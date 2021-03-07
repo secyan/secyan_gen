@@ -1,0 +1,2 @@
+{{ left_table.variable_table_name }}.SemiJoin({{ right_table.variable_table_name }},"{{ left }}" , "{{ right }}");
+{% if should_aggregate %}{{ left_table.variable_table_name }}.Aggregate({% for name  in  not_in_names %}"{{ name }}"{% if not loop.last %},{% endif %}{% endfor %}){% endif %}

@@ -31,3 +31,12 @@ class JoinTest(unittest.TestCase):
         expected_names = ["c.name", "b.id", "c.address", "b.name"]
         for c in column_names:
             self.assertTrue(c.name_with_table in expected_names)
+
+    def test_simple_join_3(self):
+        self.a_table.join(self.b_table, "id", "id")
+        self.b_table.join(self.c_table, "id", "id")
+        column_names = self.a_table.column_names
+        self.assertEqual(len(column_names), 5)
+        expected_names = ["a.name", "a.id", "b.name", "c.name", "c.address"]
+        for c in column_names:
+            self.assertTrue(c.name_with_table in expected_names)

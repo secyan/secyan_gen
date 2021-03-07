@@ -59,7 +59,8 @@ class Parser:
 
     def __parse_from__(self):
         last = self.root.get_last_node()
-        last.child = FromNode()
+        last.next = FromNode()
+        last.next.prev = last
 
     def __parse_where__(self, token: Where):
         last = self.root.get_last_node()
@@ -67,11 +68,13 @@ class Parser:
         for t in token.tokens:
             if type(t) == Comparison:
                 comparison_list.append(t)
-        last.child = WhereNode(comparison_list=comparison_list, tables=self.tables)
+        last.next = WhereNode(comparison_list=comparison_list, tables=self.tables)
+        last.next.prev = last
 
     def __parse__select__(self):
         last = self.root.get_last_node()
-        last.child = SelectNode(tables=self.tables)
+        last.next = SelectNode(tables=self.tables)
+        last.next.prev = last
 
     def __parse__identifier__(self, token: Identifier):
         last = self.root.get_last_node()

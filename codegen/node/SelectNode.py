@@ -23,9 +23,9 @@ class SelectNode(BaseNode):
         Merge data from from node
         :return:
         """
-        if self.child and self.child.self_identify == "From":
-            self.from_tables = self.child.identifier_list
-            self.child = self.child.child
+        if self.next and self.next.self_identify == "From":
+            self.from_tables = self.next.identifier_list
+            self.next = self.next.next
         else:
             print("aaa")
 
@@ -37,9 +37,8 @@ class SelectNode(BaseNode):
             for t in self.tables:
                 if t.variable_table_name == tb_name:
                     table = t
-            with open('./codegen/node/templates/select.template.j2', 'r') as file:
-                template = Template(file.read())
 
+            template = self.open_template_file("select.template.j2")
             owner = "SERVER"
             attr_names = [c.name for c in table.column_names]
             attr_types = [c.column_type.value for c in table.column_names]
