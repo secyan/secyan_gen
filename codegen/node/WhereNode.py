@@ -1,8 +1,8 @@
 from typing import List
 
 from sqlparse.sql import Identifier, Comparison
+
 from .JoinNode import JoinNode, JoinData
-from .SelectNode import SelectNode
 from ..table.table import Table
 
 

@@ -1,5 +1,6 @@
 from typing import List, Optional
-from sqlparse.sql import Identifier, IdentifierList, Token
+
+from sqlparse.sql import Identifier
 
 try:
     import importlib.resources as pkg_resources

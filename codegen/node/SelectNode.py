@@ -1,10 +1,10 @@
 from typing import List
-from functools import reduce
+
+from jinja2 import Template
 from sqlparse.sql import Identifier
-from . import FromNode
+
 from .BaseNode import BaseNode
 from ..table.table import Table
-from jinja2 import Template
 
 
 class SelectNode(BaseNode):

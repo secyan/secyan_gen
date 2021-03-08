@@ -1,8 +1,6 @@
-from copy import deepcopy
 from typing import List
 
 from jinja2 import Template
-from sqlparse.sql import Comparison
 
 from .BaseNode import BaseNode
 from .SelectNode import SelectNode
