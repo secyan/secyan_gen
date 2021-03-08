@@ -28,8 +28,9 @@ class JoinNodeTest(unittest.TestCase):
 
         result = root.next.to_code()
         print(result)
-        self.assertEqual(len(result), 2)
-        self.assertEqual(result[0], 'b.Aggregate({ "ba" })\na.SemiJoin(b,"aa" , "ba");')
+        self.assertEqual(len(result), 10)
+        self.assertEqual(result[0], 'b.Aggregate({ "ba" });')
+        self.assertEqual(result[1], 'a.SemiJoin(b,"aa" , "ba");')
 
     def test_simple_join2(self):
         data = [JoinData(left="aa", right="ab"), JoinData(left="ec", right="eb")]
@@ -56,5 +57,5 @@ class JoinNodeTest(unittest.TestCase):
 
         result = root.next.to_code()
         print(result)
-        self.assertEqual(len(result), 3)
+        self.assertEqual(len(result), 13)
         # self.assertEqual(result[0], 'a.SemiJoin(b,"aa" , "ba");\na.Aggregate("b","c")')

@@ -17,7 +17,8 @@ class Table:
         self._table_name = table_name
         self.parent: "Table" = None
         self.children: List["JoinColumn"] = []
-        self.original_column_names: List[Column] = [Column(table=self, name=c.name, column_type=c.column_type) for c in columns]
+        self.original_column_names: List[Column] = [Column(table=self, name=c.name, column_type=c.column_type) for c in
+                                                    columns]
 
     def __str__(self):
         return f"<Table: {self._table_name} />"
@@ -53,27 +54,38 @@ class Table:
 
             return column_names
 
+    def get_columns_after_aggregate(self):
+        parent_columns = [c for c in self.original_column_names]
+        aggs = []
+        for child in self.children:
+            aggs += child.to_table.get_aggregate_columns()
+
+        for a in aggs:
+            if a not in parent_columns:
+                parent_columns.append(a)
+        return parent_columns
+
     def get_aggregate_columns(self) -> List[Column]:
         agg = []
         if self.parent and self.parent.parent:
-            parent_columns = self.parent.column_names
-            parent_parent_columns = self.parent.parent.original_column_names
-            diff = []
-            for pc in parent_columns:
-                if pc in parent_parent_columns:
-                    diff.append(pc)
-
-            for d in diff:
-                if d in self.column_names:
-                    agg.append(d)
+            parent_columns = [c for c in self.parent.original_column_names]
+            parent_parent_columns = [c for c in self.parent.parent.original_column_names]
+            agg = self.get_aggregate_columns_util(parent_columns, self.original_column_names)
+            agg += self.get_aggregate_columns_util(parent_parent_columns, self.original_column_names)
 
         elif self.parent and not self.parent.parent:
-            parent_columns = self.parent.original_column_names
-            for c in parent_columns:
-                for cr in c.related_columns:
-                    if cr == c:
-                        agg.append(cr)
+            parent_columns = [c for c in self.parent.original_column_names]
+            self_columns = self.get_columns_after_aggregate()
+            agg = self.get_aggregate_columns_util(parent_columns, self_columns)
 
+        return agg
+
+    def get_aggregate_columns_util(self, parent_columns: List[Column], self_columns: List[Column]) -> List[Column]:
+        agg = []
+        for c in parent_columns:
+            for cr in c.related_columns:
+                if cr in self_columns:
+                    agg.append(cr)
         return agg
 
     def has_column_with_name(self, column_name: str) -> bool:

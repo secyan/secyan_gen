@@ -69,8 +69,9 @@ class JoinTest(unittest.TestCase):
         self.assertEqual(len(column_names), 4)
 
         agg = table_b.get_aggregate_columns()
-        self.assertEqual(1, len(agg))
-        self.assertEqual(agg[0].name, "e")
+        self.assertEqual(2, len(agg))
+        self.assertEqual(agg[0].name, "a")
+        self.assertEqual(agg[1].name, "e")
 
         agg = table_a.get_aggregate_columns()
         self.assertEqual(1, len(agg))
@@ -99,3 +100,30 @@ class JoinTest(unittest.TestCase):
         agg = table_b.get_aggregate_columns()
         self.assertEqual(1, len(agg))
         self.assertEqual(agg[0].name, "ba")
+
+    def test_get_aggregate_columns3(self):
+        table_a = Table(table_name="A", columns=[
+            Column(name="a", column_type=TypeEnum.int),
+            Column(name="b", column_type=TypeEnum.int),
+        ])
+
+        table_b = Table(table_name="B", columns=[
+            Column(name="a", column_type=TypeEnum.int),
+            Column(name="c", column_type=TypeEnum.int)
+        ])
+
+        table_c = Table(table_name="C", columns=[
+            Column(name="b", column_type=TypeEnum.int),
+            Column(name="d", column_type=TypeEnum.int)
+        ])
+
+        table_a.join(table_b, 'a', 'a')
+        table_a.join(table_c, 'b', 'b')
+
+        agg = table_b.get_aggregate_columns()
+        self.assertEqual(1, len(agg))
+        self.assertEqual(agg[0].name, 'a')
+
+        agg = table_c.get_aggregate_columns()
+        self.assertEqual(1, len(agg))
+        self.assertEqual(agg[0].name, "b")

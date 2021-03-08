@@ -7,15 +7,20 @@ from codegen.node.SelectNode import SelectNode
 from codegen.node.WhereNode import WhereNode
 from codegen.table.table import Table
 from jinja2 import Template
+from . import templates
+
+try:
+    import importlib.resources as pkg_resources
+except ImportError:
+    import importlib_resources as pkg_resources
 
 
 class Parser:
-    def __init__(self, sql: str, tables: List[Table], table_to_reveal: Table):
+    def __init__(self, sql: str, tables: List[Table]):
         self.sql = sql
         self.tokens: List[Token] = sqlparse.parse(sql)[0].tokens
         self.root = BaseNode()
         self.tables: List[Table] = tables
-        self.table_to_reveal: Table = table_to_reveal
 
     def parse(self):
         for token in self.tokens:
@@ -36,25 +41,25 @@ class Parser:
         cur = self.root
         while cur:
             cur.merge()
-            cur = cur.child
+            cur = cur.next
         return self
 
     def to_code(self):
-        l = []
+        code = []
         cur = self.root
         while cur:
-            if cur.to_code():
-                l += cur.to_code()
-            cur = cur.child
+            c = cur.to_code()
+            if c:
+                code += c
+            cur = cur.next
 
-        return l
+        return code
 
     def to_file(self, file_name: str):
-        with open('./codegen/template.j2', 'r') as f:
-            template = Template(f.read())
+        template = Template(pkg_resources.read_text(templates, "template.j2"))
         with open(file_name, 'w') as f:
             lines = self.to_code()
-            generated = template.render(function_lines=lines, table_to_reveal=self.table_to_reveal)
+            generated = template.render(function_lines=lines)
             f.write(generated)
 
     def __parse_from__(self):

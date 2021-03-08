@@ -31,7 +31,6 @@ class JoinNode(BaseNode):
             cur = cur.prev
 
     def to_code(self):
-        template = Template(self.open_template_file("join.template.j2"))
         tables = []
         index = []
 
@@ -87,7 +86,7 @@ class JoinNode(BaseNode):
                                        aggregate=agg, left=from_key, right=to_key,
                                        should_aggregate=len(agg) > 0, should_join=True)
 
-            code.append(rendered)
+            code += rendered.split("\n")
 
         else:
             # TODO: Conditional aggregate. Currently will append aggregate statement no matter what.
@@ -96,7 +95,7 @@ class JoinNode(BaseNode):
 
             rendered = template.render(left_table=root.parent, right_table=root,
                                        aggregate=agg, left=from_key, right=to_key,
-                                       should_aggregate=True, should_join=False)
-            code.append(rendered)
+                                       should_aggregate=True, should_join=False, reveal_table=root, should_reveal=True)
+            code += rendered.split("\n")
 
         return code

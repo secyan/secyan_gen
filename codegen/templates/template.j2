@@ -21,7 +21,4 @@ void run_Demo(DataSize ds, bool printResult){
     {% for line in function_lines -%}
     {{ line }}
     {% endfor %}
-    {{table_to_reveal.variable_table_name}}.RevealAnnotToOwner();
-    if (printResult)
-        {{table_to_reveal.variable_table_name}}.Print();
 }

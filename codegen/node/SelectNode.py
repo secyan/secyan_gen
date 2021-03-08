@@ -38,7 +38,7 @@ class SelectNode(BaseNode):
                 if t.variable_table_name == tb_name:
                     table = t
 
-            template = self.open_template_file("select.template.j2")
+            template = Template(self.open_template_file("select.template.j2"))
             owner = "SERVER"
             attr_names = [c.name for c in table.column_names]
             attr_types = [c.column_type.value for c in table.column_names]

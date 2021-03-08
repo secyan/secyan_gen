@@ -34,8 +34,8 @@ void run_Demo(DataSize ds, bool printResult){
     auto orders_ri = {
             SERVER,
     		false,
-    		{ "o_custkey","o_orderkey" },
-    		{ Relation::INT,Relation::INT },
+    		{ "o_custkey","o_orderkey","o_shippriority" },
+    		{ Relation::INT,Relation::INT,Relation::INT },
     		NumRows[rn][ds],
     		false
     };
@@ -57,10 +57,18 @@ void run_Demo(DataSize ds, bool printResult){
     filePath = GetFilePath(LINEITEM, ds);
     lineitem.LoadData(filePath.c_str(), "demo");
     
-    customer.SemiJoin(orders,c_custkey , o_custkey);
-    lineitem.SemiJoin(orders,l_orderkey , o_orderkey);
+    customer.Aggregate({ "c_custkey","l_orderkey" });
+    orders.SemiJoin(customer,"o_custkey" , "c_custkey");
     
-    lineitem.RevealAnnotToOwner();
+    lineitem.Aggregate({ "c_custkey","l_orderkey" });
+    orders.SemiJoin(lineitem,"o_orderkey" , "l_orderkey");
+    
+    orders.Aggregate({ "l_orderkey","o_orderdate","o_shippriority" });
+    
+    
+    orders.RevealAnnotToOwner();
     if (printResult)
-        lineitem.Print();
+        orders.Print();
+    
+    
 }
