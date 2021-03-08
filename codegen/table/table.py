@@ -5,9 +5,14 @@ from typing import List
 from .column import Column, JoinColumn
 
 
+class CharacterEnum(Enum):
+    server = "SERVER"
+    client = "CLIENT"
+
+
 class Table:
 
-    def __init__(self, table_name: str, columns: List[Column]):
+    def __init__(self, table_name: str, columns: List[Column], owner: CharacterEnum = CharacterEnum.server):
         """
         Create a table with columns
         :param table_name: table name
@@ -17,8 +22,11 @@ class Table:
         self._table_name = table_name
         self.parent: "Table" = None
         self.children: List["JoinColumn"] = []
-        self.original_column_names: List[Column] = [Column(table=self, name=c.name, column_type=c.column_type) for c in
-                                                    columns]
+        self.original_column_names: List[Column] = [
+            Column(table=self, name=c.name, column_type=c.column_type) for c in
+            columns
+        ]
+        self.owner = owner
 
     def __str__(self):
         return f"<Table: {self._table_name} />"

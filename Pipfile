@@ -9,6 +9,7 @@ verify_ssl = true
 sqlparse = "*"
 jinja2 = "*"
 pytest = "*"
+coverage = "*"
 
 [requires]
 python_version = "3.8"

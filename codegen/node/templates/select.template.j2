@@ -7,7 +7,7 @@ auto {{ table_name }}_ri = {
 		false
 };
 Relation::AnnotInfo {{ table_name }}_ai = {true, true};
-Relation orders({{ table_name }}_ri, {{ table_name }}_ai);
+Relation {{ table_name }}({{ table_name }}_ri, {{ table_name }}_ai);
 filePath = GetFilePath({{ from_table.normalized }}, ds);
 {{ table_name }}.LoadData(filePath.c_str(), "demo");
 

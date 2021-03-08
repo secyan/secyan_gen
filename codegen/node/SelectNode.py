@@ -37,9 +37,10 @@ class SelectNode(BaseNode):
             for t in self.tables:
                 if t.variable_table_name == tb_name:
                     table = t
-
+            if not table:
+                raise RuntimeError("Cannot find table with this name: " + tb_name)
             template = Template(self.open_template_file("select.template.j2"))
-            owner = "SERVER"
+            owner = table.owner.value
             attr_names = [c.name for c in table.column_names]
             attr_types = [c.column_type.value for c in table.column_names]
             rendered = template.render(attr_names=attr_names, attr_types=attr_types,
