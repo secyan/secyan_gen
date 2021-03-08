@@ -4,5 +4,5 @@
 
 A code generation project for SECYAN Repo. To run the code, see example/main.py for example.
 
-A running example is hosted on this [website](https://9sa6wy50hh.execute-api.ap-east-1.amazonaws.com/dev)
+A running example is hosted on this [website](https://cwvf54ckb6.execute-api.ap-east-1.amazonaws.com/dev)
 ![example](images/image1.png)
