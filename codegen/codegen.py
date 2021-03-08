@@ -62,6 +62,16 @@ class Parser:
             generated = template.render(function_lines=lines)
             f.write(generated)
 
+    def to_output(self) -> str:
+        """
+        Generate code and return
+        :return:
+        """
+        template = Template(pkg_resources.read_text(templates, "template.j2"))
+        lines = self.to_code()
+        generated = template.render(function_lines=lines)
+        return generated
+
     def __parse_from__(self):
         last = self.root.get_last_node()
         last.next = FromNode()

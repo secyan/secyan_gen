@@ -10,6 +10,8 @@ sqlparse = "*"
 jinja2 = "*"
 pytest = "*"
 coverage = "*"
+flask = "*"
+zappa = "*"
 
 [requires]
 python_version = "3.8"

@@ -10,6 +10,7 @@ class CharacterEnum(Enum):
     client = "CLIENT"
 
 
+
 class Table:
 
     def __init__(self, table_name: str, columns: List[Column], owner: CharacterEnum = CharacterEnum.server):
@@ -30,6 +31,19 @@ class Table:
 
     def __str__(self):
         return f"<Table: {self._table_name} />"
+
+    @staticmethod
+    def load_from_json(json_content: dict) -> "Table":
+        """
+        Construct a table from json content
+        :param json_content:
+        :return:
+        """
+        assert "table_name" in json_content
+        assert "columns" in json_content
+        assert "owner" in json_content
+        columns = [Column.load_column_from_json(c) for c in json_content['columns']]
+        return Table(table_name=json_content["table_name"], columns=columns, owner=CharacterEnum[json_content['owner']])
 
     @property
     def variable_table_name(self):

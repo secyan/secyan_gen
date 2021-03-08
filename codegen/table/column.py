@@ -8,6 +8,8 @@ class TypeEnum(Enum):
     """
     int = "INT"
     string = "STRING"
+    decimal = "DECIMAL"
+    date = "DATE"
 
 
 class Column:
@@ -21,6 +23,19 @@ class Column:
         self.column_type: TypeEnum = column_type
         self.table: "Table" = table
         self.related_columns: List["Column"] = []
+
+    @staticmethod
+    def load_column_from_json(json_content: dict) -> "Column":
+        """
+        Load column from json data
+        :param json_content:
+        :return:
+        """
+        assert type(json_content) == dict
+        assert "column_type" in json_content
+        assert "name" in json_content
+
+        return Column(name=json_content["name"], column_type=TypeEnum[json_content['column_type']])
 
     @property
     def name_with_table(self):

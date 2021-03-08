@@ -2,4 +2,7 @@
 
 [![Build and test](https://github.com/sirily11/SECYAN-GEN/actions/workflows/test.yml/badge.svg)](https://github.com/sirily11/SECYAN-GEN/actions/workflows/test.yml)
 
-A code generation project for SECYAN Repo. To run the code, see main.py for example.
+A code generation project for SECYAN Repo. To run the code, see example/main.py for example.
+
+A running example is hosted on this [website](https://9sa6wy50hh.execute-api.ap-east-1.amazonaws.com/dev)
+![example](images/image1.png)
