@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import List
 
 
 class TypeEnum(Enum):
@@ -19,6 +20,7 @@ class Column:
         self.name: str = name
         self.column_type: TypeEnum = column_type
         self.table: "Table" = table
+        self.related_columns: List["Column"] = []
 
     @property
     def name_with_table(self):
@@ -29,6 +31,17 @@ class Column:
         """
         return f"{self.table.variable_table_name}.{self.name}"
 
+    def __eq__(self, other: "Column"):
+        if other.table == self.table and other.name == self.name:
+            return True
+        columns = [c for c in self.related_columns if c.table != self.table]
+        for column in columns:
+            if column.name == other.name and column.table == other.table:
+                return True
+
+    def __str__(self):
+        return f"<Column: {self.name} />"
+
 
 class JoinColumn:
     def __init__(self, to_table: "Table", from_table: "Table", to_table_key: str, from_table_key: str):
@@ -36,3 +49,15 @@ class JoinColumn:
         self.to_table_key = to_table_key
         self.from_table_key = from_table_key
         self.from_table = from_table
+
+    @property
+    def to_table_join_column(self) -> Column:
+        for column in self.to_table.column_names:
+            if column.name == self.to_table_key:
+                return column
+
+    @property
+    def from_table_join_column(self) -> Column:
+        for column in self.from_table.column_names:
+            if column.name == self.from_table_key:
+                return column

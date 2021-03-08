@@ -5,6 +5,10 @@ from codegen.table.table import Table
 
 
 class JoinTest(unittest.TestCase):
+    """
+    Test join on tables
+    """
+
     def setUp(self):
         self.a_table = Table(table_name="a",
                              columns=[Column(name="name", column_type=TypeEnum.string),
@@ -40,3 +44,58 @@ class JoinTest(unittest.TestCase):
         expected_names = ["a.name", "a.id", "b.name", "c.name", "c.address"]
         for c in column_names:
             self.assertTrue(c.name_with_table in expected_names)
+
+    def test_get_aggregate_columns(self):
+        table_a = Table(table_name="A", columns=[
+            Column(name="a", column_type=TypeEnum.int),
+            Column(name="b", column_type=TypeEnum.int),
+            Column(name="c", column_type=TypeEnum.int)
+        ])
+
+        table_b = Table(table_name="B", columns=[
+            Column(name="a", column_type=TypeEnum.int),
+            Column(name="e", column_type=TypeEnum.int)
+        ])
+
+        table_c = Table(table_name="C", columns=[
+            Column(name="e", column_type=TypeEnum.int),
+            Column(name="f", column_type=TypeEnum.int)
+        ])
+
+        table_a.join(table_b, "a", "a")
+        table_c.join(table_a, "e", "e")
+
+        column_names = table_a.column_names
+        self.assertEqual(len(column_names), 4)
+
+        agg = table_b.get_aggregate_columns()
+        self.assertEqual(1, len(agg))
+        self.assertEqual(agg[0].name, "e")
+
+        agg = table_a.get_aggregate_columns()
+        self.assertEqual(1, len(agg))
+        self.assertEqual(agg[0].name, "e")
+
+        agg = table_c.get_aggregate_columns()
+        self.assertEqual(0, len(agg))
+
+    def test_get_aggregate_columns2(self):
+        table_a = Table(table_name="A", columns=[
+            Column(name="aa", column_type=TypeEnum.int),
+            Column(name="b", column_type=TypeEnum.int),
+            Column(name="c", column_type=TypeEnum.int)
+        ])
+
+        table_b = Table(table_name="B", columns=[
+            Column(name="ba", column_type=TypeEnum.int),
+            Column(name="e", column_type=TypeEnum.int)
+        ])
+
+        table_a.join(to_table=table_b, from_table_key="aa", to_table_key="ba")
+
+        column_names = table_a.column_names
+        self.assertEqual(len(column_names), 4)
+
+        agg = table_b.get_aggregate_columns()
+        self.assertEqual(1, len(agg))
+        self.assertEqual(agg[0].name, "ba")

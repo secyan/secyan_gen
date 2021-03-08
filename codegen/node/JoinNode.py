@@ -6,6 +6,7 @@ from sqlparse.sql import Comparison
 
 from .BaseNode import BaseNode
 from .SelectNode import SelectNode
+from ..table.column import Column, TypeEnum
 from ..table.table import Table
 
 
@@ -30,11 +31,11 @@ class JoinNode(BaseNode):
             cur = cur.prev
 
     def to_code(self):
-        code = []
-        selections = [i.normalized for i in self.__get_select__().identifier_list]
         template = Template(self.open_template_file("join.template.j2"))
+        tables = []
+        index = []
 
-        for c in self.join_list:
+        for i, c in enumerate(self.join_list):
             c: JoinData
             left_table = None
             right_table = None
@@ -50,15 +51,52 @@ class JoinNode(BaseNode):
 
             if left_table and right_table:
                 left_table.join(right_table, str(c.left), str(c.right))
-                column_names = left_table.column_names
-                not_in_names = []
-                for column_name in column_names:
-                    if column_name.name not in selections:
-                        not_in_names.append(column_name.name)
+                if left_table not in tables:
+                    tables.append(left_table)
+                    index.append(i)
 
-                rendered = template.render(left_table=left_table, right_table=right_table,
-                                           not_in_names=not_in_names, left=c.left, right=c.right,
-                                           should_aggregate=len(not_in_names) > 0)
-                code.append(rendered)
+                if right_table not in tables:
+                    tables.append(right_table)
+                    index.append(i)
 
-            return code
+        root = None
+        for table in tables:
+            if not table.parent:
+                root = table
+                break
+
+        code = self.to_code_util(root=root)
+        return code
+
+    def to_code_util(self, root: Table, from_key=None, to_key=None) -> List[str]:
+        """
+        Do a post-order tree Traversal to generate code
+        :param root: current table
+        :param from_key: join key. From table's column name
+        :param to_key: join key. To table's column name
+        :return: list of generated code
+        """
+        code = []
+        template = Template(self.open_template_file("join.template.j2"))
+        for child in root.children:
+            code += self.to_code_util(child.to_table, child.from_table_key, child.to_table_key)
+
+        if root.parent:
+            agg = root.get_aggregate_columns()
+            rendered = template.render(left_table=root.parent, right_table=root,
+                                       aggregate=agg, left=from_key, right=to_key,
+                                       should_aggregate=len(agg) > 0, should_join=True)
+
+            code.append(rendered)
+
+        else:
+            # TODO: Conditional aggregate. Currently will append aggregate statement no matter what.
+            selections = [i.normalized for i in self.__get_select__().identifier_list]
+            agg = [Column(name=s, column_type=TypeEnum.int) for s in selections]
+
+            rendered = template.render(left_table=root.parent, right_table=root,
+                                       aggregate=agg, left=from_key, right=to_key,
+                                       should_aggregate=True, should_join=False)
+            code.append(rendered)
+
+        return code
