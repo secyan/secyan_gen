@@ -5,6 +5,7 @@ on:
     paths:
       - '**.py'
       - '**.yml'
+      - '**.html'
       - 'zappa_settings.json'
 jobs:
   build:
