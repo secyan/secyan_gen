@@ -57,10 +57,10 @@ void run_Demo(DataSize ds, bool printResult){
     filePath = GetFilePath(LINEITEM, ds);
     lineitem.LoadData(filePath.c_str(), "demo");
     
-    customer.Aggregate({ "c_custkey","l_orderkey" });
+    customer.Aggregate({ "c_custkey" });
     orders.SemiJoin(customer,"o_custkey" , "c_custkey");
     
-    lineitem.Aggregate({ "c_custkey","l_orderkey" });
+    lineitem.Aggregate({ "l_orderkey" });
     orders.SemiJoin(lineitem,"o_orderkey" , "l_orderkey");
     
     orders.Aggregate({ "l_orderkey","o_orderdate","o_shippriority" });

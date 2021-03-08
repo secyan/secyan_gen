@@ -12,6 +12,11 @@ from ..table.table import Table
 
 class JoinData:
     def __init__(self, left, right):
+        """
+        Data object contains join info
+        :param left: key on the left join statement
+        :param right: key on the right join statement
+        """
         self.left = left
         self.right = right
 
@@ -19,11 +24,20 @@ class JoinData:
 class JoinNode(BaseNode):
 
     def __init__(self, join_list: List[JoinData], tables: List[Table]):
+        """
+        Base node which perform join operation
+        :param join_list:
+        :param tables:
+        """
         super().__init__()
         self.join_list: List[JoinData] = join_list
         self.tables = tables
 
     def __get_select__(self):
+        """
+        Get the select node from the SQL tree
+        :return:
+        """
         cur = self
         while cur:
             if type(cur) == SelectNode:
@@ -95,7 +109,8 @@ class JoinNode(BaseNode):
 
             rendered = template.render(left_table=root.parent, right_table=root,
                                        aggregate=agg, left=from_key, right=to_key,
-                                       should_aggregate=True, should_join=False, reveal_table=root, should_reveal=True)
+                                       should_aggregate=True, should_join=False,
+                                       reveal_table=root, should_reveal=True)
             code += rendered.split("\n")
 
         return code

@@ -20,6 +20,9 @@ class BaseNode:
     child: Optional["BaseNode"]
 
     def __init__(self):
+        """
+        Base SQL node object.
+        """
         self.self_identify = "Base"
         self.prev: Optional["BaseNode"] = None
         self.child: Optional["BaseNode"] = None
@@ -27,6 +30,10 @@ class BaseNode:
         self.identifier_list: List[Identifier] = []
 
     def print_graph(self):
+        """
+        Print SQL tree Graph
+        :return:
+        """
         cur = self
 
         while cur:
@@ -35,6 +42,10 @@ class BaseNode:
             cur = cur.next
 
     def merge(self):
+        """
+        Merge data with other nodes
+        :return:
+        """
         pass
 
     def to_code(self) -> List[str]:
@@ -45,6 +56,10 @@ class BaseNode:
         pass
 
     def get_last_node(self) -> "BaseNode":
+        """
+        Get last node in this tree structure
+        :return:
+        """
         cur = self
 
         while cur.next:
@@ -53,5 +68,10 @@ class BaseNode:
         return cur
 
     def open_template_file(self, path: str):
+        """
+        Open jinja template file
+        :param path: Jinja template file path
+        :return:
+        """
         template = pkg_resources.read_text(templates, path)
         return template

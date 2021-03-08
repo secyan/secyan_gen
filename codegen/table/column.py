@@ -45,6 +45,13 @@ class Column:
 
 class JoinColumn:
     def __init__(self, to_table: "Table", from_table: "Table", to_table_key: str, from_table_key: str):
+        """
+        An object contains joining information
+        :param to_table: Join to which table
+        :param from_table: From which table
+        :param to_table_key: to table's column name
+        :param from_table_key: from table's column name
+        """
         self.to_table = to_table
         self.to_table_key = to_table_key
         self.from_table_key = from_table_key
@@ -52,12 +59,20 @@ class JoinColumn:
 
     @property
     def to_table_join_column(self) -> Column:
+        """
+        Get column from to_table with to_table_key
+        :return:
+        """
         for column in self.to_table.column_names:
             if column.name == self.to_table_key:
                 return column
 
     @property
     def from_table_join_column(self) -> Column:
+        """
+        Get column from from_table with from_table_key
+        :return:
+        """
         for column in self.from_table.column_names:
             if column.name == self.from_table_key:
                 return column

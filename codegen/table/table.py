@@ -54,7 +54,13 @@ class Table:
 
             return column_names
 
-    def get_columns_after_aggregate(self):
+    def get_columns_after_aggregate(self) -> List[Column]:
+        """
+        Get list of columns after aggregation. This will include all columns passed from children
+        and it's columns
+        :return:
+        """
+
         parent_columns = [c for c in self.original_column_names]
         aggs = []
         for child in self.children:
@@ -66,6 +72,11 @@ class Table:
         return parent_columns
 
     def get_aggregate_columns(self) -> List[Column]:
+        """
+        Get list of columns need to aggregate
+        :return:
+        """
+
         agg = []
         if self.parent and self.parent.parent:
             parent_columns = [c for c in self.parent.original_column_names]
@@ -81,6 +92,12 @@ class Table:
         return agg
 
     def get_aggregate_columns_util(self, parent_columns: List[Column], self_columns: List[Column]) -> List[Column]:
+        """
+        Helper function. Return list of columns
+        :param parent_columns:
+        :param self_columns:
+        :return:
+        """
         agg = []
         for c in parent_columns:
             for cr in c.related_columns:
@@ -89,6 +106,11 @@ class Table:
         return agg
 
     def has_column_with_name(self, column_name: str) -> bool:
+        """
+        table has the column with name
+        :param column_name: Column name
+        :return: True if has
+        """
         for column in self.column_names:
             if column.name == column_name:
                 return True
