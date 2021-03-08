@@ -5,6 +5,7 @@ on:
     paths:
       - '**.py'
       - '**.yml'
+      - 'zappa_settings.json'
 jobs:
   build:
     runs-on: ubuntu-latest
