@@ -21,8 +21,9 @@ def generate_code():
     sql = data['sql']
     parser = Parser(sql=sql, tables=tables)
     output = parser.parse().to_output()
+    graph = [t for t in parser.tables if len(t.children) > 0][0].get_root().to_json()
 
-    return jsonify({"code": output})
+    return jsonify({"code": output, "join_graph": graph})
 
 
 if __name__ == '__main__':

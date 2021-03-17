@@ -1,12 +1,17 @@
-{% if not is_group_by %}{% if should_aggregate %}{{ right_table.variable_table_name }}.Aggregate({ {% for column  in  aggregate %}"{{ column.name }}"{% if not loop.last %},{% endif %}{% endfor %} });{% endif %}
-{% if should_join %}{{ left_table.variable_table_name }}.SemiJoin({{ right_table.variable_table_name }},"{{ left }}" , "{{ right }}");{% endif %}
-{% endif %}
-{% if is_group_by %}
+{% if not is_group_by -%}
+{% if should_aggregate -%}
+{{ right_table.variable_table_name }}.Aggregate({ {% for column  in  aggregate %}"{{ column.name }}"{% if not loop.last %},{% endif %}{% endfor %} });
+{%- endif -%}
+{% if should_join -%}
+{{ left_table.variable_table_name }}.SemiJoin({{ right_table.variable_table_name }},"{{ left }}" , "{{ right }}");
+{%- endif %}
+{%- else -%}
 vector<string> o_groupBy = { {% for column  in  aggregate %}"{{ column.name }}"{% if not loop.last %},{% endif %}{% endfor %} };
 {{ right_table.variable_table_name }}.Aggregate(o_groupBy);
-{% endif %}
+{%- endif -%}
+
 {% if should_reveal %}
 {{ reveal_table.variable_table_name  }}.RevealAnnotToOwner();
 if (printResult)
     {{  reveal_table.variable_table_name }}.Print();
-{% endif %}
+{%- endif -%}

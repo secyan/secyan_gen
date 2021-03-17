@@ -60,6 +60,8 @@ class JoinNode(BaseNode):
         Perform join
         :return:
         """
+        
+        # TODO: Generate a free-connex join tree
         for i, c in enumerate(self.join_list):
             c: JoinData
             left_table = None
@@ -84,12 +86,7 @@ class JoinNode(BaseNode):
                     self.join_tables.append(right_table)
 
     def to_code(self):
-        root = None
-        for table in self.join_tables:
-            if not table.parent:
-                root = table
-                break
-
+        root = self.join_tables[0].get_root()
         code = self.__to_code_util__(root=root)
         return code
 

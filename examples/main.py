@@ -32,6 +32,32 @@ limit
 
 """
 
+sql2 = """
+select
+   c_custkey,
+   c_name,
+   sum(l_extendedprice * (1 - l_discount)) as revenue,
+   c_nationkey
+ from
+   CUSTOMER,
+   ORDERS,
+   LINEITEM
+where
+   c_custkey = o_custkey
+   and l_orderkey = o_orderkey
+   and o_orderdate >= date '1993-08-01'
+   and o_orderdate < date '1993-08-01' + interval '3' month
+   and l_returnflag = 'R'
+ group by
+   c_custkey,
+   c_name
+order by
+   revenue desc
+limit
+   20;
+
+"""
+
 # CUSTOMER_TABLE = Table(table_name="CUSTOMER",
 #                        columns=[
 #                            Column(name="c_custkey", column_type=TypeEnum.int),
@@ -62,5 +88,5 @@ limit
 
 with open("examples/table_config.json", 'r') as f:
     tables = [Table.load_from_json(t) for t in json.load(f)]
-    parser = Parser(sql=sql, tables=tables)
+    parser = Parser(sql=sql2, tables=tables)
     parser.parse().to_file("examples/test.cpp")

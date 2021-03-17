@@ -43,7 +43,7 @@ class Table:
             return self._owner
         else:
             depth = self.get_depth()
-            return CharacterEnum.server if depth % 2 == 0 else CharacterEnum.client
+            return CharacterEnum.server if depth % 2 == 1 else CharacterEnum.client
 
     def get_depth(self) -> int:
         """
@@ -65,7 +65,8 @@ class Table:
         assert "table_name" in json_content
         assert "columns" in json_content
         columns = [Column.load_column_from_json(c) for c in json_content['columns']]
-        return Table(table_name=json_content["table_name"], columns=columns, owner=CharacterEnum[json_content['owner']] if "owner" in json_content else None)
+        return Table(table_name=json_content["table_name"], columns=columns,
+                     owner=CharacterEnum[json_content['owner']] if "owner" in json_content else None)
 
     @property
     def variable_table_name(self) -> str:
@@ -171,10 +172,11 @@ class Table:
 
     def join(self, to_table: "Table", from_table_key: str, to_table_key: str):
         """
-        Join another table
-        :param to_table_key: key from table_b
-        :param from_table_key: key from table_a, or self table
-        :param to_table: another table or table b
+        Join another table. IF A join B, then A becomes the parent of B
+
+        :param to_table_key: key from table_b.
+        :param from_table_key: key from table_a, or self table.
+        :param to_table: another table or table b.
         :return:
         """
         if not to_table.has_column_with_name(to_table_key):
@@ -194,3 +196,19 @@ class Table:
         from_column.related_columns.append(to_column)
 
         return self
+
+    def get_root(self):
+        """
+        Return the root of the join tree
+        :return:
+        """
+        if not self.parent:
+            return self
+        return self.parent.get_root()
+
+    def to_json(self):
+        return {
+            "text": {"name": self.variable_table_name},
+            # "parent": self.parent.variable_table_name if self.parent else None,
+            "children": [c.to_table.to_json() for c in self.children]
+        }
