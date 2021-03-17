@@ -1,13 +1,15 @@
 from typing import List, Optional
 import sqlparse
 from sqlparse.sql import Comment, Identifier, Statement, Where, Token, IdentifierList, Comparison
-from codegen.node.BaseNode import BaseNode
-from codegen.node.FromNode import FromNode
-from codegen.node.SelectNode import SelectNode
-from codegen.node.WhereNode import WhereNode
-from codegen.table.table import Table
+from .node.BaseNode import BaseNode
+from .node.FromNode import FromNode
+from .node.SelectNode import SelectNode
+from .node.WhereNode import WhereNode
+from .table.table import Table
 from jinja2 import Template
 from . import templates
+from .node.GroupbyNode import GroupByNode
+from .node.OrderByNode import OrderByNode
 
 try:
     import importlib.resources as pkg_resources
@@ -19,7 +21,7 @@ class Parser:
     def __init__(self, sql: str, tables: List[Table]):
         self.sql = sql
         self.tokens: List[Token] = sqlparse.parse(sql)[0].tokens
-        self.root = BaseNode()
+        self.root = BaseNode(tables=[])
         self.tables: List[Table] = tables
 
     def parse(self):
@@ -28,15 +30,20 @@ class Parser:
                 if type(token) == Token:
                     if token.normalized == "SELECT":
                         self.__parse__select__()
-                    elif token.normalized == "GROUPBY":
-                        pass
+                    elif token.normalized == "GROUP BY":
+                        self.__parse_group_by__()
                     elif token.normalized == "FROM":
                         self.__parse_from__()
+                    elif token.normalized == "ORDER BY":
+                        self.__parse_order_by__()
                 elif type(token) == Where:
+                    token: Where
                     self.__parse_where__(token)
                 elif type(token) == Identifier:
+                    token: Identifier
                     self.__parse__identifier__(token)
                 elif type(token) == IdentifierList:
+                    token: IdentifierList
                     self.__parse__identifier_list__(token)
         cur = self.root
         while cur:
@@ -74,7 +81,7 @@ class Parser:
 
     def __parse_from__(self):
         last = self.root.get_last_node()
-        last.next = FromNode()
+        last.next = FromNode(tables=self.tables)
         last.next.prev = last
 
     def __parse_where__(self, token: Where):
@@ -86,6 +93,16 @@ class Parser:
         last.next = WhereNode(comparison_list=comparison_list, tables=self.tables)
         last.next.prev = last
 
+    def __parse_group_by__(self):
+        last = self.root.get_last_node()
+        last.next = GroupByNode(tables=self.tables)
+        last.next.prev = last
+
+    def __parse_order_by__(self):
+        last = self.root.get_last_node()
+        last.next = OrderByNode(tables=self.tables)
+        last.next.prev = last
+
     def __parse__select__(self):
         last = self.root.get_last_node()
         last.next = SelectNode(tables=self.tables)
@@ -93,9 +110,9 @@ class Parser:
 
     def __parse__identifier__(self, token: Identifier):
         last = self.root.get_last_node()
-        last.identifier_list = [token]
+        last.set_identifier_list([token])
 
     def __parse__identifier_list__(self, token: IdentifierList):
         last = self.root.get_last_node()
         tokens = [t for t in token.get_identifiers()]
-        last.identifier_list = tokens
+        last.set_identifier_list(tokens)

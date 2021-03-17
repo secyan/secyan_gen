@@ -1,6 +1,8 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 
-from sqlparse.sql import Identifier
+from sqlparse.sql import Identifier, Token, Function
+
+from ..table.table import Table
 
 try:
     import importlib.resources as pkg_resources
@@ -20,7 +22,7 @@ class BaseNode:
     # Sub query
     child: Optional["BaseNode"]
 
-    def __init__(self):
+    def __init__(self, tables: List[Table]):
         """
         Base SQL node object.
         """
@@ -28,7 +30,15 @@ class BaseNode:
         self.prev: Optional["BaseNode"] = None
         self.child: Optional["BaseNode"] = None
         self.next: Optional["BaseNode"] = None
-        self.identifier_list: List[Identifier] = []
+        self._identifier_list: List[Identifier] = []
+        self.tables = tables
+
+    @property
+    def identifier_list(self):
+        return self._identifier_list
+
+    def set_identifier_list(self, value):
+        self._identifier_list = value
 
     def print_graph(self):
         """
@@ -76,3 +86,22 @@ class BaseNode:
         """
         template = pkg_resources.read_text(templates, path)
         return template
+
+    def find_table_by_identifier_or_function(self, identifier: Union[Function, Identifier]) -> Table:
+        if type(identifier) != Token and len(identifier.tokens) > 1:
+            identifier: Function
+            for token in identifier.tokens:
+                table = self.find_table_by_identifier_or_function(token)
+                if table:
+                    return table
+
+        if type(identifier) == Identifier:
+            for table in self.tables:
+                if table.has_column_with_name(identifier.normalized):
+                    return table
+
+    def find_table_by_table_name(self, identifier: Identifier):
+        tb_name = identifier.normalized.lower()
+        for table in self.tables:
+            if tb_name == table.variable_table_name:
+                return table

@@ -6,7 +6,7 @@ from .BaseNode import BaseNode
 
 
 class FromNode(BaseNode):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, tables):
+        super().__init__(tables=tables)
         self.self_identify = "From"
         self.from_tables: List[Identifier] = []

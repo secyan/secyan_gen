@@ -1,5 +1,6 @@
 import unittest
 
+import sqlparse
 from sqlparse.sql import Identifier, Token
 
 from codegen.node.SelectNode import SelectNode
@@ -34,3 +35,22 @@ class TestSelect(unittest.TestCase):
         self.assert_content_in_arr(code, "CLIENT")
         self.assert_content_in_arr(code, "{ Relation::INT,Relation::STRING }")
 
+    def test_select_with_aggregation(self):
+        sql = """select sum(a) from A"""
+        tokens = sqlparse.parse(sql)[0].tokens
+        select_node = SelectNode(tables=[self.table_a])
+
+        select_node.from_tables = tokens[6]
+        select_node.set_identifier_list([tokens[2]])
+        select_node.merge()
+        self.assertFalse(select_node.tables[0].is_bool)
+
+    def test_select_with_aggregation2(self):
+        sql = """select sum(a) as re from A"""
+        tokens = sqlparse.parse(sql)[0].tokens
+        select_node = SelectNode(tables=[self.table_a])
+
+        select_node.from_tables = tokens[6]
+        select_node.set_identifier_list([tokens[2]])
+        select_node.merge()
+        self.assertFalse(select_node.tables[0].is_bool)

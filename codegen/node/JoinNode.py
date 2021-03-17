@@ -3,6 +3,7 @@ from typing import List
 from jinja2 import Template
 
 from .BaseNode import BaseNode
+from .GroupbyNode import GroupByNode
 from .SelectNode import SelectNode
 from ..table.column import Column, TypeEnum
 from ..table.table import Table
@@ -27,7 +28,7 @@ class JoinNode(BaseNode):
         :param join_list:
         :param tables:
         """
-        super().__init__()
+        super().__init__(tables=tables)
         self.join_list: List[JoinData] = join_list
         self.tables = tables
 
@@ -41,6 +42,17 @@ class JoinNode(BaseNode):
             if type(cur) == SelectNode:
                 return cur
             cur = cur.prev
+
+    def __get_group_by__(self):
+        """
+        Get the group by node from the SQL tree
+        :return:
+        """
+        cur = self
+        while cur:
+            if type(cur) == GroupByNode:
+                return cur
+            cur = cur.next
 
     def to_code(self):
         tables = []
@@ -61,7 +73,8 @@ class JoinNode(BaseNode):
                     left_table = table
 
             if left_table and right_table:
-                left_table.join(right_table, str(c.left), str(c.right))
+                right_table.join(left_table, str(c.right), str(c.left))
+                # left_table.join(right_table, str(c.left), str(c.right))
                 if left_table not in tables:
                     tables.append(left_table)
                     index.append(i)
@@ -76,10 +89,10 @@ class JoinNode(BaseNode):
                 root = table
                 break
 
-        code = self.to_code_util(root=root)
+        code = self.__to_code_util__(root=root)
         return code
 
-    def to_code_util(self, root: Table, from_key=None, to_key=None) -> List[str]:
+    def __to_code_util__(self, root: Table, from_key=None, to_key=None) -> List[str]:
         """
         Do a post-order tree Traversal to generate code
         :param root: current table
@@ -90,9 +103,12 @@ class JoinNode(BaseNode):
         code = []
         template = Template(self.open_template_file("join.template.j2"))
         for child in root.children:
-            code += self.to_code_util(child.to_table, child.from_table_key, child.to_table_key)
+            code += self.__to_code_util__(child.to_table, child.from_table_key, child.to_table_key)
 
         if root.parent:
+            if root.parent.owner == root.owner:
+                # TODO: Remove this error when the original code changed
+                raise RuntimeError("Cannot semi join by the same owner")
             agg = root.get_aggregate_columns()
             rendered = template.render(left_table=root.parent, right_table=root,
                                        aggregate=agg, left=from_key, right=to_key,
@@ -101,14 +117,40 @@ class JoinNode(BaseNode):
             code += rendered.split("\n")
 
         else:
-            # TODO: Conditional aggregate. Currently will append aggregate statement no matter what.
-            selections = [i.normalized for i in self.__get_select__().identifier_list]
-            agg = [Column(name=s, column_type=TypeEnum.int) for s in selections]
+            group_by = self.__get_group_by__()
+            select = self.__get_select__()
+            selections = []
+            is_group_by = False
+            if group_by:
+
+                selections = [i.normalized for i in group_by.identifier_list]
+                is_group_by = True
+            elif select:
+                selections = [i.normalized for i in select.identifier_list]
+            else:
+                raise SyntaxError("SQL Statement should have select statement")
+
+            columns = root.get_columns_after_aggregate()
+            new_selections = self.__preprocess_selection__(selections=selections, columns=columns)
+            agg = [Column(name=s, column_type=TypeEnum.int) for s in new_selections]
 
             rendered = template.render(left_table=root.parent, right_table=root,
                                        aggregate=agg, left=from_key, right=to_key,
                                        should_aggregate=True, should_join=False,
-                                       reveal_table=root, should_reveal=True)
+                                       reveal_table=root, should_reveal=True, is_group_by=is_group_by)
             code += rendered.split("\n")
 
         return code
+
+    def __preprocess_selection__(self, columns: List[Column], selections: List[str]) -> List[str]:
+        new_selections = []
+        for selection in selections:
+            for column in columns:
+                if column.name == selection:
+                    new_selections.append(column.name)
+                else:
+                    for rc in column.related_columns:
+                        if rc.name == selection:
+                            new_selections.append(column.name)
+
+        return new_selections

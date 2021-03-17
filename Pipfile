@@ -12,6 +12,7 @@ pytest = "*"
 coverage = "*"
 flask = "*"
 zappa = "*"
+gitpython = "*"
 
 [requires]
 python_version = "3.8"

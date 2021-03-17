@@ -1,7 +1,6 @@
 [
   {
-    "table_name": "supplier",
-    "owner": "client",
+    "table_name": "SUPPLIER",
     "columns": [
       {
         "column_type": "int",
@@ -34,8 +33,7 @@
     ]
   },
   {
-    "table_name": "customer",
-    "owner": "client",
+    "table_name": "CUSTOMER",
     "columns": [
       {
         "column_type": "int",
@@ -72,8 +70,7 @@
     ]
   },
   {
-    "table_name": "lineitem",
-    "owner": "client",
+    "table_name": "LINEITEM",
     "columns": [
       {
         "column_type": "int",
@@ -142,8 +139,7 @@
     ]
   },
   {
-    "table_name": "orders",
-    "owner": "client",
+    "table_name": "ORDERS",
     "columns": [
       {
         "column_type": "int",
@@ -184,8 +180,7 @@
     ]
   },
   {
-    "table_name": "region",
-    "owner": "client",
+    "table_name": "REGION",
     "columns": [
       {
         "column_type": "int",
@@ -203,7 +198,6 @@
   },
   {
     "table_name": "nation",
-    "owner": "client",
     "columns": [
       {
         "column_type": "int",

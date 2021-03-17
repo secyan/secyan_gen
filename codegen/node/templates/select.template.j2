@@ -1,13 +1,14 @@
-auto {{ table_name }}_ri = {
+
+Relation::RelationInfo {{ table_name }}_ri = {
         {{ owner }},
 		false,
 		{ {% for name in attr_names %}"{{ name }}"{% if not loop.last %},{% endif %}{% endfor %} },
 		{ {% for name in attr_types %}Relation::{{ name }}{% if not loop.last %},{% endif %}{% endfor %} },
-		NumRows[rn][ds],
+		NumRows[{{ table.relational_name }}][ds],
 		false
 };
-Relation::AnnotInfo {{ table_name }}_ai = {true, true};
+Relation::AnnotInfo {{ table_name }}_ai = { {% if is_boolean %}true{% else %}false{% endif %} , true};
 Relation {{ table_name }}({{ table_name }}_ri, {{ table_name }}_ai);
-filePath = GetFilePath({{ from_table.normalized }}, ds);
+{% if should_init_file_path %}auto {% endif %}filePath = GetFilePath({{ from_table.normalized }}, ds);
 {{ table_name }}.LoadData(filePath.c_str(), "demo");
 

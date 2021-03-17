@@ -10,10 +10,9 @@ class CharacterEnum(Enum):
     client = "CLIENT"
 
 
-
 class Table:
 
-    def __init__(self, table_name: str, columns: List[Column], owner: CharacterEnum = CharacterEnum.server):
+    def __init__(self, table_name: str, columns: List[Column], owner: CharacterEnum = None):
         """
         Create a table with columns
         :param table_name: table name
@@ -27,10 +26,33 @@ class Table:
             Column(table=self, name=c.name, column_type=c.column_type) for c in
             columns
         ]
-        self.owner = owner
+        self._owner = owner
+        # Used for is_boolean struct
+        self.is_bool = True
 
     def __str__(self):
         return f"<Table: {self._table_name} />"
+
+    @property
+    def owner(self) -> CharacterEnum:
+        """
+        Get the owner of this table
+        :return:
+        """
+        if self._owner:
+            return self._owner
+        else:
+            return CharacterEnum.server if self.get_depth() % 2 == 0 else CharacterEnum.client
+
+    def get_depth(self) -> int:
+        """
+        Get depth of current table in the join tree
+        :return:
+        """
+        if not self.parent:
+            return 0
+        else:
+            return 1 + self.parent.get_depth()
 
     @staticmethod
     def load_from_json(json_content: dict) -> "Table":
@@ -41,17 +63,24 @@ class Table:
         """
         assert "table_name" in json_content
         assert "columns" in json_content
-        assert "owner" in json_content
         columns = [Column.load_column_from_json(c) for c in json_content['columns']]
-        return Table(table_name=json_content["table_name"], columns=columns, owner=CharacterEnum[json_content['owner']])
+        return Table(table_name=json_content["table_name"], columns=columns, owner=CharacterEnum[json_content['owner']] if "owner" in json_content else None)
 
     @property
-    def variable_table_name(self):
+    def variable_table_name(self) -> str:
         """
         Get a table's variable name. Used in codegen
         :return:
         """
         return self._table_name.lower()
+
+    @property
+    def relational_name(self) -> str:
+        """
+        Get relational name
+        :return:
+        """
+        return self._table_name.upper()
 
     @property
     def column_names(self):

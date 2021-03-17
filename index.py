@@ -3,13 +3,15 @@ from flask import render_template
 import json
 from codegen.codegen import Parser
 from codegen.table.table import Table
+import subprocess
 
 app = Flask(__name__)
 
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    version = subprocess.check_output(["git", "describe"]).strip()
+    return render_template("index.html", version=str(version).replace("b", ""))
 
 
 @app.route("/generate", methods=["POST"])
