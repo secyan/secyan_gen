@@ -2,7 +2,7 @@ import unittest
 
 from codegen.codegen import Parser
 from ..node.SelectNode import SelectNode
-from ..table.table import Table
+from ..table.table import Table, CharacterEnum
 from .test_table_config import TEST_CONFIG
 
 
@@ -48,6 +48,11 @@ class TestParseQ3(unittest.TestCase):
         self.assertTrue(len(self.tables) > 0)
         self.codegen.parse()
         tables = self.codegen.tables
+
+        CUSTOMRER = tables[1]
+        LINEITEM = tables[2]
+        ORDERS = tables[3]
+
         select_node: SelectNode = self.codegen.root.next
         where_node = select_node.next
         group_by_node = where_node.next
@@ -59,3 +64,7 @@ class TestParseQ3(unittest.TestCase):
 
         code = where_node.to_code()
         self.assert_content_in_arr(code, 'vector<string> o_groupBy = { "o_orderkey","o_orderdate","o_shippriority" };')
+
+        self.assertEqual(CUSTOMRER.owner, CharacterEnum.client)
+        self.assertEqual(LINEITEM.owner, CharacterEnum.client)
+        self.assertEqual(ORDERS.owner, CharacterEnum.server)

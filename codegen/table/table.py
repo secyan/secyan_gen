@@ -42,7 +42,8 @@ class Table:
         if self._owner:
             return self._owner
         else:
-            return CharacterEnum.server if self.get_depth() % 2 == 0 else CharacterEnum.client
+            depth = self.get_depth()
+            return CharacterEnum.server if depth % 2 == 0 else CharacterEnum.client
 
     def get_depth(self) -> int:
         """

@@ -26,6 +26,7 @@ class JoinNodeTest(unittest.TestCase):
         root.next = JoinNode(join_list=data, tables=[table_a, table_b])
         root.next.prev = root
 
+        root.next.merge()
         result = root.next.to_code()
         print(result)
         self.assertEqual(result[0], 'a.Aggregate({ "aa" });')
@@ -54,6 +55,7 @@ class JoinNodeTest(unittest.TestCase):
         root.next = JoinNode(join_list=data, tables=tables)
         root.next.prev = root
 
+        root.next.merge()
         result = root.next.to_code()
         print(result)
         self.assertEqual(len(result), 19)

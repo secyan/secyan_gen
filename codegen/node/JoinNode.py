@@ -31,6 +31,7 @@ class JoinNode(BaseNode):
         super().__init__(tables=tables)
         self.join_list: List[JoinData] = join_list
         self.tables = tables
+        self.join_tables: List[Table] = []
 
     def __get_select__(self):
         """
@@ -54,10 +55,11 @@ class JoinNode(BaseNode):
                 return cur
             cur = cur.next
 
-    def to_code(self):
-        tables = []
-        index = []
-
+    def merge(self):
+        """
+        Perform join
+        :return:
+        """
         for i, c in enumerate(self.join_list):
             c: JoinData
             left_table = None
@@ -75,16 +77,15 @@ class JoinNode(BaseNode):
             if left_table and right_table:
                 right_table.join(left_table, str(c.right), str(c.left))
                 # left_table.join(right_table, str(c.left), str(c.right))
-                if left_table not in tables:
-                    tables.append(left_table)
-                    index.append(i)
+                if left_table not in self.join_tables:
+                    self.join_tables.append(left_table)
 
-                if right_table not in tables:
-                    tables.append(right_table)
-                    index.append(i)
+                if right_table not in self.join_tables:
+                    self.join_tables.append(right_table)
 
+    def to_code(self):
         root = None
-        for table in tables:
+        for table in self.join_tables:
             if not table.parent:
                 root = table
                 break
