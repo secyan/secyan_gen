@@ -88,6 +88,7 @@ export default function HomePage() {
                     setIsLoading(true);
                     if (code?.length === 0 || tableStructure?.length === 0) {
                       window.alert("Invaild Input");
+                      setIsLoading(false);
                       return;
                     }
                     try {
@@ -101,8 +102,9 @@ export default function HomePage() {
                         description: `${err}`,
                         duration: 5,
                       });
+                    } finally {
+                      setIsLoading(false);
                     }
-                    setIsLoading(false);
                   }}
                 >
                   Convert
