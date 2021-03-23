@@ -4,10 +4,13 @@ on:
   push:
     paths:
       - '**.py'
+      - "**.tsx"
+      - "**.css"
+      - "**.js"
       - '**.yml'
       - '**.html'
       - 'zappa_settings.json'
-      - "package.json"
+      - "**.json"
 jobs:
   deploy_aws:
     runs-on: ubuntu-latest
