@@ -1,3 +1,5 @@
 .pytest_cache
 *.cpp
 *.pyc
+*.gz
+*.zip

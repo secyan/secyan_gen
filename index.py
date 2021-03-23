@@ -13,8 +13,7 @@ CORS(app)
 
 @app.route("/")
 def index():
-    version = subprocess.check_output(["git", "describe"]).strip()
-    return render_template("index.html", version=str(version).replace("b", ""))
+    return jsonify()
 
 
 @app.route("/generate", methods=["POST"])

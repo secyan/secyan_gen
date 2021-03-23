@@ -9,11 +9,10 @@ verify_ssl = true
 sqlparse = "*"
 jinja2 = "*"
 pytest = "*"
-coverage = "*"
 flask = "*"
 zappa = "*"
-gitpython = "*"
 flask-cors = "*"
+pip = "*"
 
 [requires]
 python_version = "3.8"
