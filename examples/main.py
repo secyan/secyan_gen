@@ -2,6 +2,7 @@ import sqlparse
 from codegen.codegen import Parser
 from codegen.table.column import TypeEnum
 from codegen.table.table import Table, Column
+from codegen.table.free_connex_table import FreeConnexTable
 import json
 
 sql = """
@@ -87,6 +88,6 @@ limit
 #                        ])
 
 with open("examples/table_config.json", 'r') as f:
-    tables = [Table.load_from_json(t) for t in json.load(f)]
+    tables = [FreeConnexTable.load_from_json(t) for t in json.load(f)]
     parser = Parser(sql=sql2, tables=tables)
     parser.parse().to_file("examples/test.cpp")

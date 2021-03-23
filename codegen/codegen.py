@@ -24,6 +24,14 @@ class Parser:
         self.root = BaseNode(tables=[])
         self.tables: List[Table] = tables
 
+    def get_output_attributes(self):
+        node = self.root
+        while node:
+            if type(node) == SelectNode:
+                return [str(i) for i in node.identifier_list]
+            else:
+                node = node.next
+
     def parse(self):
         for token in self.tokens:
             if not token.is_whitespace:

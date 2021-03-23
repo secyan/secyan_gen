@@ -8,7 +8,7 @@ on:
       - '**.html'
       - 'zappa_settings.json'
 jobs:
-  build:
+  deploy_aws:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -27,3 +27,22 @@ jobs:
           AWS_DEFAULT_REGION: ap-east-1
         run: |
           pipenv run zappa update
+
+  deploy_github_page:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Install dependencies
+        run: yarn install
+        working-directory: ./webapp
+      - name: Build
+        run: yarn build
+        working-directory: ./webapp
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./webapp/build

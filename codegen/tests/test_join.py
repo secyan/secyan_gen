@@ -2,6 +2,7 @@ import unittest
 
 from codegen.table.column import Column, TypeEnum
 from codegen.table.table import Table
+from codegen.table.free_connex_table import FreeConnexTable
 
 
 class JoinTest(unittest.TestCase):
@@ -127,3 +128,132 @@ class JoinTest(unittest.TestCase):
         agg = table_c.get_aggregate_columns()
         self.assertEqual(1, len(agg))
         self.assertEqual(agg[0].name, "b")
+
+
+class FreeConnexJoin(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.table_1 = FreeConnexTable(table_name="1", columns=[
+            Column(name="a", column_type=TypeEnum.int),
+            Column(name="b", column_type=TypeEnum.int),
+        ])
+
+        self.table_2 = FreeConnexTable(table_name="2", columns=[
+            Column(name="a", column_type=TypeEnum.int),
+            Column(name="c", column_type=TypeEnum.int)
+        ])
+
+        self.table_3 = FreeConnexTable(table_name="3", columns=[
+            Column(name="b", column_type=TypeEnum.int),
+            Column(name="d", column_type=TypeEnum.int)
+        ])
+
+        self.table_4 = FreeConnexTable(table_name="4", columns=[
+            Column(name="d", column_type=TypeEnum.int),
+            Column(name="f", column_type=TypeEnum.int),
+            Column(name="g", column_type=TypeEnum.int),
+        ])
+
+        self.table_5 = FreeConnexTable(table_name="5", columns=[
+            Column(name="b", column_type=TypeEnum.int),
+            Column(name="e", column_type=TypeEnum.int)
+        ])
+
+    def test_is_free_connex_join(self):
+        """
+        See exaample/join_tree.drawio tree A
+        :return:
+        """
+
+        self.table_1.join(self.table_2, "a", "a")
+        self.table_1.join(self.table_3, "b", "b")
+        self.table_3.join(self.table_4, "d", "d")
+        self.table_3.join(self.table_5, "b", "b")
+
+        output_attrs = ["b", "d", "e", "f"]
+        non_output_attrs = ["a", "c", "g"]
+
+        height_of_tree = self.table_1.get_height()
+
+        table, height = self.table_1.get_highest_with_attr("a", height_of_tree)
+        self.assertEqual(table, self.table_1)
+        self.assertEqual(height, 2)
+
+        table, height = self.table_1.get_highest_with_attr("d", height_of_tree)
+        self.assertEqual(table, self.table_3)
+        self.assertEqual(height, 1)
+
+        table, height = self.table_1.get_highest_with_attr("c", height_of_tree)
+        self.assertEqual(table, self.table_2)
+        self.assertEqual(height, 1)
+
+        is_free_connex, output_tables = self.table_1.is_free_connex(output_attrs=output_attrs,
+                                                                    non_output_attrs=non_output_attrs,
+                                                                    height=height_of_tree)
+        self.assertFalse(is_free_connex)
+        self.assertEqual(output_tables[0], self.table_3)
+
+    def test_is_free_connex_join2(self):
+        """
+        See exaample/join_tree.drawio tree B
+        :return:
+        """
+
+        self.table_5.join(self.table_3, "b", "b")
+        self.table_3.join(self.table_1, "b", "b")
+        self.table_1.join(self.table_2, "a", "a")
+        self.table_3.join(self.table_4, "d", "d")
+
+        output_attrs = ["b", "d", "e", "f"]
+        non_output_attrs = ["a", "c", "g"]
+
+        height_of_tree = self.table_5.get_height()
+
+        table, height = self.table_5.get_highest_with_attr("a", height_of_tree)
+        self.assertEqual(table, self.table_1)
+        self.assertEqual(height, 1)
+
+        table, height = self.table_5.get_highest_with_attr("d", height_of_tree)
+        self.assertEqual(table, self.table_3)
+        self.assertEqual(height, 2)
+
+        table, height = self.table_5.get_highest_with_attr("c", height_of_tree)
+        self.assertEqual(table, self.table_2)
+        self.assertEqual(height, 0)
+
+        is_free_connex, _ = self.table_5.is_free_connex(output_attrs=output_attrs,
+                                                        non_output_attrs=non_output_attrs,
+                                                        height=height_of_tree)
+        self.assertTrue(is_free_connex)
+
+    def test_is_free_connex_join3(self):
+        """
+        See exaample/join_tree.drawio tree A
+        :return:
+        """
+
+        self.table_1.join(self.table_2, "a", "a")
+        self.table_1.join(self.table_3, "b", "b")
+        self.table_3.join(self.table_4, "d", "d")
+        self.table_3.join(self.table_5, "b", "b")
+
+        output_attrs = ["b", "d", "e", "f"]
+        non_output_attrs = ["a", "c", "g", "sum"]
+
+        height_of_tree = self.table_1.get_height()
+
+        is_free_connex, output_tables = self.table_1.is_free_connex(output_attrs=output_attrs,
+                                                                    non_output_attrs=non_output_attrs,
+                                                                    height=height_of_tree)
+        self.assertFalse(is_free_connex)
+        self.assertEqual(output_tables[0], self.table_3)
+
+    def test_swap(self):
+        self.table_1.join(self.table_2, "a", "a")
+        self.table_1.join(self.table_3, "b", "b")
+        self.table_3.join(self.table_4, "d", "d")
+        self.table_3.join(self.table_5, "b", "b")
+
+        # self.table_3.swap()
+        # self.assertEqual(self.table_5.parent, None)
+        # self.assertEqual(self.table_5.children, [self.table_3])

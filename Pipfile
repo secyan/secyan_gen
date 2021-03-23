@@ -13,6 +13,7 @@ coverage = "*"
 flask = "*"
 zappa = "*"
 gitpython = "*"
+flask-cors = "*"
 
 [requires]
 python_version = "3.8"

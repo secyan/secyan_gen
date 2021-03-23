@@ -1,6 +1,6 @@
 from copy import deepcopy
 from enum import Enum
-from typing import List
+from typing import List, Dict, Tuple
 
 from .column import Column, JoinColumn
 
@@ -42,18 +42,28 @@ class Table:
         if self._owner:
             return self._owner
         else:
-            depth = self.get_depth()
+            depth = self.get_height()
             return CharacterEnum.server if depth % 2 == 1 else CharacterEnum.client
 
-    def get_depth(self) -> int:
+    def get_height(self) -> int:
         """
-        Get depth of current table in the join tree
+        Get height of the join tree
         :return:
         """
-        if not self.parent:
+        if len(self.children) == 0:
             return 0
-        else:
-            return 1 + self.parent.get_depth()
+
+        heights = []
+        for c in self.children:
+            t: "Table" = c.to_table
+            heights.append(t.get_height())
+
+        topmost = heights[0]
+        for h in heights:
+            if h > topmost:
+                topmost = h
+
+        return topmost + 1
 
     @staticmethod
     def load_from_json(json_content: dict) -> "Table":
@@ -170,6 +180,18 @@ class Table:
 
         return False
 
+    def has_column_with_name_without_aggregation(self, column_name: str) -> bool:
+        """
+        table has the column with name
+        :param column_name: Column name
+        :return: True if has
+        """
+        for column in self.original_column_names:
+            if column.name == column_name:
+                return True
+
+        return False
+
     def join(self, to_table: "Table", from_table_key: str, to_table_key: str):
         """
         Join another table. IF A join B, then A becomes the parent of B
@@ -206,9 +228,14 @@ class Table:
             return self
         return self.parent.get_root()
 
-    def to_json(self):
+    def to_json(self, output_attrs: List[str]):
+        attrs = {}
+        for column in self.original_column_names:
+            attrs[column.name] = column.name
+
         return {
-            "text": {"name": self.variable_table_name},
+            "name": self.variable_table_name,
+            # "attributes": attrs,
             # "parent": self.parent.variable_table_name if self.parent else None,
-            "children": [c.to_table.to_json() for c in self.children]
+            "children": [c.to_table.to_json(output_attrs=output_attrs) for c in self.children]
         }

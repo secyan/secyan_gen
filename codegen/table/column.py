@@ -91,3 +91,13 @@ class JoinColumn:
         for column in self.from_table.column_names:
             if column.name == self.from_table_key:
                 return column
+
+    def swap(self):
+        tmp = self.to_table
+        tmp_key = self.to_table_key
+
+        self.to_table = self.from_table
+        self.from_table = tmp
+
+        self.to_table_key = self.from_table_key
+        self.from_table_key = tmp_key
