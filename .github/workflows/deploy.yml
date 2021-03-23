@@ -41,9 +41,13 @@ jobs:
       - name: Install dependencies
         run: yarn install
         working-directory: ./webapp
+        env:
+          CI: false
       - name: Build
         run: yarn build
         working-directory: ./webapp
+        env:
+          CI: false
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
