@@ -7,6 +7,7 @@ on:
       - '**.yml'
       - '**.html'
       - 'zappa_settings.json'
+      - "package.json"
 jobs:
   deploy_aws:
     runs-on: ubuntu-latest
