@@ -83,18 +83,34 @@ class FreeConnexTable(Table):
 
         for attr in output_attrs:
             table, _ = self.get_highest_with_attr(attr, height=height)
-
-            output_attr_tables.append(table)
+            if table:
+                output_attr_tables.append(table)
 
         for attr in non_output_attrs:
             table, _ = self.get_highest_with_attr(attr, height=height)
-            non_output_attr_tables.append(table)
+            if table:
+                non_output_attr_tables.append(table)
 
         for ot in output_attr_tables:
             for nt in non_output_attr_tables:
                 if ot and ot.parent == nt:
                     not_qualified_tables.append(ot)
 
-        not_qualified_tables = [n for n in not_qualified_tables if n not in non_output_attr_tables]
+        not_qualified_tables = list(set(not_qualified_tables))
 
         return len(not_qualified_tables) == 0, not_qualified_tables
+
+    def is_cycle(self, visited: List["FreeConnexTable"] = None) -> bool:
+        if visited is None:
+            visited = []
+
+        if self in visited:
+            return True
+        for c in self.children:
+            c: JoinColumn
+            table: "FreeConnexTable" = c.to_table
+            is_cycle = table.is_cycle(visited=visited)
+            if is_cycle:
+                return True
+
+        return False

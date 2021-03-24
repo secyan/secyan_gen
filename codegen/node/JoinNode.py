@@ -7,7 +7,7 @@ from .GroupbyNode import GroupByNode
 from .SelectNode import SelectNode
 from ..table.column import Column, TypeEnum
 from ..table.table import Table
-
+from sqlparse.sql import Identifier
 
 class JoinData:
     def __init__(self, left, right):
@@ -84,6 +84,12 @@ class JoinNode(BaseNode):
 
                 if right_table not in self.join_tables:
                     self.join_tables.append(right_table)
+
+            else:
+                if not left_table and type(c.left) is Identifier:
+                    raise RuntimeError(f"Cannot find related join column: {c.left}")
+                elif not right_table and type(c.right) is Identifier:
+                    raise RuntimeError(f"Cannot find related join column: {c.right}")
 
     def to_code(self):
         root = self.join_tables[0].get_root()

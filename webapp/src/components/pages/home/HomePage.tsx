@@ -99,7 +99,7 @@ export default function HomePage() {
                     } catch (err) {
                       notification.open({
                         message: "Cannot generate code",
-                        description: `${err}`,
+                        description: `${err?.response?.data}`,
                         duration: 5,
                       });
                     } finally {

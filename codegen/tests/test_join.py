@@ -46,6 +46,9 @@ class JoinTest(unittest.TestCase):
         for c in column_names:
             self.assertTrue(c.name_with_table in expected_names)
 
+    def test_simple_join_with_error(self):
+        self.assertRaises(RuntimeError, self.a_table.join, self.b_table, "id", "abc")
+
     def test_get_aggregate_columns(self):
         table_a = Table(table_name="A", columns=[
             Column(name="a", column_type=TypeEnum.int),
@@ -248,6 +251,54 @@ class FreeConnexJoin(unittest.TestCase):
         self.assertFalse(is_free_connex)
         self.assertEqual(output_tables[0], self.table_3)
 
+    def test_is_free_connex_join4(self):
+        """
+        See exaample/join_tree.drawio tree C
+        :return:
+        """
+        self.table_1 = FreeConnexTable(table_name="1", columns=[
+            Column(name="a", column_type=TypeEnum.int),
+            Column(name="b1", column_type=TypeEnum.int),
+        ])
+
+        self.table_2 = FreeConnexTable(table_name="2", columns=[
+            Column(name="a", column_type=TypeEnum.int),
+            Column(name="c", column_type=TypeEnum.int)
+        ])
+
+        self.table_3 = FreeConnexTable(table_name="3", columns=[
+            Column(name="b2", column_type=TypeEnum.int),
+            Column(name="d1", column_type=TypeEnum.int)
+        ])
+
+        self.table_4 = FreeConnexTable(table_name="4", columns=[
+            Column(name="d2", column_type=TypeEnum.int),
+            Column(name="f", column_type=TypeEnum.int),
+            Column(name="g", column_type=TypeEnum.int),
+        ])
+
+        self.table_5 = FreeConnexTable(table_name="5", columns=[
+            Column(name="b3", column_type=TypeEnum.int),
+            Column(name="e", column_type=TypeEnum.int)
+        ])
+
+        self.table_1.join(self.table_2, "a", "a")
+        self.table_1.join(self.table_3, "b1", "b2")
+        self.table_3.join(self.table_4, "d1", "d2")
+        self.table_3.join(self.table_5, "b2", "b3")
+
+        output_attrs = ["b1", "d1", "e", "f"]
+        non_output_attrs = ["a", "c", "g"]
+
+        height_of_tree = self.table_1.get_height()
+
+        is_free_connex, output_tables = self.table_1.is_free_connex(output_attrs=output_attrs,
+                                                                    non_output_attrs=non_output_attrs,
+                                                                    height=height_of_tree)
+        self.assertFalse(is_free_connex)
+        self.assertEqual(output_tables[0], self.table_3)
+        self.assertFalse(self.table_1.is_cycle())
+
     def test_swap(self):
         self.table_1.join(self.table_2, "a", "a")
         self.table_1.join(self.table_3, "b", "b")
@@ -257,3 +308,24 @@ class FreeConnexJoin(unittest.TestCase):
         # self.table_3.swap()
         # self.assertEqual(self.table_5.parent, None)
         # self.assertEqual(self.table_5.children, [self.table_3])
+
+    def test_is_cycle(self):
+        table1 = FreeConnexTable(table_name="1", columns=[
+            Column(name="a", column_type=TypeEnum.int),
+            Column(name="b", column_type=TypeEnum.int),
+        ])
+
+        table2 = FreeConnexTable(table_name="2", columns=[
+            Column(name="b", column_type=TypeEnum.int),
+            Column(name="c", column_type=TypeEnum.int),
+        ])
+
+        table3 = FreeConnexTable(table_name="3", columns=[
+            Column(name="c", column_type=TypeEnum.int),
+            Column(name="a", column_type=TypeEnum.int),
+        ])
+
+        table1.join(table2, "b", "b")
+        table2.join(table3, "c", "c")
+
+        self.assertRaises(Exception, table3.join, table1, "a", "a")

@@ -7,6 +7,8 @@ import Axios from "axios";
 interface Result {
   code: string;
   joinGraph: any;
+  isFreeConnex: boolean;
+  errorTables: string[];
 }
 
 interface CodeContextState {
@@ -40,6 +42,7 @@ export class CodeProvider extends Component<CodeProps, CodeContextState> {
   }
 
   post = async (): Promise<void> => {
+    this.setState({ result: undefined });
     let url = Utils.getURL("generate");
     console.log("url", url);
     let resp = await Axios.post<Result>(url, {

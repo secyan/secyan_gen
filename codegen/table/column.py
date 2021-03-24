@@ -54,6 +54,17 @@ class Column:
             if column.name == other.name and column.table == other.table:
                 return True
 
+
+    def equals_name(self, column_name: str) -> bool:
+        if self.name == column_name:
+            return True
+
+        for column in self.related_columns:
+            if column.name == column_name:
+                return True
+
+        return False
+
     def __str__(self):
         return f"<Column: {self.name} />"
 

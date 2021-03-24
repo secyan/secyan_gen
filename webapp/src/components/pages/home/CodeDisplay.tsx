@@ -1,9 +1,19 @@
 import React from "react";
 import Highlight, { defaultProps } from "prism-react-renderer";
 import { CodeContext } from "../../model/CodeContext";
-import { Affix, Button, Card, Col, Popover, Row, Typography } from "antd";
+import {
+  Affix,
+  Alert,
+  Button,
+  Card,
+  Col,
+  Popover,
+  Row,
+  Typography,
+} from "antd";
 import theme from "prism-react-renderer/themes/github";
 import TreeDisplay from "./TreeDisplay";
+import ErrorTablesDisplay from "./ErrorTablesDisplay";
 
 const { Title, Paragraph, Text, Link } = Typography;
 export default function CodeDisplay() {
@@ -37,6 +47,15 @@ export default function CodeDisplay() {
       <Typography>
         <Title>Result</Title>
       </Typography>
+      {result?.isFreeConnex === false && (
+        <Popover content={<ErrorTablesDisplay />}>
+          <Alert
+            type="error"
+            style={{ marginBottom: 10 }}
+            message={`This query is not a free connex query. Check the join tree and reorder your join statement.`}
+          />
+        </Popover>
+      )}
       <Highlight
         {...defaultProps}
         code={result!.code}

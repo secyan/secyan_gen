@@ -48,6 +48,7 @@ class SelectNode(BaseNode):
         # Merge From node data
         if self.next and self.next.self_identify == "From":
             self.from_tables = self.next.identifier_list
+            self.next.merge()
             self.next = self.next.next
         else:
             pass

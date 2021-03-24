@@ -29,6 +29,7 @@ class Table:
         self._owner = owner
         # Used for is_boolean struct
         self.is_bool = True
+        self.used = False
 
     def __str__(self):
         return f"<Table: {self._table_name} />"
@@ -175,7 +176,7 @@ class Table:
         :return: True if has
         """
         for column in self.column_names:
-            if column.name == column_name:
+            if column.equals_name(column_name):
                 return True
 
         return False
@@ -187,7 +188,7 @@ class Table:
         :return: True if has
         """
         for column in self.original_column_names:
-            if column.name == column_name:
+            if column.equals_name(column_name):
                 return True
 
         return False
@@ -201,22 +202,24 @@ class Table:
         :param to_table: another table or table b.
         :return:
         """
-        if not to_table.has_column_with_name(to_table_key):
-            raise RuntimeError(f"Cannot find the key {to_table_key} in table {to_table}")
+        try:
+            if not to_table.has_column_with_name(to_table_key):
+                raise RuntimeError(f"Cannot find the key {to_table_key} in table {to_table}")
 
-        if not self.has_column_with_name(from_table_key):
-            raise RuntimeError(f"Cannot find the key {from_table_key} in table {self}")
+            if not self.has_column_with_name(from_table_key):
+                raise RuntimeError(f"Cannot find the key {from_table_key} in table {self}")
 
-        join_column = JoinColumn(to_table=to_table, to_table_key=to_table_key,
-                                 from_table_key=from_table_key, from_table=self)
-        self.children.append(join_column)
-        to_table.parent = self
-        to_column = join_column.to_table_join_column
-        from_column = join_column.from_table_join_column
+            join_column = JoinColumn(to_table=to_table, to_table_key=to_table_key,
+                                     from_table_key=from_table_key, from_table=self)
+            self.children.append(join_column)
+            to_table.parent = self
+            to_column = join_column.to_table_join_column
+            from_column = join_column.from_table_join_column
 
-        to_column.related_columns.append(from_column)
-        from_column.related_columns.append(to_column)
-
+            to_column.related_columns.append(from_column)
+            from_column.related_columns.append(to_column)
+        except RecursionError:
+            raise Exception("Join tree has a cycle")
         return self
 
     def get_root(self):
@@ -227,6 +230,7 @@ class Table:
         if not self.parent:
             return self
         return self.parent.get_root()
+
 
     def to_json(self, output_attrs: List[str]):
         attrs = {}
