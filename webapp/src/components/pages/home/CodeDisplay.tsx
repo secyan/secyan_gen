@@ -52,7 +52,7 @@ export default function CodeDisplay() {
           <Alert
             type="error"
             style={{ marginBottom: 10 }}
-            message={`This query is not a free connex query. Check the join tree and reorder your join statement.`}
+            message={`Cannot auto generate a free connex join tree from query. Check the join tree and reorder your join statement.`}
           />
         </Popover>
       )}
