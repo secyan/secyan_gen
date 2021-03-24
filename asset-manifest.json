@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/SECYAN-GEN/static/css/main.6dea0f05.chunk.css",
-    "main.js": "/SECYAN-GEN/static/js/main.639f037b.chunk.js",
-    "main.js.map": "/SECYAN-GEN/static/js/main.639f037b.chunk.js.map",
+    "main.js": "/SECYAN-GEN/static/js/main.a58ec596.chunk.js",
+    "main.js.map": "/SECYAN-GEN/static/js/main.a58ec596.chunk.js.map",
     "runtime-main.js": "/SECYAN-GEN/static/js/runtime-main.01acb4fe.js",
     "runtime-main.js.map": "/SECYAN-GEN/static/js/runtime-main.01acb4fe.js.map",
     "static/css/2.de2ac02e.chunk.css": "/SECYAN-GEN/static/css/2.de2ac02e.chunk.css",
@@ -20,6 +20,6 @@
     "static/css/2.de2ac02e.chunk.css",
     "static/js/2.6ba9f116.chunk.js",
     "static/css/main.6dea0f05.chunk.css",
-    "static/js/main.639f037b.chunk.js"
+    "static/js/main.a58ec596.chunk.js"
   ]
 }
