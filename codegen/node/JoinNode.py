@@ -9,6 +9,7 @@ from ..table.column import Column, TypeEnum
 from ..table.table import Table
 from sqlparse.sql import Identifier
 
+
 class JoinData:
     def __init__(self, left, right):
         """
@@ -32,6 +33,7 @@ class JoinNode(BaseNode):
         self.join_list: List[JoinData] = join_list
         self.tables = tables
         self.join_tables: List[Table] = []
+        self.root = None
 
     def __get_select__(self):
         """
@@ -60,14 +62,14 @@ class JoinNode(BaseNode):
         Perform join
         :return:
         """
-        
+
         # TODO: Generate a free-connex join tree
         for i, c in enumerate(self.join_list):
             c: JoinData
             left_table = None
             right_table = None
             for table in self.tables:
-                column_names = [t.name for t in table.column_names]
+                column_names = [t.name for t in table.original_column_names]
 
                 if str(c.right) in column_names and not right_table:
                     right_table = table
@@ -78,6 +80,8 @@ class JoinNode(BaseNode):
 
             if left_table and right_table:
                 right_table.join(left_table, str(c.right), str(c.left))
+                left_table.used_in_join = True
+                right_table.used_in_join = True
                 # left_table.join(right_table, str(c.left), str(c.right))
                 if left_table not in self.join_tables:
                     self.join_tables.append(left_table)
@@ -92,8 +96,8 @@ class JoinNode(BaseNode):
                     raise RuntimeError(f"Cannot find related join column: {c.right}")
 
     def to_code(self):
-        root = self.join_tables[0].get_root()
-        code = self.__to_code_util__(root=root)
+        assert self.root is not None
+        code = self.__to_code_util__(root=self.root)
         return code
 
     def __to_code_util__(self, root: Table, from_key=None, to_key=None) -> List[str]:

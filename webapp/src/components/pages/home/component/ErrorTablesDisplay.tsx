@@ -2,7 +2,7 @@ import { Typography } from "antd";
 import Paragraph from "antd/lib/typography/Paragraph";
 import Title from "antd/lib/typography/Title";
 import React from "react";
-import { CodeContext } from "../../model/CodeContext";
+import { CodeContext } from "../../../model/CodeContext";
 
 export default function ErrorTablesDisplay() {
   const { result } = React.useContext(CodeContext);

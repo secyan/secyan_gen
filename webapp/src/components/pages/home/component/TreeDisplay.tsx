@@ -1,5 +1,5 @@
 import React from "react";
-import { CodeContext } from "../../model/CodeContext";
+import { CodeContext } from "../../../model/CodeContext";
 import Tree from "react-d3-tree";
 
 export default function TreeDisplay() {

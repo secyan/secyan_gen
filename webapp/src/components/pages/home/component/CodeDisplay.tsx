@@ -1,6 +1,6 @@
 import React from "react";
 import Highlight, { defaultProps } from "prism-react-renderer";
-import { CodeContext } from "../../model/CodeContext";
+import { CodeContext } from "../../../model/CodeContext";
 import {
   Affix,
   Alert,

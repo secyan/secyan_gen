@@ -3,6 +3,8 @@ import unittest
 from codegen.table.column import Column, TypeEnum
 from codegen.table.table import Table
 from codegen.table.free_connex_table import FreeConnexTable
+from .test_table_config import TEST_CONFIG
+from ..codegen import Parser
 
 
 class JoinTest(unittest.TestCase):
@@ -329,3 +331,39 @@ class FreeConnexJoin(unittest.TestCase):
         table2.join(table3, "c", "c")
 
         self.assertRaises(Exception, table3.join, table1, "a", "a")
+
+
+class TestJoin2(unittest.TestCase):
+    def test_simple_join(self):
+        sql = """
+        select
+    n_name,
+    sum(l_extendedprice * (1 - l_discount)) as revenue
+from
+    CUSTOMER,
+    ORDERS,
+    LINEITEM,
+    SUPPLIER,
+    NATION,
+    REGION
+where
+     o_custkey=c_custkey
+    and l_orderkey = o_orderkey
+    and s_suppkey= l_suppkey
+    and r_name = 'MIDDLE EAST'
+    and o_orderdate >= date '1994-01-01'
+    and o_orderdate < date '1994-01-01' + interval '1' year
+group by
+    n_name
+order by
+    revenue desc;
+        """
+        tables = [Table.load_from_json(t) for t in TEST_CONFIG]
+        parser = Parser(tables=tables, sql=sql)
+        parser.parse()
+        root = parser.root_table
+        self.assertEqual(root.variable_table_name, "customer")
+        self.assertEqual(root.children[0].to_table.variable_table_name, "orders")
+        self.assertEqual(root.children[0].to_table.children[0].to_table.variable_table_name, "lineitem")
+        self.assertEqual(root.children[0].to_table.children[0].to_table.children[0].to_table.variable_table_name, "supplier")
+

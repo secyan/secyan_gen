@@ -30,6 +30,7 @@ class Table:
         # Used for is_boolean struct
         self.is_bool = True
         self.used = False
+        self.used_in_join = False
 
     def __str__(self):
         return f"<Table: {self._table_name} />"
@@ -219,7 +220,7 @@ class Table:
             to_column.related_columns.append(from_column)
             from_column.related_columns.append(to_column)
         except RecursionError:
-            raise Exception("Join tree has a cycle")
+            raise Exception(f"Join tree has a cycle. When joining {from_table_key} and {to_table_key}.")
         return self
 
     def get_root(self):

@@ -78,30 +78,31 @@ class TestParseQ3(unittest.TestCase):
 class TestParseQuery(unittest.TestCase):
     def setUp(self) -> None:
         self.query = """
-        select
-           l_orderkey,
-           sum(l_extendedprice * (1 - l_discount)) as revenue,
-           o_orderdate,
-           o_shippriority
-        from
-           CUSTOMER,
-           ORDERS,
-           LINEITEM
-        where
-           c_mktsegment = 'AUTOMOBILE'
-           and o_custkey=c_custkey
-           and o_orderkey=l_orderkey
-           and o_orderdate < date '1995-03-13'
-           and l_shipdate > date '1995-03-13'
-        group by
-           l_orderkey,
-           o_orderdate,
-           o_shippriority
-        order by
-           revenue desc,
-           o_orderdate
-        limit
-           10;
+      select
+   l_orderkey,
+   sum(l_extendedprice * (1 - l_discount)) as revenue,
+   o_orderdate,
+   o_shippriority
+from
+   CUSTOMER,
+   ORDERS,
+   LINEITEM
+where
+   c_mktsegment = 'AUTOMOBILE'
+   and c_custkey = o_custkey
+   and l_orderkey = o_orderkey
+   and o_orderdate < date '1995-03-13'
+   and l_shipdate > date '1995-03-13'
+group by
+   l_orderkey,
+   o_orderdate,
+   o_shippriority
+order by
+   revenue desc,
+   o_orderdate
+limit
+   10;
+
         """
 
         self.tables = [FreeConnexTable.load_from_json(t) for t in TEST_CONFIG]
@@ -133,4 +134,4 @@ class TestParseQuery(unittest.TestCase):
         self.assertFalse(tables[2].is_bool)
 
         is_free, _ = self.codegen.is_free_connex()
-        self.assertFalse(is_free)
+        self.assertTrue(is_free)

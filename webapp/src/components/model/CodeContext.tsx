@@ -15,7 +15,10 @@ interface CodeContextState {
   code?: string;
   tableStructure?: string;
   result?: Result;
+  backend: string;
+  setBackend(backend: string): void;
   post(): Promise<void>;
+  postDB(): Promise<void>;
   setCode(code: string): void;
   setTable(table: string): void;
 }
@@ -25,10 +28,14 @@ interface CodeProps {}
 export class CodeProvider extends Component<CodeProps, CodeContextState> {
   constructor(props: CodeProps) {
     super(props);
+    let backend = localStorage.getItem("backend") ?? "python";
     this.state = {
       setCode: this.setCode,
+      setBackend: this.setBackend,
+      backend: backend,
       setTable: this.setTable,
       post: this.post,
+      postDB: this.postDB,
     };
   }
 
@@ -41,15 +48,34 @@ export class CodeProvider extends Component<CodeProps, CodeContextState> {
     });
   }
 
+  setBackend = (end: string) => {
+    this.setState({ backend: end });
+    localStorage.setItem("backend", end);
+  };
+
+  /**
+   * Post request and update generated code
+   */
   post = async (): Promise<void> => {
     this.setState({ result: undefined });
     let url = Utils.getURL("generate");
-    console.log("url", url);
     let resp = await Axios.post<Result>(url, {
       sql: this.state.code,
       table: this.state.tableStructure,
     });
-    console.log(resp.data);
+    this.setState({ result: resp.data });
+  };
+
+  /**
+   * Post request using db execution plan
+   */
+  postDB = async (): Promise<void> => {
+    this.setState({ result: undefined });
+    let url = Utils.getURL("generate_db");
+    let resp = await Axios.post<Result>(url, {
+      sql: this.state.code,
+      table: this.state.tableStructure,
+    });
     this.setState({ result: resp.data });
   };
 

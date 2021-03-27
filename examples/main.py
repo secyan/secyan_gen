@@ -59,6 +59,30 @@ limit
 
 """
 
+sql3 = """
+select
+    n_name,
+    sum(l_extendedprice * (1 - l_discount)) as revenue
+from
+    CUSTOMER,
+    ORDERS,
+    LINEITEM,
+    SUPPLIER,
+    NATION,
+    REGION
+where
+     o_custkey=c_custkey
+    and l_orderkey = o_orderkey
+    and s_suppkey= l_suppkey
+    and r_name = 'MIDDLE EAST'
+    and o_orderdate >= date '1994-01-01'
+    and o_orderdate < date '1994-01-01' + interval '1' year
+group by
+    n_name
+order by
+    revenue desc;
+"""
+
 # CUSTOMER_TABLE = Table(table_name="CUSTOMER",
 #                        columns=[
 #                            Column(name="c_custkey", column_type=TypeEnum.int),
@@ -89,5 +113,8 @@ limit
 
 with open("examples/table_config.json", 'r') as f:
     tables = [FreeConnexTable.load_from_json(t) for t in json.load(f)]
-    parser = Parser(sql=sql2, tables=tables)
-    parser.parse().to_file("examples/test.cpp")
+    parser = Parser(sql=sql3, tables=tables)
+    parser.parse()
+    o = parser.root_table.to_json(parser.get_output_attributes())
+    print(o)
+    parser.to_file("examples/test.cpp")

@@ -27,7 +27,7 @@ class Parser:
 
     @property
     def root_table(self) -> Table:
-        return [t for t in self.tables if t.used][0].get_root()
+        return [t for t in self.tables if t.used_in_join][0].get_root()
 
     def get_output_attributes(self) -> List[str]:
         node = self.root
@@ -49,7 +49,6 @@ class Parser:
                             attrs.append(col.name)
 
         return attrs
-
 
     def is_free_connex(self) -> Tuple[bool, List["Table"]]:
         root_table: FreeConnexTable = self.root_table
@@ -82,11 +81,25 @@ class Parser:
                 elif type(token) == IdentifierList:
                     token: IdentifierList
                     self.__parse__identifier_list__(token)
+
+        self.do_merge()
+        self.check_valid()
+        return self
+
+    def do_merge(self):
         cur = self.root
         while cur:
             cur.merge()
             cur = cur.next
-        return self
+
+    def check_valid(self) -> bool:
+        n = 0
+        for table in self.tables:
+            if table.parent is None and table.used_in_join:
+                n += 1
+
+        if n > 1:
+            raise RuntimeError(f"Join tree has {n} root. Check your join statement.")
 
     def to_code(self):
         code = []

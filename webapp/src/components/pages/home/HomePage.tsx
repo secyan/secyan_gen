@@ -5,6 +5,7 @@ import {
   notification,
   PageHeader,
   Row,
+  Select,
   Tabs,
   Typography,
 } from "antd";
@@ -13,9 +14,11 @@ import Editor from "@monaco-editor/react";
 import Sider from "antd/lib/layout/Sider";
 import React from "react";
 import { CodeContext } from "../../model/CodeContext";
-import CodeDisplay from "./CodeDisplay";
+import CodeDisplay from "./component/CodeDisplay";
+import Header from "./component/Header";
 
 const { TabPane } = Tabs;
+
 const { Link } = Typography;
 
 export default function HomePage() {
@@ -35,11 +38,13 @@ export default function HomePage() {
     tableStructure,
     result,
     post,
+    postDB,
+    backend,
   } = React.useContext(CodeContext);
 
   return (
     <Layout style={{ maxHeight: "100vh", overflow: "hidden", padding: 10 }}>
-      <PageHeader title="CodeGen" />
+      <Header />
       <Content>
         <Row style={{ height: "80%" }} gutter={[16, 10]}>
           <Col span={8}>
@@ -92,12 +97,16 @@ export default function HomePage() {
                       return;
                     }
                     try {
-                      await post();
+                      if (backend == "python") {
+                        await post();
+                      } else {
+                        await postDB();
+                      }
                       notification.info({
                         message: "Code generated",
                       });
                     } catch (err) {
-                      notification.open({
+                      notification.error({
                         message: "Cannot generate code",
                         description: `${err?.response?.data}`,
                         duration: 5,
