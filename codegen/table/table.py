@@ -232,15 +232,14 @@ class Table:
             return self
         return self.parent.get_root()
 
-
-    def to_json(self, output_attrs: List[str]):
+    def to_json(self, output_attrs: List[str], join_by=None):
         attrs = {}
         for column in self.original_column_names:
             attrs[column.name] = column.name
 
         return {
             "name": self.variable_table_name,
-            # "attributes": attrs,
+            "attributes": {"": f"{join_by}"},
             # "parent": self.parent.variable_table_name if self.parent else None,
-            "children": [c.to_table.to_json(output_attrs=output_attrs) for c in self.children]
+            "children": [c.to_table.to_json(output_attrs=output_attrs, join_by=c.to_table_key) for c in self.children]
         }

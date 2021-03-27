@@ -95,9 +95,10 @@ class JoinNode(BaseNode):
                 elif not right_table and type(c.right) is Identifier:
                     raise RuntimeError(f"Cannot find related join column: {c.right}")
 
-    def to_code(self):
-        assert self.root is not None
-        code = self.__to_code_util__(root=self.root)
+    def to_code(self, root):
+        assert root is not None
+        assert isinstance(root, Table)
+        code = self.__to_code_util__(root=root)
         return code
 
     def __to_code_util__(self, root: Table, from_key=None, to_key=None) -> List[str]:
@@ -114,9 +115,9 @@ class JoinNode(BaseNode):
             code += self.__to_code_util__(child.to_table, child.from_table_key, child.to_table_key)
 
         if root.parent:
-            if root.parent.owner == root.owner:
-                # TODO: Remove this error when the original code changed
-                raise RuntimeError("Cannot semi join by the same owner")
+            # if root.parent.owner == root.owner:
+            #     # TODO: Remove this error when the original code changed
+            #     raise RuntimeError("Cannot semi join by the same owner")
             agg = root.get_aggregate_columns()
             rendered = template.render(left_table=root.parent, right_table=root,
                                        aggregate=agg, left=from_key, right=to_key,

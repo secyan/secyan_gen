@@ -29,7 +29,7 @@ class TestSelect(unittest.TestCase):
             Identifier(tokens=[Token("int", "A")]),
         ]
 
-        code = select_node.to_code()
+        code = select_node.to_code(self.table_a.get_root())
         print(code)
         self.assert_content_in_arr(code, "Relation a(a_ri, a_ai);")
         self.assert_content_in_arr(code, "CLIENT")

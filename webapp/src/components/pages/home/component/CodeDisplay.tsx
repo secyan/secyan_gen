@@ -19,6 +19,8 @@ const { Title, Paragraph, Text, Link } = Typography;
 export default function CodeDisplay() {
   const { result } = React.useContext(CodeContext);
   const [copied, setCopied] = React.useState(false);
+  const [visible, setVisible] = React.useState(false);
+
   React.useEffect(() => {
     setCopied(false);
   }, [result]);
@@ -38,7 +40,11 @@ export default function CodeDisplay() {
             </Button>
           </Col>
           <Col>
-            <Popover content={<TreeDisplay />} placement="leftBottom">
+            <Popover
+              content={<TreeDisplay />}
+              placement="leftBottom"
+              trigger="click"
+            >
               <Button>Show Join Tree</Button>
             </Popover>
           </Col>

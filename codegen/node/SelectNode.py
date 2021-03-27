@@ -53,7 +53,7 @@ class SelectNode(BaseNode):
         else:
             pass
 
-    def to_code(self) -> List[str]:
+    def to_code(self, root) -> List[str]:
         output = []
         for i, f in enumerate(self.from_tables):
             table: Table = self.find_table_by_table_name(f)

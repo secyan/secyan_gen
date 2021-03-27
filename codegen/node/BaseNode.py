@@ -59,7 +59,7 @@ class BaseNode:
         """
         pass
 
-    def to_code(self) -> List[str]:
+    def to_code(self, root) -> List[str]:
         """
         Generate code
         :return:

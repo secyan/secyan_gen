@@ -27,7 +27,7 @@ class JoinNodeTest(unittest.TestCase):
         root.next.prev = root
 
         root.next.merge()
-        result = root.next.to_code()
+        result = root.next.to_code(table_a.get_root())
         self.assertTrue('a.Aggregate({ "aa" });' in result[0])
 
     def test_simple_join2(self):
@@ -54,6 +54,6 @@ class JoinNodeTest(unittest.TestCase):
         root.next.prev = root
 
         root.next.merge()
-        result = root.next.to_code()
+        result = root.next.to_code(table_a.get_root())
         self.assertTrue(len(result) > 0)
         # self.assertEqual(result[0], 'a.SemiJoin(b,"aa" , "ba");\na.Aggregate("b","c")')

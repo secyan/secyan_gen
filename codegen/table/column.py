@@ -54,7 +54,6 @@ class Column:
             if column.name == other.name and column.table == other.table:
                 return True
 
-
     def equals_name(self, column_name: str) -> bool:
         if self.name == column_name:
             return True
@@ -90,7 +89,7 @@ class JoinColumn:
         :return:
         """
         for column in self.to_table.column_names:
-            if column.name == self.to_table_key:
+            if column.equals_name(self.to_table_key):
                 return column
 
     @property
@@ -100,7 +99,7 @@ class JoinColumn:
         :return:
         """
         for column in self.from_table.column_names:
-            if column.name == self.from_table_key:
+            if column.equals_name(self.from_table_key):
                 return column
 
     def swap(self):

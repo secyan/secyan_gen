@@ -92,7 +92,7 @@ class Parser:
             cur.merge()
             cur = cur.next
 
-    def check_valid(self) -> bool:
+    def check_valid(self):
         n = 0
         for table in self.tables:
             if table.parent is None and table.used_in_join:
@@ -101,11 +101,15 @@ class Parser:
         if n > 1:
             raise RuntimeError(f"Join tree has {n} root. Check your join statement.")
 
-    def to_code(self):
+    def to_code(self) -> List[str]:
+        """
+        Generate a list of code
+        :return:
+        """
         code = []
         cur = self.root
         while cur:
-            c = cur.to_code()
+            c = cur.to_code(root=self.root_table)
             if c:
                 code += c
             cur = cur.next

@@ -76,7 +76,7 @@ class PostgresDBPlan(DBPlan):
         except Exception:
             raise SyntaxError("Cannot parse this join condition")
 
-    def __join__util__(self):
+    def __join__util__(self, depth=0):
         """
         Join helper function.
         :return:
@@ -84,21 +84,34 @@ class PostgresDBPlan(DBPlan):
 
         left_table: Optional[Table] = None
         right_table: Optional[Table] = None
+        left_depth = 0
+        right_depth = 0
 
         for i, plan in enumerate(self.plans):
             if i == 0:
-                left_table = plan.__join__util__()
+                left_table, left_depth = plan.__join__util__(depth=depth + 1)
             else:
-                right_table = plan.__join__util__()
+                right_table, right_depth = plan.__join__util__(depth=depth + 1)
 
         if self.is_join:
             if left_table and right_table:
                 left_table.used_in_join = True
                 right_table.used_in_join = True
+                ret_table = None
 
-                left, right = self.__parse_join_key__(self.hash_cond)
-                right_table.join(to_table=left_table, from_table_key=right, to_table_key=left)
-                return right_table
+                if "AND" in self.hash_cond:
+                    conds = self.hash_cond.split("AND")
+                    for cond in conds:
+                        left, right = self.__parse_join_key__(cond)
+                        ret_table = self.__perform_join_util__(left=left_table, right=right_table, left_key=left,
+                                                               right_key=right,
+                                                               left_depth=left_depth, right_depth=right_depth)
+                else:
+                    left, right = self.__parse_join_key__(self.hash_cond)
+                    ret_table = self.__perform_join_util__(left=left_table, right=right_table, left_key=left,
+                                                           right_key=right,
+                                                           left_depth=left_depth, right_depth=right_depth)
+                return ret_table, depth
 
         elif self.is_scan:
             found_table = None
@@ -108,13 +121,22 @@ class PostgresDBPlan(DBPlan):
 
             assert found_table is not None
 
-            return found_table
+            return found_table, depth
 
         elif left_table:
-            return left_table
+            return left_table, left_depth
 
         elif right_table:
-            return right_table
+            return right_table, right_depth
+
+    def __perform_join_util__(self, left: Table, right: Table, left_key: str, right_key: str, left_depth,
+                              right_depth):
+        if left_depth < right_depth:
+            left.join(right, from_table_key=left_key, to_table_key=right_key)
+            return left
+        else:
+            right.join(left, from_table_key=right_key, to_table_key=left_key)
+            return right
 
     @property
     def is_join(self) -> bool:

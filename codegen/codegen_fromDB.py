@@ -31,5 +31,5 @@ class CodeGenDB(Parser):
             if not isinstance(cur, JoinNode):
                 cur.merge()
             else:
-                cur.root = self.root_table
+                pass
             cur = cur.next

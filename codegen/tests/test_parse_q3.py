@@ -64,7 +64,7 @@ class TestParseQ3(unittest.TestCase):
         self.assertEqual(len(select_node.identifier_list), 4)
         self.assertFalse(tables[2].is_bool)
 
-        code = where_node.to_code()
+        code = where_node.to_code(ORDERS.get_root())
         self.assert_content_in_arr(code, 'vector<string> o_groupBy = { "o_orderkey","o_orderdate","o_shippriority" };')
 
         is_free, _ = self.codegen.is_free_connex()

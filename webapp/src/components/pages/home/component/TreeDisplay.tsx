@@ -6,14 +6,14 @@ export default function TreeDisplay() {
   const { result } = React.useContext(CodeContext);
 
   return (
-    <div style={{ height: 500, width: 500 }}>
+    <div style={{ height: 500, width: 1000 }}>
       {/* {JSON.stringify(result?.joinGraph)} */}
       {result && (
         <Tree
           data={result.joinGraph}
           orientation="vertical"
           pathFunc="step"
-          translate={{ y: 100, x: 200 }}
+          translate={{ y: 100, x: 400 }}
         />
       )}
     </div>
