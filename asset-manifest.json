@@ -1,25 +1,25 @@
 {
   "files": {
-    "main.css": "/SECYAN-GEN/static/css/main.6dea0f05.chunk.css",
-    "main.js": "/SECYAN-GEN/static/js/main.a58ec596.chunk.js",
-    "main.js.map": "/SECYAN-GEN/static/js/main.a58ec596.chunk.js.map",
-    "runtime-main.js": "/SECYAN-GEN/static/js/runtime-main.01acb4fe.js",
-    "runtime-main.js.map": "/SECYAN-GEN/static/js/runtime-main.01acb4fe.js.map",
-    "static/css/2.de2ac02e.chunk.css": "/SECYAN-GEN/static/css/2.de2ac02e.chunk.css",
-    "static/js/2.6ba9f116.chunk.js": "/SECYAN-GEN/static/js/2.6ba9f116.chunk.js",
-    "static/js/2.6ba9f116.chunk.js.map": "/SECYAN-GEN/static/js/2.6ba9f116.chunk.js.map",
-    "static/js/3.13c4b10c.chunk.js": "/SECYAN-GEN/static/js/3.13c4b10c.chunk.js",
-    "static/js/3.13c4b10c.chunk.js.map": "/SECYAN-GEN/static/js/3.13c4b10c.chunk.js.map",
-    "index.html": "/SECYAN-GEN/index.html",
-    "static/css/2.de2ac02e.chunk.css.map": "/SECYAN-GEN/static/css/2.de2ac02e.chunk.css.map",
-    "static/css/main.6dea0f05.chunk.css.map": "/SECYAN-GEN/static/css/main.6dea0f05.chunk.css.map",
-    "static/js/2.6ba9f116.chunk.js.LICENSE.txt": "/SECYAN-GEN/static/js/2.6ba9f116.chunk.js.LICENSE.txt"
+    "main.css": "https://sirily11.github.io/SECYAN-GEN/static/css/main.6dea0f05.chunk.css",
+    "main.js": "https://sirily11.github.io/SECYAN-GEN/static/js/main.02fe5e3d.chunk.js",
+    "main.js.map": "https://sirily11.github.io/SECYAN-GEN/static/js/main.02fe5e3d.chunk.js.map",
+    "runtime-main.js": "https://sirily11.github.io/SECYAN-GEN/static/js/runtime-main.8c0f55bc.js",
+    "runtime-main.js.map": "https://sirily11.github.io/SECYAN-GEN/static/js/runtime-main.8c0f55bc.js.map",
+    "static/css/2.de2ac02e.chunk.css": "https://sirily11.github.io/SECYAN-GEN/static/css/2.de2ac02e.chunk.css",
+    "static/js/2.d3d1d042.chunk.js": "https://sirily11.github.io/SECYAN-GEN/static/js/2.d3d1d042.chunk.js",
+    "static/js/2.d3d1d042.chunk.js.map": "https://sirily11.github.io/SECYAN-GEN/static/js/2.d3d1d042.chunk.js.map",
+    "static/js/3.1171b784.chunk.js": "https://sirily11.github.io/SECYAN-GEN/static/js/3.1171b784.chunk.js",
+    "static/js/3.1171b784.chunk.js.map": "https://sirily11.github.io/SECYAN-GEN/static/js/3.1171b784.chunk.js.map",
+    "index.html": "https://sirily11.github.io/SECYAN-GEN/index.html",
+    "static/css/2.de2ac02e.chunk.css.map": "https://sirily11.github.io/SECYAN-GEN/static/css/2.de2ac02e.chunk.css.map",
+    "static/css/main.6dea0f05.chunk.css.map": "https://sirily11.github.io/SECYAN-GEN/static/css/main.6dea0f05.chunk.css.map",
+    "static/js/2.d3d1d042.chunk.js.LICENSE.txt": "https://sirily11.github.io/SECYAN-GEN/static/js/2.d3d1d042.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.01acb4fe.js",
+    "static/js/runtime-main.8c0f55bc.js",
     "static/css/2.de2ac02e.chunk.css",
-    "static/js/2.6ba9f116.chunk.js",
+    "static/js/2.d3d1d042.chunk.js",
     "static/css/main.6dea0f05.chunk.css",
-    "static/js/main.a58ec596.chunk.js"
+    "static/js/main.02fe5e3d.chunk.js"
   ]
 }
