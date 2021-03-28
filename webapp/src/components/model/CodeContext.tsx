@@ -34,7 +34,7 @@ export class CodeProvider extends Component<CodeProps, CodeContextState> {
     super(props);
     let backend = localStorage.getItem("backend") ?? "python";
     let createDB = localStorage.getItem("createDB") === "true" ? true : false;
-    let dbName = createDB
+    let dbName = !createDB
       ? localStorage.getItem("dbName") ?? undefined
       : undefined;
 

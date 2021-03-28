@@ -1,8 +1,9 @@
 from typing import List
 
-from sqlparse.sql import Identifier
+from sqlparse.sql import Identifier, Token
 
 from .BaseNode import BaseNode
+from ..table import Table
 
 
 class FromNode(BaseNode):

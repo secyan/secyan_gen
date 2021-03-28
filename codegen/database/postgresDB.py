@@ -82,6 +82,26 @@ class PostgresDBPlan(DBPlan):
     def __str__(self):
         return f"<PostgresDBPlan: {self.node_type} />"
 
+    def perform_select_from(self) -> List[Table]:
+        return self.__perform__select_from__util__()
+
+    def __perform__select_from__util__(self) -> List[Table]:
+        results = []
+        for plan in self.plans:
+            rs = plan.__perform__select_from__util__()
+            results += rs
+
+        if self.is_scan:
+            found_table = None
+            for table in self.tables:
+                if table.variable_table_name == self.relation_name.lower():
+                    found_table = table
+
+            assert found_table is not None
+            return [found_table]
+
+        return results
+
     def perform_join(self):
         self.__join__util__()
 

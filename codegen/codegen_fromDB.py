@@ -1,8 +1,11 @@
 from typing import List, Optional
 
+from sqlparse.sql import IdentifierList, Identifier, Token
+
 from .codegen import Parser
 from .database.baseDB import DatabaseDriver
 from .database.dbplan import DBPlan
+from .node import FromNode
 from .node.JoinNode import JoinNode
 from .table.table import Table
 
@@ -25,11 +28,29 @@ class CodeGenDB(Parser):
 
         return super(CodeGenDB, self).parse()
 
+    def parse_from(self):
+        from_tables = [Identifier(tokens=[Token(value=f.variable_table_name, ttype="")]) for f in self.db_driver.perform_select_from()]
+        from_node = FromNode(tables=self.tables)
+        from_node.set_identifier_list(from_tables)
+        last = self.root.get_last_node()
+        last.next = from_node
+        last.next.prev = last
+
+    def parse_identifier(self, token: Identifier):
+        last = self.root.get_last_node()
+        if isinstance(last, FromNode):
+            return
+        super().parse_identifier(token)
+
+    def parse_identifier_list(self, token: IdentifierList):
+        last = self.root.get_last_node()
+        if isinstance(last, FromNode):
+            return
+        super().parse_identifier_list(token)
+
     def do_merge(self):
         cur = self.root
         while cur:
             if not isinstance(cur, JoinNode):
                 cur.merge()
-            else:
-                pass
             cur = cur.next

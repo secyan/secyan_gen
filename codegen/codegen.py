@@ -66,22 +66,22 @@ class Parser:
             if not token.is_whitespace:
                 if type(token) == Token:
                     if token.normalized == "SELECT":
-                        self.__parse__select__()
+                        self.parse__select()
                     elif token.normalized == "GROUP BY":
-                        self.__parse_group_by__()
+                        self.parse_group_by()
                     elif token.normalized == "FROM":
-                        self.__parse_from__()
+                        self.parse_from()
                     elif token.normalized == "ORDER BY":
-                        self.__parse_order_by__()
+                        self.parse_order_by()
                 elif type(token) == Where:
                     token: Where
-                    self.__parse_where__(token)
+                    self.parse_where(token)
                 elif type(token) == Identifier:
                     token: Identifier
-                    self.__parse__identifier__(token)
+                    self.parse_identifier(token)
                 elif type(token) == IdentifierList:
                     token: IdentifierList
-                    self.__parse__identifier_list__(token)
+                    self.parse_identifier_list(token)
 
         self.do_merge()
         self.check_valid()
@@ -137,12 +137,12 @@ class Parser:
         generated = template.render(function_lines=lines, function_name=function_name)
         return generated
 
-    def __parse_from__(self):
+    def parse_from(self):
         last = self.root.get_last_node()
         last.next = FromNode(tables=self.tables)
         last.next.prev = last
 
-    def __parse_where__(self, token: Where):
+    def parse_where(self, token: Where):
         last = self.root.get_last_node()
         comparison_list: List[Comparison] = []
         for t in token.tokens:
@@ -151,26 +151,26 @@ class Parser:
         last.next = WhereNode(comparison_list=comparison_list, tables=self.tables)
         last.next.prev = last
 
-    def __parse_group_by__(self):
+    def parse_group_by(self):
         last = self.root.get_last_node()
         last.next = GroupByNode(tables=self.tables)
         last.next.prev = last
 
-    def __parse_order_by__(self):
+    def parse_order_by(self):
         last = self.root.get_last_node()
         last.next = OrderByNode(tables=self.tables)
         last.next.prev = last
 
-    def __parse__select__(self):
+    def parse__select(self):
         last = self.root.get_last_node()
         last.next = SelectNode(tables=self.tables)
         last.next.prev = last
 
-    def __parse__identifier__(self, token: Identifier):
+    def parse_identifier(self, token: Identifier):
         last = self.root.get_last_node()
         last.set_identifier_list([token])
 
-    def __parse__identifier_list__(self, token: IdentifierList):
+    def parse_identifier_list(self, token: IdentifierList):
         last = self.root.get_last_node()
         tokens = [t for t in token.get_identifiers()]
         last.set_identifier_list(tokens)

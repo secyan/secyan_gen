@@ -13,3 +13,10 @@ class DBPlan:
         :return:
         """
         raise NotImplementedError
+
+    def perform_select_from(self) -> List[Table]:
+        """
+        Get tables needed for codegen
+        :return:
+        """
+        raise NotImplementedError

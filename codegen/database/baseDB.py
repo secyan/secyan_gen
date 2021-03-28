@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from codegen.database.dbplan import DBPlan
 from codegen.table.table import Table
@@ -11,6 +11,7 @@ class DatabaseDriver:
 
     def __init__(self, tables: List[Table]):
         self.tables = tables
+        self.plan: Optional[DBPlan] = None
 
     def get_query_plan(self, sql: str) -> DBPlan:
         """
@@ -29,6 +30,7 @@ class DatabaseDriver:
         """
         plan = self.get_query_plan(sql)
         plan.perform_join()
+        self.plan = plan
 
     def perform_join_by_plan(self, plan: DBPlan):
         """
@@ -37,3 +39,8 @@ class DatabaseDriver:
         :return:
         """
         plan.perform_join()
+        self.plan = plan
+
+    def perform_select_from(self):
+        assert self.plan is not None
+        return self.plan.perform_select_from()
