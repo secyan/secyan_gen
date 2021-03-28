@@ -29,7 +29,7 @@ def generate_code():
         tables = [FreeConnexTable.load_from_json(t) for t in json.loads(data['table'])]
         sql = data['sql']
         parser = Parser(sql=sql, tables=tables)
-        output = parser.parse().to_output()
+        output = parser.parse().to_output(data.get("functionName"))
         graph = parser.root_table.to_json(
             output_attrs=parser.get_output_attributes())
 
@@ -73,9 +73,9 @@ def generate_code_by_db():
         else:
             parser.parse()
 
-        output = parser.to_output()
+        output = parser.to_output(function_name=data.get("functionName"))
         graph = parser.root_table.to_json(
-            output_attrs=parser.get_output_attributes())
+            output_attrs=parser.get_output_attributes()) if parser.root_table else {}
 
         is_free_connex, error_tables = parser.is_free_connex()
         error_tables = [e.variable_table_name for e in error_tables]

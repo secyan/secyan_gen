@@ -20,8 +20,15 @@ class Parser:
         self.tables: List[Table] = tables
 
     @property
-    def root_table(self) -> Table:
-        return [t for t in self.tables if t.used_in_join][0].get_root()
+    def root_table(self) -> Optional[Table]:
+        joined = [t for t in self.tables if t.used_in_join]
+
+        if len(joined) > 0:
+            return joined[0].get_root()
+
+        joined = [t for t in self.tables if t.used]
+
+        return joined[0].get_root()
 
     def get_output_attributes(self) -> List[str]:
         node = self.root
@@ -95,7 +102,8 @@ class Parser:
                 roots.append(table)
 
         if n > 1:
-            raise RuntimeError(f"Join tree has {n} root. Check your join statement. Roots: {[r.variable_table_name for r in roots]}")
+            raise RuntimeError(
+                f"Join tree has {n} root. Check your join statement. Roots: {[r.variable_table_name for r in roots]}")
 
     def to_code(self) -> List[str]:
         """
@@ -119,14 +127,14 @@ class Parser:
             generated = template.render(function_lines=lines)
             f.write(generated)
 
-    def to_output(self) -> str:
+    def to_output(self, function_name="run_Demo") -> str:
         """
         Generate code and return
         :return:
         """
         template = Template(pkg_resources.read_text(templates, "template.j2"))
         lines = self.to_code()
-        generated = template.render(function_lines=lines)
+        generated = template.render(function_lines=lines, function_name=function_name)
         return generated
 
     def __parse_from__(self):

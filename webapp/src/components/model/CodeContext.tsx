@@ -17,6 +17,8 @@ interface CodeContextState {
   result?: Result;
   backend: string;
   databaseName?: string;
+  functionName?: string;
+  setFunctionName(name: string): void;
   setBackend(backend: string): void;
   post(): Promise<void>;
   postDB(): Promise<void>;
@@ -31,6 +33,11 @@ export class CodeProvider extends Component<CodeProps, CodeContextState> {
   constructor(props: CodeProps) {
     super(props);
     let backend = localStorage.getItem("backend") ?? "python";
+    let createDB = localStorage.getItem("createDB") === "true" ? true : false;
+    let dbName = createDB
+      ? localStorage.getItem("dbName") ?? undefined
+      : undefined;
+
     this.state = {
       setCode: this.setCode,
       setBackend: this.setBackend,
@@ -39,6 +46,8 @@ export class CodeProvider extends Component<CodeProps, CodeContextState> {
       post: this.post,
       setDatabase: this.setDatabase,
       postDB: this.postDB,
+      setFunctionName: this.setFunctionName,
+      databaseName: dbName,
     };
   }
 
@@ -50,6 +59,10 @@ export class CodeProvider extends Component<CodeProps, CodeContextState> {
       tableStructure: tableStructure ?? "",
     });
   }
+
+  setFunctionName = (name: string) => {
+    this.setState({ functionName: name });
+  };
 
   setDatabase = (name?: string) => {
     this.setState({ databaseName: name });
@@ -69,6 +82,7 @@ export class CodeProvider extends Component<CodeProps, CodeContextState> {
     let resp = await Axios.post<Result>(url, {
       sql: this.state.code,
       table: this.state.tableStructure,
+      functionName: this.state.functionName,
     });
     this.setState({ result: resp.data });
   };
@@ -86,6 +100,7 @@ export class CodeProvider extends Component<CodeProps, CodeContextState> {
       sql: this.state.code,
       table: this.state.tableStructure,
       database: this.state.databaseName,
+      functionName: this.state.functionName,
     });
     this.setState({ result: resp.data });
   };

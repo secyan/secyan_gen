@@ -96,10 +96,12 @@ class JoinNode(BaseNode):
                     raise RuntimeError(f"Cannot find related join column: {c.right}")
 
     def to_code(self, root):
-        assert root is not None
-        assert isinstance(root, Table)
-        code = self.__to_code_util__(root=root)
-        return code
+        if root:
+            assert isinstance(root, Table)
+            code = self.__to_code_util__(root=root)
+            return code
+        else:
+            return ""
 
     def __to_code_util__(self, root: Table, from_key=None, to_key=None) -> List[str]:
         """
@@ -145,7 +147,7 @@ class JoinNode(BaseNode):
 
             rendered = template.render(left_table=root.parent, right_table=root,
                                        aggregate=agg, left=from_key, right=to_key,
-                                       should_aggregate=True, should_join=False,
+                                       should_aggregate=len(agg) > 0, should_join=False,
                                        reveal_table=root, should_reveal=True, is_group_by=is_group_by)
             code += rendered.split("\n")
 

@@ -2,6 +2,7 @@ import {
   Button,
   Card,
   Col,
+  Input,
   notification,
   PageHeader,
   Row,
@@ -40,16 +41,27 @@ export default function HomePage() {
     post,
     postDB,
     backend,
+    functionName,
+    setFunctionName,
   } = React.useContext(CodeContext);
 
   return (
-    <Layout style={{ maxHeight: "100vh", overflow: "hidden", padding: 10 }}>
+    <Layout style={{ height: "100vh", overflow: "hidden", padding: 10 }}>
       <Header />
-      <Content>
+      <Content style={{ height: "100%" }}>
         <Row style={{ height: "80%" }} gutter={[16, 10]}>
           <Col span={8}>
             <Card>
-              <Tabs defaultActiveKey="1" onChange={() => {}}>
+              <Tabs defaultActiveKey="0" onChange={() => {}}>
+                <TabPane tab="Function Info" key="0">
+                  <Input
+                    value={functionName}
+                    placeholder="Function Name"
+                    onChange={(e) => {
+                      setFunctionName(e.target.value);
+                    }}
+                  />
+                </TabPane>
                 <TabPane tab="SQL Statement" key="1">
                   <Editor
                     height={height - 300}

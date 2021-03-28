@@ -16,7 +16,7 @@ class SelectNode(BaseNode):
         super().__init__(tables=tables)
         self.self_identify = "Selection"
         self.from_tables: List[Identifier] = []
-        self.support_aggregation_functions = ["sum"]
+        self.support_aggregation_functions = ["sum", "count", "avg"]
 
     def is_function_supported(self, identifier: Identifier):
         for func in self.support_aggregation_functions:

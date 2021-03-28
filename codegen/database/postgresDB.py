@@ -123,6 +123,7 @@ class PostgresDBPlan(DBPlan):
                 left_table.used_in_join = True
                 right_table.used_in_join = True
                 ret_table = None
+                print(self.hash_cond)
 
                 if "AND" in self.hash_cond:
                     conds = self.hash_cond.split("AND")

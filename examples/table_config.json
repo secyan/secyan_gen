@@ -216,5 +216,71 @@
         "name": "n_comment"
       }
     ]
+  },
+  {
+    "table_name": "part",
+    "columns": [
+      {
+        "column_type": "int",
+        "name": "p_partkey"
+      },
+      {
+        "column_type": "string",
+        "name": "p_name"
+      },
+      {
+        "column_type": "string",
+        "name": "p_mfgr"
+      },
+      {
+        "column_type": "string",
+        "name": "p_brand"
+      },
+      {
+        "column_type": "string",
+        "name": "p_type"
+      },
+      {
+        "column_type": "int",
+        "name": "p_size"
+      },
+      {
+        "column_type": "string",
+        "name": "p_container"
+      },
+      {
+        "column_type": "decimal",
+        "name": "p_retailprice"
+      },
+      {
+        "column_type": "string",
+        "name": "p_comment"
+      }
+    ]
+  },
+  {
+    "table_name": "partsupp",
+    "columns": [
+      {
+        "column_type": "int",
+        "name": "ps_partkey"
+      },
+      {
+        "column_type": "int",
+        "name": "ps_suppkey"
+      },
+      {
+        "column_type": "int",
+        "name": "ps_availqty"
+      },
+      {
+        "column_type": "decimal",
+        "name": "ps_supplycost"
+      },
+      {
+        "column_type": "string",
+        "name": "ps_comment"
+      }
+    ]
   }
 ]
