@@ -1,4 +1,6 @@
+import Editor from "@monaco-editor/react";
 import { Button, PageHeader, Select, Form, Input } from "antd";
+import Checkbox from "antd/lib/checkbox/Checkbox";
 import Modal from "antd/lib/modal/Modal";
 import React from "react";
 import { CodeContext } from "../../../model/CodeContext";
@@ -7,34 +9,28 @@ const { Option } = Select;
 
 export default function Header() {
   const [show, setShow] = React.useState(false);
+  const [code, setCode] = React.useState("");
+  const [createDB, setCreateDB] = React.useState(false);
+  const [dbName, setDBName] = React.useState("");
   const [form] = Form.useForm();
-  const { setBackend, backend } = React.useContext(CodeContext);
+  const { setBackend, backend, setDatabase } = React.useContext(CodeContext);
 
   const onSettingsClick = () => {
-    let port = localStorage.getItem("port");
-    let host = localStorage.getItem("host");
-    let username = localStorage.getItem("username");
-    let password = localStorage.getItem("password");
-    let database = localStorage.getItem("database");
-
-    let value = {
-      port: port,
-      host: host,
-      username: username,
-      password: password,
-      database: database,
-    };
-
-    form.setFieldsValue(value);
+    setCode(localStorage.getItem("createScript") ?? "");
+    setCreateDB(localStorage.getItem("createDB") === "true" ? true : false);
+    setDBName(localStorage.getItem("dbName") ?? "");
     setShow(true);
   };
 
-  const onSubmit = async (v: any) => {
-    localStorage.setItem("port", v.port);
-    localStorage.setItem("host", v.host);
-    localStorage.setItem("username", v.username);
-    localStorage.setItem("password", v.password);
-    localStorage.setItem("database", v.database);
+  const onSubmit = () => {
+    localStorage.setItem("createScript", code);
+    localStorage.setItem("createDB", createDB === true ? "true" : "false");
+    localStorage.setItem("dbName", dbName);
+    if (!createDB) {
+      setDatabase(dbName);
+    } else {
+      setDatabase(undefined);
+    }
     setShow(false);
   };
 
@@ -53,9 +49,9 @@ export default function Header() {
       ? [select]
       : [
           select,
-          // <Button type="primary" onClick={onSettingsClick}>
-          //   Settings
-          // </Button>,
+          <Button type="primary" onClick={onSettingsClick}>
+            Settings
+          </Button>,
         ];
 
   return (
@@ -67,26 +63,35 @@ export default function Header() {
         title="Database settings"
         onCancel={() => setShow(false)}
         onOk={() => {
-          form.submit();
+          onSubmit();
         }}
       >
-        <Form name="db settings" form={form} onFinish={onSubmit}>
-          <Form.Item label="Host" name="host">
-            <Input />
-          </Form.Item>
-          <Form.Item label="Port" name="port">
-            <Input type="number" />
-          </Form.Item>
-          <Form.Item label="Username" name="username">
-            <Input />
-          </Form.Item>
-          <Form.Item label="Password" name="password">
-            <Input.Password />
-          </Form.Item>
-          <Form.Item label="Database" name="database">
-            <Input />
-          </Form.Item>
-        </Form>
+        {createDB && (
+          <div style={{ height: 500 }}>
+            <Editor
+              value={code}
+              options={{ minimap: { enabled: false } }}
+              onChange={(v) => setCode(v ?? "")}
+              language="sql"
+            />
+          </div>
+        )}
+        <Checkbox
+          value={createDB}
+          onChange={(v) => {
+            setCreateDB(v.target.checked);
+          }}
+        >
+          Create database
+        </Checkbox>
+        {createDB}
+        {!createDB && (
+          <Input
+            placeholder="Database Name"
+            value={dbName}
+            onChange={(e) => setDBName(e.target.value)}
+          />
+        )}
       </Modal>
     </div>
   );

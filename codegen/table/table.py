@@ -239,7 +239,7 @@ class Table:
 
         return {
             "name": self.variable_table_name,
-            "attributes": {"": f"{join_by}"},
+            "attributes": {"": f"{join_by if join_by else [f'{c.to_table_key} ' for c in self.children]}"},
             # "parent": self.parent.variable_table_name if self.parent else None,
             "children": [c.to_table.to_json(output_attrs=output_attrs, join_by=c.to_table_key) for c in self.children]
         }

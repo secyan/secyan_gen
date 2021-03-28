@@ -16,10 +16,12 @@ interface CodeContextState {
   tableStructure?: string;
   result?: Result;
   backend: string;
+  databaseName?: string;
   setBackend(backend: string): void;
   post(): Promise<void>;
   postDB(): Promise<void>;
   setCode(code: string): void;
+  setDatabase(name?: string): void;
   setTable(table: string): void;
 }
 
@@ -35,6 +37,7 @@ export class CodeProvider extends Component<CodeProps, CodeContextState> {
       backend: backend,
       setTable: this.setTable,
       post: this.post,
+      setDatabase: this.setDatabase,
       postDB: this.postDB,
     };
   }
@@ -47,6 +50,10 @@ export class CodeProvider extends Component<CodeProps, CodeContextState> {
       tableStructure: tableStructure ?? "",
     });
   }
+
+  setDatabase = (name?: string) => {
+    this.setState({ databaseName: name });
+  };
 
   setBackend = (end: string) => {
     this.setState({ backend: end });
@@ -72,11 +79,21 @@ export class CodeProvider extends Component<CodeProps, CodeContextState> {
   postDB = async (): Promise<void> => {
     this.setState({ result: undefined });
     let url = Utils.getURL("generate_db");
+    if (localStorage.getItem("createDB") === "true") {
+      await this.createDB();
+    }
     let resp = await Axios.post<Result>(url, {
       sql: this.state.code,
       table: this.state.tableStructure,
+      database: this.state.databaseName,
     });
     this.setState({ result: resp.data });
+  };
+
+  createDB = async (): Promise<void> => {
+    let code = localStorage.getItem("createScript");
+    let url = Utils.getURL("create_db");
+    await Axios.post(url, { data: code });
   };
 
   setCode = (code: string) => {

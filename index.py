@@ -48,14 +48,15 @@ def generate_code_by_db():
     :return:
     """
     try:
-        data = request.json
+        data: dict = request.json
         tables = [FreeConnexTable.load_from_json(t) for t in json.loads(data['table'])]
+
         sql = data['sql']
         password = getenv('password')
         user = getenv('user')
-        database = "tpch"
-        host = "localhost"
-        port = "5432"
+        database = data.get("database", None) if data.get("database", None) else getenv("database")
+        host = getenv("host")
+        port = getenv("port")
 
         driver = PostgresDBDriver(password=password,
                                   user=user,
@@ -81,6 +82,28 @@ def generate_code_by_db():
         return jsonify(
             {"code": output, "joinGraph": graph, "isFreeConnex": is_free_connex, "errorTables": error_tables})
 
+    except Exception as e:
+        traceback.print_exc()
+        return Response(str(e), status=500)
+
+
+@app.route("/create_db", methods=["POST"])
+def create_db():
+    password = getenv('password')
+    user = getenv('user')
+    database = getenv("database")
+    host = getenv("host")
+    port = getenv("port")
+
+    driver = PostgresDBDriver(password=password,
+                              user=user,
+                              database_name=database,
+                              host=host,
+                              port=port,
+                              tables=[])
+    try:
+        driver.init(data=request.json['data'])
+        return Response(status=201)
     except Exception as e:
         traceback.print_exc()
         return Response(str(e), status=500)

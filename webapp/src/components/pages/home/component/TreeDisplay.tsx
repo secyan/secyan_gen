@@ -14,6 +14,7 @@ export default function TreeDisplay() {
           orientation="vertical"
           pathFunc="step"
           translate={{ y: 100, x: 400 }}
+          nodeSize={{ x: 257, y: 175 }}
         />
       )}
     </div>

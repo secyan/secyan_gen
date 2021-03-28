@@ -1,16 +1,10 @@
 from typing import List, Optional, Tuple
 import sqlparse
 from sqlparse.sql import Comment, Identifier, Statement, Where, Token, IdentifierList, Comparison
-from .node.BaseNode import BaseNode
-from .node.FromNode import FromNode
-from .node.SelectNode import SelectNode
-from .node.WhereNode import WhereNode
-from .table.table import Table
-from .table.free_connex_table import FreeConnexTable
+from .node import SelectNode, GroupByNode, FromNode, JoinNode, OrderByNode, WhereNode, BaseNode
+from .table import Table, FreeConnexTable
 from jinja2 import Template
 from . import templates
-from .node.GroupbyNode import GroupByNode
-from .node.OrderByNode import OrderByNode
 
 try:
     import importlib.resources as pkg_resources
@@ -94,12 +88,14 @@ class Parser:
 
     def check_valid(self):
         n = 0
+        roots = []
         for table in self.tables:
             if table.parent is None and table.used_in_join:
                 n += 1
+                roots.append(table)
 
         if n > 1:
-            raise RuntimeError(f"Join tree has {n} root. Check your join statement.")
+            raise RuntimeError(f"Join tree has {n} root. Check your join statement. Roots: {[r.variable_table_name for r in roots]}")
 
     def to_code(self) -> List[str]:
         """

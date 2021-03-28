@@ -5,6 +5,7 @@ import json
 from .baseDB import DatabaseDriver
 from .dbplan import DBPlan
 from ..table.table import Table
+from ..utils import CreateDBHelper
 
 
 class PostgresDBDriver(DatabaseDriver):
@@ -15,6 +16,30 @@ class PostgresDBDriver(DatabaseDriver):
         self.password = password
         self.host = host
         self.port = port
+
+    def init(self, data: str):
+        util = CreateDBHelper(tables=self.tables, database_name=self.database_name)
+        conn = psycopg2.connect(user=self.user, password=self.password, host=self.host,
+                                port=self.port)
+        conn.autocommit = True
+        cursor = conn.cursor()
+        print("Drop db")
+        cursor.execute(util.drop_db())
+
+        print("Create DB")
+        cursor.execute(util.create_db())
+        conn.close()
+
+        conn = psycopg2.connect(user=self.user, password=self.password, host=self.host,
+                                port=self.port, database=self.database_name)
+        cursor = conn.cursor()
+
+        print("Create Tables")
+        for statement in data.split(";"):
+            if "create" in statement.lower():
+                cursor.execute(statement)
+
+        conn.commit()
 
     def get_query_plan(self, sql: str) -> "PostgresDBPlan":
         try:
@@ -88,7 +113,7 @@ class PostgresDBPlan(DBPlan):
         right_depth = 0
 
         for i, plan in enumerate(self.plans):
-            if i == 0:
+            if i == 1:
                 left_table, left_depth = plan.__join__util__(depth=depth + 1)
             else:
                 right_table, right_depth = plan.__join__util__(depth=depth + 1)
@@ -102,12 +127,12 @@ class PostgresDBPlan(DBPlan):
                 if "AND" in self.hash_cond:
                     conds = self.hash_cond.split("AND")
                     for cond in conds:
-                        left, right = self.__parse_join_key__(cond)
+                        right, left = self.__parse_join_key__(cond)
                         ret_table = self.__perform_join_util__(left=left_table, right=right_table, left_key=left,
                                                                right_key=right,
                                                                left_depth=left_depth, right_depth=right_depth)
                 else:
-                    left, right = self.__parse_join_key__(self.hash_cond)
+                    right, left = self.__parse_join_key__(self.hash_cond)
                     ret_table = self.__perform_join_util__(left=left_table, right=right_table, left_key=left,
                                                            right_key=right,
                                                            left_depth=left_depth, right_depth=right_depth)

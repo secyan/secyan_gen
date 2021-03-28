@@ -1,0 +1,33 @@
+version: "3.9"
+services:
+  webapp:
+    build:
+      context: ./
+      dockerfile: docker/webapp.dockerfile
+
+    ports:
+      - "8080:80"
+    container_name: "codegen-webapp"
+
+  server:
+    build:
+      context: ./
+      dockerfile: docker/server.dockerfile
+    volumes:
+      - ./:/app
+    ports:
+      - "5000:5000"
+    container_name: "codegen-server"
+    command: pipenv run python index.py
+    environment:
+      host: db
+      password: password
+      user: user
+      database: test
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: user
