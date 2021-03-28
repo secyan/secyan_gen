@@ -17,6 +17,8 @@ import React from "react";
 import { CodeContext } from "../../model/CodeContext";
 import CodeDisplay from "./component/CodeDisplay";
 import Header from "./component/Header";
+import * as monaco from "monaco-editor";
+import { Utils } from "../../model/utils";
 
 const { TabPane } = Tabs;
 
@@ -45,6 +47,51 @@ export default function HomePage() {
     setFunctionName,
   } = React.useContext(CodeContext);
 
+  const handleEditorWillMount = React.useCallback(
+    (monaco: any) => {
+      monaco.languages.registerCompletionItemProvider("sql", {
+        provideCompletionItems: (
+          model: monaco.editor.ITextModel,
+          position: monaco.Position
+        ) => {
+          var word = model.getWordUntilPosition(position);
+          var range = {
+            startLineNumber: position.lineNumber,
+            endLineNumber: position.lineNumber,
+            startColumn: word.startColumn,
+            endColumn: word.endColumn,
+          };
+          if (tableStructure)
+            return {
+              suggestions: Utils.generateSuggestions(range, tableStructure),
+            };
+        },
+      });
+
+      monaco.languages.registerHoverProvider("sql", {
+        provideHover: (
+          model: monaco.editor.ITextModel,
+          position: monaco.Position
+        ) => {
+          var word = model.getWordAtPosition(position);
+          var range = {
+            startLineNumber: position.lineNumber,
+            endLineNumber: position.lineNumber,
+            startColumn: word?.startColumn,
+            endColumn: word?.endColumn,
+          };
+          return Utils.generateHover(
+            range,
+            model,
+            word?.word ?? "",
+            tableStructure
+          );
+        },
+      });
+    },
+    [tableStructure]
+  );
+
   return (
     <Layout style={{ height: "100vh", overflow: "hidden", padding: 10 }}>
       <Header />
@@ -65,6 +112,9 @@ export default function HomePage() {
                 <TabPane tab="SQL Statement" key="1">
                   <Editor
                     height={height - 300}
+                    beforeMount={(e) => {
+                      handleEditorWillMount(e);
+                    }}
                     language="sql"
                     value={code}
                     options={{ minimap: { enabled: false } }}
