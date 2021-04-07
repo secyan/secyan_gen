@@ -243,3 +243,7 @@ class Table:
             # "parent": self.parent.variable_table_name if self.parent else None,
             "children": [c.to_table.to_json(output_attrs=output_attrs, join_by=c.to_table_key) for c in self.children]
         }
+
+    def clear_join(self):
+        self.children = []
+        self.parent = None

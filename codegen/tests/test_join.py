@@ -358,12 +358,11 @@ group by
 order by
     revenue desc;
         """
-        tables = [Table.load_from_json(t) for t in TEST_CONFIG]
+        tables = [FreeConnexTable.load_from_json(t) for t in TEST_CONFIG]
         parser = Parser(tables=tables, sql=sql)
         parser.parse()
         root = parser.root_table
-        self.assertEqual(root.variable_table_name, "customer")
-        self.assertEqual(root.children[0].to_table.variable_table_name, "orders")
-        self.assertEqual(root.children[0].to_table.children[0].to_table.variable_table_name, "lineitem")
-        self.assertEqual(root.children[0].to_table.children[0].to_table.children[0].to_table.variable_table_name, "supplier")
+        self.assertEqual(root.variable_table_name, "orders")
+        self.assertEqual(root.children[0].to_table.variable_table_name, "customer")
+        self.assertEqual(root.children[1].to_table.variable_table_name, "lineitem")
 

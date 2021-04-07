@@ -6,11 +6,8 @@ from flask import Flask, request, jsonify, Response
 import json
 from codegen.codegen import Parser
 from codegen.codegen_fromDB import CodeGenDB
-from codegen.database.dbplan import DBPlan
 from codegen.database.postgresDB import PostgresDBPlan, PostgresDBDriver
-from codegen.table.table import Table
 from codegen.table.free_connex_table import FreeConnexTable
-import subprocess
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -24,6 +21,10 @@ def index():
 
 @app.route("/generate", methods=["POST"])
 def generate_code():
+    """
+    Use default code gen
+    :return:
+    """
     try:
         data = request.json
         tables = [FreeConnexTable.load_from_json(t) for t in json.loads(data['table'])]

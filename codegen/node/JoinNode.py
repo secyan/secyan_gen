@@ -133,7 +133,6 @@ class JoinNode(BaseNode):
             selections = []
             is_group_by = False
             if group_by:
-
                 selections = [i.normalized for i in group_by.identifier_list]
                 is_group_by = True
             elif select:
@@ -145,6 +144,8 @@ class JoinNode(BaseNode):
             new_selections = self.__preprocess_selection__(selections=selections, columns=columns)
             agg = [Column(name=s, column_type=TypeEnum.int) for s in new_selections]
 
+            agg = self.remove_duplicates(agg)
+
             rendered = template.render(left_table=root.parent, right_table=root,
                                        aggregate=agg, left=from_key, right=to_key,
                                        should_aggregate=len(agg) > 0, should_join=False,
@@ -152,6 +153,14 @@ class JoinNode(BaseNode):
             code += rendered.split("\n")
 
         return code
+
+    def remove_duplicates(self, columns: List[Column]) -> List[Column]:
+        ret_columns = []
+        for c in columns:
+            if c not in ret_columns:
+                ret_columns.append(c)
+
+        return ret_columns
 
     def __preprocess_selection__(self, columns: List[Column], selections: List[str]) -> List[str]:
         new_selections = []

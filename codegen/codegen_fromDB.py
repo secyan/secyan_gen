@@ -28,7 +28,7 @@ class CodeGenDB(Parser):
 
         return super(CodeGenDB, self).parse()
 
-    def parse_from(self):
+    def __parse_from__(self):
         from_tables = [Identifier(tokens=[Token(value=f.variable_table_name, ttype="")]) for f in self.db_driver.perform_select_from()]
         from_node = FromNode(tables=self.tables)
         from_node.set_identifier_list(from_tables)
@@ -36,19 +36,19 @@ class CodeGenDB(Parser):
         last.next = from_node
         last.next.prev = last
 
-    def parse_identifier(self, token: Identifier):
+    def __parse_identifier__(self, token: Identifier):
         last = self.root.get_last_node()
         if isinstance(last, FromNode):
             return
-        super().parse_identifier(token)
+        super().__parse_identifier__(token)
 
-    def parse_identifier_list(self, token: IdentifierList):
+    def __parse_identifier_list__(self, token: IdentifierList):
         last = self.root.get_last_node()
         if isinstance(last, FromNode):
             return
-        super().parse_identifier_list(token)
+        super().__parse_identifier_list__(token)
 
-    def do_merge(self):
+    def __do_merge__(self):
         cur = self.root
         while cur:
             if not isinstance(cur, JoinNode):

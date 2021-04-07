@@ -35,9 +35,18 @@ class BaseNode:
 
     @property
     def identifier_list(self):
+        """
+        A list of identifiers. Identifier could be l_orderkey, s_orderkey.
+        :return:
+        """
         return self._identifier_list
 
-    def set_identifier_list(self, value):
+    def set_identifier_list(self, value: List[Identifier]):
+        """
+        Set the identifier list equals to the value.
+        :param value:
+        :return:
+        """
         self._identifier_list = value
 
     def print_graph(self):
@@ -54,12 +63,14 @@ class BaseNode:
 
     def merge(self):
         """
-        Merge data with other nodes
+        Merge data with other nodes.
+
+        For example, a join node will perform join.
         :return:
         """
         pass
 
-    def to_code(self, root) -> List[str]:
+    def to_code(self, root: "Table") -> List[str]:
         """
         Generate code
         :return:
@@ -88,6 +99,14 @@ class BaseNode:
         return template
 
     def find_table_by_identifier_or_function(self, identifier: Union[Function, Identifier]) -> Table:
+        """
+        Use identifier to find the table.
+
+        Function: something like sum(1 - price)
+        Identifier: l_orderkey
+        :param identifier:
+        :return:
+        """
         if type(identifier) != Token and len(identifier.tokens) > 1:
             identifier: Function
             for token in identifier.tokens:
@@ -100,7 +119,12 @@ class BaseNode:
                 if table.has_column_with_name(identifier.normalized):
                     return table
 
-    def find_table_by_table_name(self, identifier: Identifier):
+    def find_table_by_table_name(self, identifier: Identifier) -> Table:
+        """
+        Find table by its table name.
+        :param identifier:
+        :return:
+        """
         tb_name = identifier.normalized.lower()
         for table in self.tables:
             if tb_name == table.variable_table_name:

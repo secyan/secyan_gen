@@ -34,9 +34,9 @@ class FreeConnexTable(Table):
             self.children = self.children[:-1] + [tmp_parent_join_column]
             self.parent = tmp_table
 
-            tmp.parent = self.parent.parent
-            tmp.children = self.children[1:]
-            tmp.children = tmp.children[:-1]
+            # tmp.parent = self.parent.parent
+            # tmp.children = self.children[1:]
+            # tmp.children = tmp.children[:-1]
 
     def get_highest_with_attr(self, output_attr: str, height: int) -> Tuple["Table", int]:
         """
