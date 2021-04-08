@@ -101,6 +101,13 @@ class FreeConnexTable(Table):
         return len(not_qualified_tables) == 0, not_qualified_tables
 
     def is_cycle(self, visited: List["FreeConnexTable"] = None) -> bool:
+        """
+        Whether this join tree has a cycle
+
+        :param visited: a list of tables visited
+        :return: True if has a cycle
+        """
+
         if visited is None:
             visited = []
 

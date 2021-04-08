@@ -49,7 +49,31 @@ class Table:
 
     def get_height(self) -> int:
         """
-        Get height of the join tree
+        Get max height of the join tree.
+
+        For example,
+
+        The height for tree
+        ```
+                a
+              /    \
+            b        c
+
+        ```
+        is 1
+
+        The height for tree
+
+        ```
+                a
+              /   \
+            b       d
+          /
+        c
+
+        ```
+        is 2
+
         :return:
         """
         if len(self.children) == 0:
@@ -60,10 +84,7 @@ class Table:
             t: "Table" = c.to_table
             heights.append(t.get_height())
 
-        topmost = heights[0]
-        for h in heights:
-            if h > topmost:
-                topmost = h
+        topmost = max(heights)
 
         return topmost + 1
 
@@ -245,5 +266,10 @@ class Table:
         }
 
     def clear_join(self):
+        """
+        Clear the join
+        :return:
+        """
+
         self.children = []
         self.parent = None

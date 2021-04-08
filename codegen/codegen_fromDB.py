@@ -14,10 +14,17 @@ from .table.table import Table
 class CodeGenDB(FreeConnexParser):
     """
     This codegen use system's query execution plan to generate a code.
-
     """
 
     def __init__(self, sql: str, db_driver: DatabaseDriver, tables: List[Table]):
+        """
+        Construct the Codegen DB Parser.
+
+        :param sql: SQL Query
+        :param db_driver: DB Driver which used to connect to the db
+        :param tables: list of database tables
+        """
+
         super().__init__(sql=sql, tables=tables)
         self.db_driver: DatabaseDriver = db_driver
 

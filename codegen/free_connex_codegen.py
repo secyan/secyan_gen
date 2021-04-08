@@ -8,7 +8,22 @@ from codegen.table import Table, FreeConnexTable
 
 
 class FreeConnexParser(Parser):
+    """
+    Construct a Free Connex SQL Query parser.
+    This will try to construct a free connex join tree instead of the regular join tree
+    which the base class "Parser" will generate by default.
+    """
+
     def is_free_connex(self) -> Tuple[bool, List["Table"]]:
+        """
+        Check whether the current join tree is a free connex join tree.
+
+        :return: a tuple. The first item in the tuple indicates whether the join tree is a free connex join tree.
+
+        The second argument in the tuple indicates a list of tables which cause the problem
+        if the tree is not a free connex join tree
+        """
+
         root_table: Optional[FreeConnexTable] = self.root_table
         height = root_table.get_height()
         output_attrs = self.get_output_attributes()
@@ -30,6 +45,3 @@ class FreeConnexParser(Parser):
         last.next = FreeConnexWhereNode(comparison_list=comparison_list, tables=self.tables,
                                         is_free_connex_table=self.is_free_connex)
         last.next.prev = last
-
-
-

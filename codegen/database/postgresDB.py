@@ -11,6 +11,10 @@ from ..utils import CreateDBHelper
 
 
 class PostgresDBDriver(DatabaseDriver):
+    """
+    Postgres DB driver
+    """
+
     def __init__(self, database_name: str, user: str, password: str, host: str, port: str, tables: List[Table]):
         super().__init__(tables)
         self.database_name = database_name
@@ -20,6 +24,13 @@ class PostgresDBDriver(DatabaseDriver):
         self.port = port
 
     def init(self, data: str):
+        """
+        Create a database with pre-defined table structure.
+
+        :param data: A sql statement which can create tables.
+        :return:
+        """
+
         util = CreateDBHelper(tables=self.tables, database_name=self.database_name)
         conn = psycopg2.connect(user=self.user, password=self.password, host=self.host,
                                 port=self.port)
@@ -57,6 +68,10 @@ class PostgresDBDriver(DatabaseDriver):
 
 
 class PostgresDBPlan(DBPlan):
+    """
+    Postgres DB Plan. This object should be construct by the JSON query plan
+    """
+
     node_type: str
     parallel_aware: bool
     startup_cost: float
@@ -85,6 +100,12 @@ class PostgresDBPlan(DBPlan):
         return f"<PostgresDBPlan: {self.node_type} />"
 
     def perform_select_from(self) -> List[Table]:
+        """
+        Get a list of tables used in the select statement from the query plan
+
+        :return: A list of tables used in the select statement
+        """
+
         return self.__perform__select_from__util__()
 
     def __perform__select_from__util__(self) -> List[Table]:

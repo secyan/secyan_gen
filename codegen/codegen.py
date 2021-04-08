@@ -30,7 +30,28 @@ class Parser:
     ```
     """
 
+    """
+    A SQL Query
+    """
+    sql: str
+
+    """
+    SQL Statement tokens
+    """
+    tokens: List[Token]
+
+    """
+    SQL Statement root
+    """
+    root: BaseNode
+
     def __init__(self, sql: str, tables: List[Table]):
+        """
+        Create a parser with sql query and database tables
+        :param sql: SQL Query string
+        :param tables: list of database tables
+        """
+
         self.sql = sql
         self.tokens: List[Token] = sqlparse.parse(sql)[0].tokens
         self.root = BaseNode(tables=[])
@@ -38,6 +59,10 @@ class Parser:
 
     @property
     def root_table(self) -> Optional[Table]:
+        """
+        Get the root table. This will return the root of the join tree
+        :return:
+        """
         joined = [t for t in self.tables if t.used_in_join]
 
         if len(joined) > 0:
@@ -78,6 +103,11 @@ class Parser:
         return attrs
 
     def parse(self):
+        """
+        Parse sql statement and construct the sql query tree and sql join tree
+        :return:
+        """
+
         for token in self.tokens:
             if not token.is_whitespace:
                 if type(token) == Token:
@@ -116,6 +146,15 @@ class Parser:
             cur = cur.next
 
     def check_valid(self, raise_error=True) -> bool:
+        """
+        Check if the constructed sql tree and sql join tree is valid.
+        If will return a bool indicates the result. If raise error is set to true,
+        then it will raise RuntimeError instead.
+
+        :param raise_error: Whether raise an error instead of returning a result
+        :return: A result which indicates the validation result of the join tree and sql statement tree
+        """
+
         n = 0
         roots = []
         for table in self.tables:
@@ -135,6 +174,7 @@ class Parser:
     def __to_code__(self) -> List[str]:
         """
         Generate a list of code
+
         :return: A list of code
         """
         code = []
@@ -150,6 +190,7 @@ class Parser:
     def to_file(self, file_name: str):
         """
         Generate code and save it to the file with file_name
+
         :param file_name:
         :return:
         """
@@ -162,6 +203,7 @@ class Parser:
     def to_output(self, function_name="run_Demo") -> str:
         """
         Generate code and return
+
         :return: generated code
         """
         template = Template(pkg_resources.read_text(templates, "template.j2"))
@@ -170,11 +212,24 @@ class Parser:
         return generated
 
     def __parse_from__(self):
+        """
+        Parse the "from" statement in SQL Query
+
+        :return:
+        """
+
         last = self.root.get_last_node()
         last.next = FromNode(tables=self.tables)
         last.next.prev = last
 
     def __parse_where__(self, token: Where):
+        """
+        Parse the "Where" statement in SQL Query
+
+        :param token:
+        :return:
+        """
+
         last = self.root.get_last_node()
         comparison_list: List[Comparison] = []
         for t in token.tokens:
@@ -184,25 +239,60 @@ class Parser:
         last.next.prev = last
 
     def __parse_group_by__(self):
+        """
+        Parse the "Group By" Statement in SQL Query
+
+        :return:
+        """
+
         last = self.root.get_last_node()
         last.next = GroupByNode(tables=self.tables)
         last.next.prev = last
 
     def __parse_order_by__(self):
+        """
+        Parse the "Order By" Statement in SQL Query
+
+        :return:
+        """
+
         last = self.root.get_last_node()
         last.next = OrderByNode(tables=self.tables)
         last.next.prev = last
 
     def __parse_select__(self):
+        """
+        Parse "Select" Statement in SQL Query
+
+        :return:
+        """
+
         last = self.root.get_last_node()
         last.next = SelectNode(tables=self.tables)
         last.next.prev = last
 
     def __parse_identifier__(self, token: Identifier):
+        """
+        Parse the Identifier in the SQL Query.
+
+        For example "a" in query "Select a" is the identifier
+        :param token:
+        :return:
+        """
+
         last = self.root.get_last_node()
         last.set_identifier_list([token])
 
     def __parse_identifier_list__(self, token: IdentifierList):
+        """
+        Parse the identifierList in the SQL Query.
+
+        For example "A, B, C" in query "Select * from A, B, C..." is the identifier list
+
+        :param token:
+        :return:
+        """
+
         last = self.root.get_last_node()
         tokens = [t for t in token.get_identifiers()]
         last.set_identifier_list(tokens)
