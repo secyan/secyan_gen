@@ -1,9 +1,11 @@
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Callable
 import psycopg2
 import json
 
 from .baseDB import DatabaseDriver
 from .dbplan import DBPlan
+from ..node.FreeConnexJoinNode import FreeConnexJoinNode
+from ..node.JoinNode import JoinData
 from ..table.table import Table
 from ..utils import CreateDBHelper
 
@@ -102,8 +104,12 @@ class PostgresDBPlan(DBPlan):
 
         return results
 
-    def perform_join(self):
-        self.__join__util__()
+    def perform_join(self, is_free_connex_table: Callable[[], Tuple[bool, List[Table]]]):
+        join_list: List[JoinData] = []
+        self.__join__util__(join_list=join_list)
+        # Use Free Connex Join Node to join tables
+        node = FreeConnexJoinNode(join_list=join_list, tables=self.tables, is_free_connex_table=is_free_connex_table)
+        node.merge()
 
     def __parse_join_key__(self, content: str) -> Tuple[str, str]:
         """
@@ -121,10 +127,10 @@ class PostgresDBPlan(DBPlan):
         except Exception:
             raise SyntaxError("Cannot parse this join condition")
 
-    def __join__util__(self, depth=0):
+    def __join__util__(self, join_list: List[JoinData], depth=0) -> Optional[Tuple[Table, int]]:
         """
         Join helper function.
-        :return:
+        :return: Founded table and its depth
         """
 
         left_table: Optional[Table] = None
@@ -134,30 +140,35 @@ class PostgresDBPlan(DBPlan):
 
         for i, plan in enumerate(self.plans):
             if i == 1:
-                left_table, left_depth = plan.__join__util__(depth=depth + 1)
+                left_table, left_depth = plan.__join__util__(depth=depth + 1, join_list=join_list)
             else:
-                right_table, right_depth = plan.__join__util__(depth=depth + 1)
+                right_table, right_depth = plan.__join__util__(depth=depth + 1, join_list=join_list)
 
         if self.is_join:
+            # If the current node is a join node
+
             if left_table and right_table:
                 left_table.used_in_join = True
                 right_table.used_in_join = True
                 ret_table = None
-                print(self.hash_cond)
 
                 if "AND" in self.hash_cond:
-                    conds = self.hash_cond.split("AND")
-                    for cond in conds:
-                        right, left = self.__parse_join_key__(cond)
-                        ret_table = self.__perform_join_util__(left=left_table, right=right_table, left_key=left,
-                                                               right_key=right,
-                                                               left_depth=left_depth, right_depth=right_depth)
+                    # If the plan returns a multiple join conditions. For example a join b and a join c.
+                    conditions = self.hash_cond.split("AND")
+                    for cond in conditions:
+                        right_key, left_key = self.__parse_join_key__(cond)
+                        # ret_table = self.__perform_join_util__(left=left_table, right=right_table, left_key=left_key,
+                        #                                        right_key=right_key,
+                        #                                        left_depth=left_depth, right_depth=right_depth)
+
+                        join_list.append(JoinData(left_key=left_key, right_key=right_key))
                 else:
-                    right, left = self.__parse_join_key__(self.hash_cond)
-                    ret_table = self.__perform_join_util__(left=left_table, right=right_table, left_key=left,
-                                                           right_key=right,
-                                                           left_depth=left_depth, right_depth=right_depth)
-                return ret_table, depth
+                    right_key, left_key = self.__parse_join_key__(self.hash_cond)
+                    # ret_table = self.__perform_join_util__(left=left_table, right=right_table, left_key=left_key,
+                    #                                        right_key=right_key,
+                    #                                        left_depth=left_depth, right_depth=right_depth)
+                    join_list.append(JoinData(left_key=left_key, right_key=right_key))
+                return right_table, depth
 
         elif self.is_scan:
             found_table = None

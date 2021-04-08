@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Callable, Tuple
 
 from codegen.database.dbplan import DBPlan
 from codegen.table.table import Table
@@ -16,29 +16,23 @@ class DatabaseDriver:
     def get_query_plan(self, sql: str) -> DBPlan:
         """
         Return the query execution plan based on the sql string
+
         :param sql: sql query
         :return: a query execution plan
         """
         raise NotImplementedError
 
-    def perform_join(self, sql: str):
+    def perform_join_by_plan(self, plan: DBPlan, is_free_connex_table: Callable[[], Tuple[bool, List[Table]]]):
         """
-        Join table based on the sql string.
-        This function will first call the database to get execution plan, and then use that plan to perform join.
-        :param sql: Sql query
-        :return:
-        """
-        plan = self.get_query_plan(sql)
-        plan.perform_join()
-        self.plan = plan
+        Do the join by a given db plan.
 
-    def perform_join_by_plan(self, plan: DBPlan):
-        """
-        Do the join by given a db plan.
+        :param is_free_connex_table:
         :param plan: DB Execution plan
         :return:
         """
-        plan.perform_join()
+        assert plan is not None
+
+        plan.perform_join(is_free_connex_table=is_free_connex_table)
         self.plan = plan
 
     def perform_select_from(self):

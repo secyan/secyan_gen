@@ -1,23 +1,53 @@
-from typing import List, Callable
-
+from math import factorial
+from typing import List, Callable, Tuple
 from sqlparse.sql import Identifier
-
+import itertools
 from .JoinNode import JoinNode, JoinData
 from ..table import FreeConnexTable, Table
 
 
 class FreeConnexJoinNode(JoinNode):
+    """
+    A join node which will try to create a free connex join. However, it won't guarantee the generated
+    join tree will be a free connex join tree.
+    """
 
-    def __init__(self, join_list: List[JoinData], tables: List[Table], is_free_connex_table: Callable[[], bool]):
+    def __init__(self, join_list: List[JoinData], tables: List[Table],
+                 is_free_connex_table: Callable[[], Tuple[bool, List[Table]]]):
+        """
+        Initialize a Free Connex Join Node.
+
+        :param join_list: a list of join data. Included left key, right key.
+        :param tables: A list of tables
+        :param is_free_connex_table: A function which can be used to test if one join tree is a free connex join tree
+        """
+
         super().__init__(join_list, tables)
         self.is_free_connex_table = is_free_connex_table
 
     def merge(self):
-        for i in range(0, len(self.join_list), 2):
-            self.__perform_join__(i)
+        """
+        Enumerate all possible join trees in order to find the free connex join tree
+        :return:
+        """
+        self.preprocess_join_list()
+        length = len(self.join_list)
+
+        # Will generate a list of combinations with 0 and 1
+        # 0 means will perform left to right join
+        # 1 means will perform right to left join
+        # this will let the program enumerate all the possible join trees
+        # in order to find the free connex join tree
+        combinations = list(itertools.product([0, 1],  repeat=length))
+
+        for i, combination in enumerate(combinations):
+            # (0, 0, 0)
+            combination: Tuple[int]
+
+            self.__perform_join__(combination)
             is_free_connex, _ = self.is_free_connex_table()
             if not is_free_connex:
-                if i == len(self.join_list) - 1:
+                if i == len(combinations) - 1:
                     pass
 
                 else:
@@ -25,7 +55,7 @@ class FreeConnexJoinNode(JoinNode):
             else:
                 break
 
-    def __perform_join__(self, index: int):
+    def __perform_join__(self, combination: Tuple[int]):
         """
         Join two tables. If the current index of table less than the index, the perform left join right,
         otherwise, right to left
@@ -47,7 +77,7 @@ class FreeConnexJoinNode(JoinNode):
                     left_table = table
 
             if left_table and right_table:
-                if i > index:
+                if combination[i] == 1:
                     right_table.join(left_table, str(c.right), str(c.left))
                 else:
                     left_table.join(right_table, str(c.left), str(c.right))

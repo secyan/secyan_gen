@@ -5,6 +5,7 @@ from codegen.table.table import Table
 from codegen.table.free_connex_table import FreeConnexTable
 from .test_table_config import TEST_CONFIG
 from ..codegen import Parser
+from ..free_connex_codegen import FreeConnexParser
 
 
 class JoinTest(unittest.TestCase):
@@ -359,10 +360,9 @@ order by
     revenue desc;
         """
         tables = [FreeConnexTable.load_from_json(t) for t in TEST_CONFIG]
-        parser = Parser(tables=tables, sql=sql)
+        parser = FreeConnexParser(tables=tables, sql=sql)
         parser.parse()
         root = parser.root_table
-        self.assertEqual(root.variable_table_name, "orders")
-        self.assertEqual(root.children[0].to_table.variable_table_name, "customer")
-        self.assertEqual(root.children[1].to_table.variable_table_name, "lineitem")
-
+        self.assertTrue(parser.is_free_connex())
+        # self.assertEqual("supplier", root.variable_table_name)
+        # self.assertEqual("lineitem", root.children[0].to_table.variable_table_name)

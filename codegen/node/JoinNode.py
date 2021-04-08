@@ -11,14 +11,14 @@ from sqlparse.sql import Identifier
 
 
 class JoinData:
-    def __init__(self, left, right):
+    def __init__(self, left_key: str, right_key: str):
         """
         Data object contains join info
-        :param left: key on the left join statement
-        :param right: key on the right join statement
+        :param left_key: key on the left join statement
+        :param right_key: key on the right join statement
         """
-        self.left = left
-        self.right = right
+        self.left = left_key
+        self.right = right_key
 
 
 class JoinNode(BaseNode):
@@ -56,6 +56,30 @@ class JoinNode(BaseNode):
             if type(cur) == GroupByNode:
                 return cur
             cur = cur.next
+
+    def preprocess_join_list(self):
+        """
+        Remove the data which is not a join condition. For example a_key = "Auto"
+        :return:
+        """
+        filtered_list = []
+        for c in self.join_list:
+            left_table = None
+            right_table = None
+
+            for table in self.tables:
+                column_names = [t.name for t in table.original_column_names]
+
+                if str(c.right) in column_names and not right_table:
+                    right_table = table
+                    continue
+
+                if str(c.left) in column_names and not left_table:
+                    left_table = table
+            if left_table and right_table:
+                filtered_list.append(c)
+
+        self.join_list = filtered_list
 
     def merge(self):
         """

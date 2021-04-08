@@ -7,6 +7,7 @@ import json
 from codegen.codegen import Parser
 from codegen.codegen_fromDB import CodeGenDB
 from codegen.database.postgresDB import PostgresDBPlan, PostgresDBDriver
+from codegen.free_connex_codegen import FreeConnexParser
 from codegen.table.free_connex_table import FreeConnexTable
 from flask_cors import CORS
 
@@ -29,7 +30,7 @@ def generate_code():
         data = request.json
         tables = [FreeConnexTable.load_from_json(t) for t in json.loads(data['table'])]
         sql = data['sql']
-        parser = Parser(sql=sql, tables=tables)
+        parser = FreeConnexParser(sql=sql, tables=tables)
         output = parser.parse().to_output(data.get("functionName"))
         graph = parser.root_table.to_json(
             output_attrs=parser.get_output_attributes())

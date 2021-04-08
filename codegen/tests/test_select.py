@@ -6,22 +6,16 @@ from sqlparse.sql import Identifier, Token
 from codegen.node.SelectNode import SelectNode
 from codegen.table.column import Column, TypeEnum
 from codegen.table.table import Table, CharacterEnum
+from codegen.tests.base_test_case import QueryTestCase
 
 
-class TestSelect(unittest.TestCase):
+class TestSelect(QueryTestCase):
     def setUp(self) -> None:
         self.table_a = Table(table_name="A",
                              columns=[
                                  Column(name="a", column_type=TypeEnum.int),
                                  Column(name="b", column_type=TypeEnum.string)
                              ], owner=CharacterEnum.client)
-
-    def assert_content_in_arr(self, arr, content: str):
-        for a in arr:
-            if content in a:
-                self.assertTrue(True)
-                return
-        self.assertTrue(False)
 
     def test_simple_select(self):
         select_node = SelectNode(tables=[self.table_a])

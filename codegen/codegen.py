@@ -77,19 +77,6 @@ class Parser:
 
         return attrs
 
-    def is_free_connex(self) -> Tuple[bool, List["Table"]]:
-        root_table: FreeConnexTable = self.root_table
-        height = root_table.get_height()
-        output_attrs = self.get_output_attributes()
-        non_output_attrs = self.get_non_output_attributes(output_attrs=output_attrs)
-        is_valid = self.check_valid(raise_error=False)
-
-        is_free_connex, tables = root_table.is_free_connex(output_attrs=output_attrs,
-                                                           non_output_attrs=non_output_attrs,
-                                                           height=height)
-
-        return is_free_connex and is_valid, tables
-
     def parse(self):
         for token in self.tokens:
             if not token.is_whitespace:
@@ -193,8 +180,7 @@ class Parser:
         for t in token.tokens:
             if type(t) == Comparison:
                 comparison_list.append(t)
-        last.next = WhereNode(comparison_list=comparison_list, tables=self.tables,
-                              is_free_connex_table=self.is_free_connex)
+        last.next = WhereNode(comparison_list=comparison_list, tables=self.tables)
         last.next.prev = last
 
     def __parse_group_by__(self):

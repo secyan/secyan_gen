@@ -5,12 +5,13 @@ from sqlparse.sql import IdentifierList, Identifier, Token
 from .codegen import Parser
 from .database.baseDB import DatabaseDriver
 from .database.dbplan import DBPlan
+from .free_connex_codegen import FreeConnexParser
 from .node import FromNode
 from .node.JoinNode import JoinNode
 from .table.table import Table
 
 
-class CodeGenDB(Parser):
+class CodeGenDB(FreeConnexParser):
     """
     This codegen use system's query execution plan to generate a code.
 
@@ -21,15 +22,26 @@ class CodeGenDB(Parser):
         self.db_driver: DatabaseDriver = db_driver
 
     def parse(self, query_plan: Optional[DBPlan] = None):
-        if query_plan:
-            self.db_driver.perform_join_by_plan(query_plan)
-        else:
-            self.db_driver.perform_join(sql=self.sql)
+        """
+        Parse the sql string. If the query_plan is given, then use the given query plan
 
-        return super(CodeGenDB, self).parse()
+        :param query_plan:
+        :return:
+        """
+        if not query_plan:
+            self.db_driver.plan = self.db_driver.get_query_plan(sql=self.sql)
+        else:
+            self.db_driver.plan = query_plan
+
+        super(CodeGenDB, self).parse()
+
+        self.db_driver.perform_join_by_plan(self.db_driver.plan, is_free_connex_table=self.is_free_connex)
+
+        return self
 
     def __parse_from__(self):
-        from_tables = [Identifier(tokens=[Token(value=f.variable_table_name, ttype="")]) for f in self.db_driver.perform_select_from()]
+        from_tables = [Identifier(tokens=[Token(value=f.variable_table_name, ttype="")]) for f in
+                       self.db_driver.perform_select_from()]
         from_node = FromNode(tables=self.tables)
         from_node.set_identifier_list(from_tables)
         last = self.root.get_last_node()

@@ -10,7 +10,7 @@ from codegen.table.table import Table
 
 class JoinNodeTest(unittest.TestCase):
     def test_simple_join1(self):
-        data = [JoinData(left="aa", right="ba")]
+        data = [JoinData(left_key="aa", right_key="ba")]
         table_a = Table(table_name="A",
                         columns=[Column(name="aa", column_type=TypeEnum.int),
                                  Column(name="b", column_type=TypeEnum.int),
@@ -31,7 +31,7 @@ class JoinNodeTest(unittest.TestCase):
         self.assertTrue('a.Aggregate({ "aa" });' in result[0])
 
     def test_simple_join2(self):
-        data = [JoinData(left="aa", right="ab"), JoinData(left="ec", right="eb")]
+        data = [JoinData(left_key="aa", right_key="ab"), JoinData(left_key="ec", right_key="eb")]
         table_a = Table(table_name="A",
                         columns=[Column(name="aa", column_type=TypeEnum.int),
                                  Column(name="b", column_type=TypeEnum.int),
