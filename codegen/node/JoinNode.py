@@ -145,6 +145,7 @@ class JoinNode(BaseNode):
             #     # TODO: Remove this error when the original code changed
             #     raise RuntimeError("Cannot semi join by the same owner")
             agg = root.get_aggregate_columns()
+            agg = self.remove_duplicates(agg)
             rendered = template.render(left_table=root.parent, right_table=root,
                                        aggregate=agg, left=from_key, right=to_key,
                                        should_aggregate=len(agg) > 0, should_join=True)
