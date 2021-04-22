@@ -3,6 +3,7 @@ import {
   Card,
   Col,
   Input,
+  Menu,
   notification,
   PageHeader,
   Row,
@@ -19,6 +20,7 @@ import CodeDisplay from "./component/CodeDisplay";
 import Header from "./component/Header";
 import * as monaco from "monaco-editor";
 import { Utils } from "../../model/utils";
+import Sidebar from "./component/Sidebar";
 
 const { TabPane } = Tabs;
 
@@ -95,97 +97,103 @@ export default function HomePage() {
   return (
     <Layout style={{ height: "100vh", overflow: "hidden", padding: 10 }}>
       <Header />
-      <Content style={{ height: "100%" }}>
-        <Row style={{ height: "80%" }} gutter={[16, 10]}>
-          <Col span={8}>
-            <Card>
-              <Tabs defaultActiveKey="0" onChange={() => {}}>
-                <TabPane tab="Function Info" key="0">
-                  <Input
-                    value={functionName}
-                    placeholder="Function Name"
-                    onChange={(e) => {
-                      setFunctionName(e.target.value);
-                    }}
-                  />
-                </TabPane>
-                <TabPane tab="SQL Statement" key="1">
-                  <Editor
-                    height={height - 300}
-                    beforeMount={(e) => {
-                      handleEditorWillMount(e);
-                    }}
-                    language="sql"
-                    value={code}
-                    options={{ minimap: { enabled: false } }}
-                    onChange={(e) => {
-                      if (e) {
-                        setCode(e);
+
+      <Layout>
+        <Content style={{ height: "100%" }}>
+          <Row style={{ height: "80%" }} gutter={[16, 10]}>
+            <Col span={8}>
+              <Card>
+                <Tabs defaultActiveKey="0" onChange={() => {}}>
+                  <TabPane tab="Function Info" key="0">
+                    <Input
+                      value={functionName}
+                      placeholder="Function Name"
+                      onChange={(e) => {
+                        setFunctionName(e.target.value);
+                      }}
+                    />
+                  </TabPane>
+                  <TabPane tab="SQL Statement" key="1">
+                    <Editor
+                      height={height - 300}
+                      beforeMount={(e) => {
+                        handleEditorWillMount(e);
+                      }}
+                      language="sql"
+                      value={code}
+                      options={{ minimap: { enabled: false } }}
+                      onChange={(e) => {
+                        if (e) {
+                          setCode(e);
+                        }
+                      }}
+                    />
+                  </TabPane>
+                  <TabPane tab="Table structure" key="2">
+                    <Typography>
+                      <Link
+                        target="_blank"
+                        href="https://github.com/sirily11/SECYAN-GEN/blob/master/examples/table_config.json"
+                      >
+                        Example Table Structure
+                      </Link>
+                    </Typography>
+                    <Editor
+                      height={height - 300}
+                      value={tableStructure}
+                      language="json"
+                      options={{ minimap: { enabled: false } }}
+                      onChange={(e) => {
+                        if (e) {
+                          setTable(e);
+                        }
+                      }}
+                    />
+                  </TabPane>
+                </Tabs>
+                <Row style={{ justifyContent: "flex-end", marginTop: 10 }}>
+                  <Button
+                    type="primary"
+                    loading={isLoading}
+                    onClick={async () => {
+                      setIsLoading(true);
+                      if (code?.length === 0 || tableStructure?.length === 0) {
+                        window.alert("Invaild Input");
+                        setIsLoading(false);
+                        return;
+                      }
+                      try {
+                        if (backend == "python") {
+                          await post();
+                        } else {
+                          await postDB();
+                        }
+                        notification.success({
+                          message: "Code generated",
+                        });
+                      } catch (err) {
+                        notification.error({
+                          message: "Cannot generate code",
+                          description: `${
+                            err?.response?.data ??
+                            "Cannot connect to the backend"
+                          }`,
+                          duration: 5,
+                        });
+                      } finally {
+                        setIsLoading(false);
                       }
                     }}
-                  />
-                </TabPane>
-                <TabPane tab="Table structure" key="2">
-                  <Typography>
-                    <Link
-                      target="_blank"
-                      href="https://github.com/sirily11/SECYAN-GEN/blob/master/examples/table_config.json"
-                    >
-                      Example Table Structure
-                    </Link>
-                  </Typography>
-                  <Editor
-                    height={height - 300}
-                    value={tableStructure}
-                    language="json"
-                    options={{ minimap: { enabled: false } }}
-                    onChange={(e) => {
-                      if (e) {
-                        setTable(e);
-                      }
-                    }}
-                  />
-                </TabPane>
-              </Tabs>
-              <Row style={{ justifyContent: "flex-end", marginTop: 10 }}>
-                <Button
-                  type="primary"
-                  loading={isLoading}
-                  onClick={async () => {
-                    setIsLoading(true);
-                    if (code?.length === 0 || tableStructure?.length === 0) {
-                      window.alert("Invaild Input");
-                      setIsLoading(false);
-                      return;
-                    }
-                    try {
-                      if (backend == "python") {
-                        await post();
-                      } else {
-                        await postDB();
-                      }
-                      notification.info({
-                        message: "Code generated",
-                      });
-                    } catch (err) {
-                      notification.error({
-                        message: "Cannot generate code",
-                        description: `${err?.response?.data}`,
-                        duration: 5,
-                      });
-                    } finally {
-                      setIsLoading(false);
-                    }
-                  }}
-                >
-                  Convert
-                </Button>
-              </Row>
-            </Card>
-          </Col>
-          <Col span={16}>{result && <CodeDisplay />}</Col>
-        </Row>
-      </Content>
+                  >
+                    Convert
+                  </Button>
+                </Row>
+              </Card>
+            </Col>
+            <Col span={16}>{result && <CodeDisplay />}</Col>
+          </Row>
+        </Content>
+      </Layout>
     </Layout>
   );
 }

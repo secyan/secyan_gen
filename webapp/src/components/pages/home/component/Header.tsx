@@ -76,15 +76,16 @@ export default function Header() {
             />
           </div>
         )}
+
         <Checkbox
-          value={createDB}
+          checked={createDB}
           onChange={(v) => {
             setCreateDB(v.target.checked);
           }}
         >
           Create database
         </Checkbox>
-        {createDB}
+
         {!createDB && (
           <Input
             placeholder="Database Name"

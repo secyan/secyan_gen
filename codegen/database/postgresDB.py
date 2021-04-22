@@ -139,10 +139,10 @@ class PostgresDBPlan(DBPlan):
         :return:
         """
         try:
-            content = content.replace("(", "")
-            content = content.replace(")", "")
-            left = content.split("=")[0]
-            right = content.split("=")[1]
+            new_content = content.replace("(", "")
+            new_content = new_content.replace(")", "")
+            left = new_content.split("=")[0]
+            right = new_content.split("=")[1]
 
             return left.split('.')[1].replace(" ", ""), right.split(".")[1].replace(" ", "")
         except Exception:

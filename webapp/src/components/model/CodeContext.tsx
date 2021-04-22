@@ -64,6 +64,10 @@ export class CodeProvider extends Component<CodeProps, CodeContextState> {
     this.setState({ functionName: name });
   };
 
+  /**
+   * Set used database name
+   * @param name Database name
+   */
   setDatabase = (name?: string) => {
     this.setState({ databaseName: name });
   };

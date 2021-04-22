@@ -6,7 +6,7 @@ from .codegen import Parser
 from .database.baseDB import DatabaseDriver
 from .database.dbplan import DBPlan
 from .free_connex_codegen import FreeConnexParser
-from .node import FromNode
+from .node import FromNode, SelectNode
 from .node.JoinNode import JoinNode
 from .table.table import Table
 
@@ -30,7 +30,8 @@ class CodeGenDB(FreeConnexParser):
 
     def parse(self, query_plan: Optional[DBPlan] = None):
         """
-        Parse the sql string. If the query_plan is given, then use the given query plan
+        Parse the sql string. If the query_plan is given, then use the given query plan.
+        The query plan will provide join results as well as selections
 
         :param query_plan:
         :return:
@@ -69,7 +70,24 @@ class CodeGenDB(FreeConnexParser):
 
     def __do_merge__(self):
         cur = self.root
+        has_join_node = False
+        select_node = None
         while cur:
+            if isinstance(cur, SelectNode):
+                select_node = cur
             if not isinstance(cur, JoinNode):
                 cur.merge()
+            else:
+                has_join_node = True
             cur = cur.next
+
+        # Sometimes, we perform join operation inside from node
+        if not has_join_node:
+            join_node = JoinNode(tables=self.tables, join_list=[])
+            original = select_node.next
+
+            join_node.next = original
+            join_node.next.prev = join_node
+
+            select_node.next = join_node
+            select_node.next.prev = select_node
