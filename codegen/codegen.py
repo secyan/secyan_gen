@@ -195,9 +195,10 @@ class Parser:
         :return:
         """
         template = Template(pkg_resources.read_text(templates, "template.j2"))
+        relation_names = [t.relational_name for t in self.tables]
         with open(file_name, 'w') as f:
             lines = self.__to_code__()
-            generated = template.render(function_lines=lines)
+            generated = template.render(function_lines=lines, relation_names=relation_names)
             f.write(generated)
 
     def to_output(self, function_name="run_Demo") -> str:
@@ -207,8 +208,9 @@ class Parser:
         :return: generated code
         """
         template = Template(pkg_resources.read_text(templates, "template.j2"))
+        relation_names = [t.relational_name for t in self.tables]
         lines = self.__to_code__()
-        generated = template.render(function_lines=lines, function_name=function_name)
+        generated = template.render(function_lines=lines, function_name=function_name, relation_names=relation_names)
         return generated
 
     def __parse_from__(self):

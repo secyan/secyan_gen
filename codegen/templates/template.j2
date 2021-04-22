@@ -1,11 +1,13 @@
+inline std::string GetFilePath(RelationName rn, DataSize ds) {
+    return datapath[ds] + filename[rn];
+}
+
+
 enum RelationName
 {
-    CUSTOMER,
-    ORDERS,
-    LINEITEM,
-    PART,
-    SUPPLIER,
-    PARTSUPP,
+    {% for name in relation_names -%}
+       {{ name }},
+    {% endfor -%}
     RTOTAL
 };
 
