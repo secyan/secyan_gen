@@ -12,7 +12,7 @@ class CharacterEnum(Enum):
 
 class Table:
 
-    def __init__(self, table_name: str, columns: List[Column], owner: CharacterEnum = None):
+    def __init__(self, table_name: str, columns: List[Column], data_sizes: List[float], owner: CharacterEnum = None):
         """
         Create a table with columns
         :param table_name: table name
@@ -31,6 +31,7 @@ class Table:
         self.is_bool = True
         self.used = False
         self.used_in_join = False
+        self.data_sizes = data_sizes
 
     def __str__(self):
         return f"<Table: {self._table_name} />"
@@ -97,9 +98,12 @@ class Table:
         """
         assert "table_name" in json_content
         assert "columns" in json_content
+        assert "data_sizes" in json_content
+
         columns = [Column.load_column_from_json(c) for c in json_content['columns']]
         return Table(table_name=json_content["table_name"], columns=columns,
-                     owner=CharacterEnum[json_content['owner']] if "owner" in json_content else None)
+                     owner=CharacterEnum[json_content['owner']] if "owner" in json_content else None,
+                     data_sizes=json_content['data_sizes'])
 
     @property
     def variable_table_name(self) -> str:

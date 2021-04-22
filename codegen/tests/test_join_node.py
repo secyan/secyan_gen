@@ -14,11 +14,11 @@ class JoinNodeTest(unittest.TestCase):
         table_a = Table(table_name="A",
                         columns=[Column(name="aa", column_type=TypeEnum.int),
                                  Column(name="b", column_type=TypeEnum.int),
-                                 Column(name="c", column_type=TypeEnum.int)])
+                                 Column(name="c", column_type=TypeEnum.int)], data_sizes=[100])
 
         table_b = Table(table_name="B",
                         columns=[Column(name="ba", column_type=TypeEnum.int),
-                                 Column(name="e", column_type=TypeEnum.int)])
+                                 Column(name="e", column_type=TypeEnum.int)], data_sizes=[100])
 
         root = SelectNode(tables=[table_a, table_b])
         root.set_identifier_list([Identifier(tokens=[Token(None, "b")]), Identifier(tokens=[Token(None, "c")])])
@@ -35,15 +35,15 @@ class JoinNodeTest(unittest.TestCase):
         table_a = Table(table_name="A",
                         columns=[Column(name="aa", column_type=TypeEnum.int),
                                  Column(name="b", column_type=TypeEnum.int),
-                                 Column(name="c", column_type=TypeEnum.int)])
+                                 Column(name="c", column_type=TypeEnum.int)], data_sizes=[100])
 
         table_b = Table(table_name="B",
                         columns=[Column(name="ab", column_type=TypeEnum.int),
-                                 Column(name="eb", column_type=TypeEnum.int)])
+                                 Column(name="eb", column_type=TypeEnum.int)], data_sizes=[100])
 
         table_c = Table(table_name="C",
                         columns=[Column(name="ec", column_type=TypeEnum.int),
-                                 Column(name="f", column_type=TypeEnum.int)])
+                                 Column(name="f", column_type=TypeEnum.int)], data_sizes=[100])
 
         tables = [table_a, table_b, table_c]
 

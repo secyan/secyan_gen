@@ -12,7 +12,7 @@ import {
   Typography,
 } from "antd";
 import Layout, { Content } from "antd/lib/layout/layout";
-import Editor from "@monaco-editor/react";
+import Editor, { Monaco } from "@monaco-editor/react";
 import Sider from "antd/lib/layout/Sider";
 import React from "react";
 import { CodeContext } from "../../model/CodeContext";
@@ -21,6 +21,7 @@ import Header from "./component/Header";
 import * as monaco from "monaco-editor";
 import { Utils } from "../../model/utils";
 import Sidebar from "./component/Sidebar";
+import { tableStructureSchema } from "./utils/table_structure_schema";
 
 const { TabPane } = Tabs;
 
@@ -49,8 +50,8 @@ export default function HomePage() {
     setFunctionName,
   } = React.useContext(CodeContext);
 
-  const handleEditorWillMount = React.useCallback(
-    (monaco: any) => {
+  const handleSQLEditorWillMount = React.useCallback(
+    (monaco: Monaco) => {
       monaco.languages.registerCompletionItemProvider("sql", {
         provideCompletionItems: (
           model: monaco.editor.ITextModel,
@@ -94,6 +95,24 @@ export default function HomePage() {
     [tableStructure]
   );
 
+  const handleJSONEditorWillMount = React.useCallback(
+    (monaco: Monaco) => {
+      monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+        validate: true,
+        enableSchemaRequest: true,
+        schemas: [
+          {
+            uri:
+              "https://raw.githubusercontent.com/sirily11/SECYAN-GEN/master/examples/table_config.json",
+            fileMatch: ["*"],
+            schema: tableStructureSchema,
+          },
+        ],
+      });
+    },
+    [tableStructure]
+  );
+
   return (
     <Layout style={{ height: "100vh", overflow: "hidden", padding: 10 }}>
       <Header />
@@ -117,7 +136,7 @@ export default function HomePage() {
                     <Editor
                       height={height - 300}
                       beforeMount={(e) => {
-                        handleEditorWillMount(e);
+                        handleSQLEditorWillMount(e);
                       }}
                       language="sql"
                       value={code}
@@ -141,6 +160,7 @@ export default function HomePage() {
                     <Editor
                       height={height - 300}
                       value={tableStructure}
+                      beforeMount={(e) => handleJSONEditorWillMount(e)}
                       language="json"
                       options={{ minimap: { enabled: false } }}
                       onChange={(e) => {

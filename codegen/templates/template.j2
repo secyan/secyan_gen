@@ -12,12 +12,10 @@ enum RelationName
 };
 
 size_t NumRows[RTOTAL][DTOTAL] = {
-	{150, 450, 1500, 4950, 15000},
-	{1500, 4500, 15000, 49500, 150000},
-	{6005, 17973, 60175, 198344, 595215},
-	{200, 600, 2000, 6600, 20000},
-	{10, 30, 100, 330, 1000},
-	{800, 2400, 8000, 26400, 80000}};
+    {% for data_size in data_sizes -%}
+    { {%- for size in data_size -%}{{ size }}{% if not loop.last %},{% endif %}{% endfor %}} {% if not loop.last %},{% endif %}
+    {% endfor -%}
+};
 
 void {{ function_name }}(DataSize ds, bool printResult){
     {% for line in function_lines -%}

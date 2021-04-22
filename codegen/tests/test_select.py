@@ -15,7 +15,7 @@ class TestSelect(QueryTestCase):
                              columns=[
                                  Column(name="a", column_type=TypeEnum.int),
                                  Column(name="b", column_type=TypeEnum.string)
-                             ], owner=CharacterEnum.client)
+                             ], owner=CharacterEnum.client, data_sizes=[100])
 
     def test_simple_select(self):
         select_node = SelectNode(tables=[self.table_a])

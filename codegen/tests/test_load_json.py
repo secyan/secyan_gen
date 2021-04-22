@@ -9,6 +9,7 @@ class LoadJsonTest(unittest.TestCase):
         json_content = {
             "table_name": "A",
             "owner": "client",
+            "data_sizes": [100],
             "columns": [
                 {
                     "column_type": "int",

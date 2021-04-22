@@ -1,6 +1,13 @@
 [
   {
     "table_name": "SUPPLIER",
+    "data_sizes": [
+      10,
+      30,
+      100,
+      330,
+      1000
+    ],
     "columns": [
       {
         "column_type": "int",
@@ -34,6 +41,13 @@
   },
   {
     "table_name": "CUSTOMER",
+    "data_sizes": [
+      150,
+      450,
+      1500,
+      4950,
+      15000
+    ],
     "columns": [
       {
         "column_type": "int",
@@ -71,6 +85,13 @@
   },
   {
     "table_name": "LINEITEM",
+    "data_sizes": [
+      6005,
+      17973,
+      60175,
+      198344,
+      595215
+    ],
     "columns": [
       {
         "column_type": "int",
@@ -140,6 +161,13 @@
   },
   {
     "table_name": "ORDERS",
+    "data_sizes": [
+      1500,
+      4500,
+      15000,
+      49500,
+      150000
+    ],
     "columns": [
       {
         "column_type": "int",
@@ -181,6 +209,7 @@
   },
   {
     "table_name": "REGION",
+    "data_sizes": [],
     "columns": [
       {
         "column_type": "int",
@@ -198,6 +227,7 @@
   },
   {
     "table_name": "nation",
+    "data_sizes": [],
     "columns": [
       {
         "column_type": "int",
@@ -219,6 +249,13 @@
   },
   {
     "table_name": "part",
+    "data_sizes": [
+      200,
+      600,
+      2000,
+      6600,
+      20000
+    ],
     "columns": [
       {
         "column_type": "int",
@@ -260,6 +297,13 @@
   },
   {
     "table_name": "partsupp",
+    "data_sizes": [
+      800,
+      2400,
+      8000,
+      26400,
+      80000
+    ],
     "columns": [
       {
         "column_type": "int",
