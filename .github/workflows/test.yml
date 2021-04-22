@@ -6,14 +6,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
-      - uses: dschep/install-pipenv-action@v1
-      - name: Pipenv install
-        run: |
-          pipenv install
-      - name: Test with pytest
-        run: |
-          pipenv run python -m pytest
+      - name: Build images
+        run: docker-compose build test
+
+      - name: Up db
+        run: docker-compose up db
+
+      - name: Run tests
+        run: docker-compose run test

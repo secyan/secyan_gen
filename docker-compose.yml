@@ -24,6 +24,21 @@ services:
       password: password
       user: user
       database: test
+  test:
+    build:
+      context: ./
+      dockerfile: docker/server.dockerfile
+    volumes:
+      - ./:/app
+    command: pipenv run pytest
+    depends_on:
+      - db
+    environment:
+      host: db
+      password: password
+      user: user
+      database: test
+
 
   db:
     image: postgres
