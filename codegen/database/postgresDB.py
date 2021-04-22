@@ -54,6 +54,12 @@ class PostgresDBDriver(DatabaseDriver):
 
         conn.commit()
 
+    def drop_db(self):
+        conn = psycopg2.connect(user=self.user, password=self.password, host=self.host,
+                                port=self.port, database=self.database_name)
+        cursor = conn.cursor()
+        cursor.execute("drop database")
+
     def get_query_plan(self, sql: str) -> "PostgresDBPlan":
         try:
             conn = psycopg2.connect(database=self.database_name, user=self.user, password=self.password, host=self.host,

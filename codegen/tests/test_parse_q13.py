@@ -4,7 +4,7 @@ from unittest import TestCase
 from codegen.codegen_fromDB import CodeGenDB
 from codegen.database.postgresDB import PostgresDBDriver
 from codegen.table import FreeConnexTable
-from codegen.tests.base_test_case import QueryTestCase
+from codegen.tests.base_test_case import QueryTestCase, DBTestCase
 from codegen.tests.test_table_config import TEST_CONFIG
 
 query = """
@@ -31,8 +31,10 @@ order by
 """
 
 
-class TestParseQ13(QueryTestCase):
+class TestParseQ13(DBTestCase):
     def setUp(self):
+        super().setUp()
+
         password = getenv('password')
         user = getenv('user')
         database = getenv("database")
@@ -55,4 +57,3 @@ class TestParseQ13(QueryTestCase):
         parser = CodeGenDB(db_driver=self.driver, sql=query, tables=self.tables)
         code = parser.parse().to_output()
         self.assert_content_in("orders.Aggregate", code)
-
