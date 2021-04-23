@@ -98,6 +98,7 @@ class QueryTestCase(TestCase):
 
 class DBTestCase(QueryTestCase):
     def setUp(self) -> None:
+        in_docker = getenv("in_docker")
         password = getenv('password')
         user = getenv('user')
         database = getenv("database")
@@ -109,4 +110,6 @@ class DBTestCase(QueryTestCase):
                                   host=host,
                                   port=port,
                                   tables=[])
-        driver.init(data=SET_UP_SCRIPT)
+
+        if in_docker:
+            driver.create_db_with_columns(data=SET_UP_SCRIPT)

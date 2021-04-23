@@ -4,6 +4,10 @@ from codegen.table import Table, Column, TypeEnum
 
 
 class CreateDBHelper:
+    """
+    This is a helper class which can help to create/delete database
+    """
+
     def __init__(self, tables: List[Table], database_name="test"):
         self.tables = tables
         self.db_name = database_name
@@ -15,12 +19,30 @@ class CreateDBHelper:
         }
 
     def create_db(self):
+        """
+        Perform create database operation
+
+        :return:
+        """
+
         return f"create database {self.db_name};"
 
     def drop_db(self):
+        """
+        Perform drop database operation
+
+        :return:
+        """
+
         return f"drop database if exists {self.db_name}"
 
     def create(self):
+        """
+        Perform create table operation. This function is not yet finish its implementation
+
+        :return:
+        """
+
         sql_list = ""
         for table in self.tables:
             column_sql = ""

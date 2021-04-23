@@ -38,7 +38,7 @@ services:
       password: password
       user: user
       database: test
-
+      in_docker: 1
 
   db:
     image: postgres

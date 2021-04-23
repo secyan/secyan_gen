@@ -104,7 +104,7 @@ def create_db():
                               port=port,
                               tables=[])
     try:
-        driver.init(data=request.json['data'])
+        driver.create_db_with_columns(data=request.json['data'])
         return Response(status=201)
     except Exception as e:
         traceback.print_exc()
