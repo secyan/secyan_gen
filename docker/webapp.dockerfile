@@ -5,6 +5,7 @@ COPY ./webapp/ ./
 RUN yarn install
 ENV PUBLIC_URL=/
 ENV REACT_APP_URL=http://0.0.0.0:5000
+ENV GENERATE_SOURCEMAP false
 RUN yarn build
 
 # production environment
