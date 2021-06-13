@@ -1,0 +1,3 @@
+dock[submodule "external/SECYAN"]
+	path = external/SECYAN
+	url = https://github.com/sirily11/SECYAN.git

@@ -1,7 +1,7 @@
 from copy import deepcopy
 from enum import Enum
 from typing import List, Dict, Tuple
-
+from secyan_python.constant import E_role
 from .column import Column, JoinColumn
 
 
@@ -9,18 +9,38 @@ class CharacterEnum(Enum):
     server = "SERVER"
     client = "CLIENT"
 
+    @property
+    def get_e_role(self) -> E_role:
+        """
+        This function will return the e_role based on the current value.
+        Note that, e_role is a class from secyan c++.
+
+        :return: E_role
+        """
+
+        if self == CharacterEnum.client:
+            return E_role.CLIENT
+        else:
+            return E_role.SERVER
+
 
 class Table:
 
-    def __init__(self, table_name: str, columns: List[Column], data_sizes: List[float], owner: CharacterEnum = None):
+    def __init__(self, table_name: str, columns: List[Column], data_sizes: List[float], data_paths: List[str],
+                 owner: CharacterEnum = None):
         """
         Create a table with columns
         :param table_name: table name
         :param columns: list of columns
+        :param data_sizes: list of sizes. Used for num_of_rows in the code
+
         """
+
+        assert len(data_paths) == len(data_sizes)
 
         self._table_name = table_name
         self.parent: "Table" = None
+        self.data_paths = data_paths
         self.children: List["JoinColumn"] = []
         self.original_column_names: List[Column] = [
             Column(table=self, name=c.name, column_type=c.column_type) for c in
@@ -99,16 +119,19 @@ class Table:
         assert "table_name" in json_content
         assert "columns" in json_content
         assert "data_sizes" in json_content
+        assert "data_paths" in json_content
 
         columns = [Column.load_column_from_json(c) for c in json_content['columns']]
         return Table(table_name=json_content["table_name"], columns=columns,
                      owner=CharacterEnum[json_content['owner']] if "owner" in json_content else None,
-                     data_sizes=json_content['data_sizes'])
+                     data_sizes=json_content['data_sizes'], data_paths=json_content['data_paths'])
 
     @property
     def variable_table_name(self) -> str:
         """
-        Get a table's variable name. Used in codegen
+        Get a table's variable name. Used in codegen.
+        For example, customer
+
         :return:
         """
         return self._table_name.lower()
@@ -116,7 +139,8 @@ class Table:
     @property
     def relational_name(self) -> str:
         """
-        Get relational name
+        Get relational name.
+
         :return:
         """
         return self._table_name.upper()

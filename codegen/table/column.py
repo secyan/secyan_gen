@@ -1,5 +1,6 @@
 from enum import Enum
 from typing import List
+from secyan_python.constant import E_role, DataType
 
 
 class TypeEnum(Enum):
@@ -10,6 +11,26 @@ class TypeEnum(Enum):
     string = "STRING"
     decimal = "DECIMAL"
     date = "DATE"
+
+    @property
+    def data_type(self) -> DataType:
+        """
+        Based on the current value, return the datatype.
+        Note that datatype is from secyan c++ code.
+
+        :return:
+        """
+
+        if self == TypeEnum.int:
+            return DataType.INT
+        elif self == TypeEnum.decimal:
+            return DataType.DECIMAL
+        elif self == TypeEnum.string:
+            return DataType.STRING
+        elif self == TypeEnum.date:
+            return DataType.DATE
+        else:
+            raise RuntimeError("Cannot find corresponding type")
 
 
 class Column:

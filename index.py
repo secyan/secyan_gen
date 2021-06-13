@@ -2,14 +2,16 @@ from os import getenv
 
 import traceback
 from flask import Flask, request, jsonify, Response
-
 import json
 from codegen.codegen import Parser
 from codegen.codegen_fromDB import CodeGenDB
+from codegen.codegen_python import CodeGenPython
 from codegen.database.postgresDB import PostgresDBPlan, PostgresDBDriver
 from codegen.free_connex_codegen import FreeConnexParser
 from codegen.table.free_connex_table import FreeConnexTable
 from flask_cors import CORS
+
+from codegen.table.python_free_connex_table import PythonFreeConnexTable
 
 app = Flask(__name__)
 CORS(app)
@@ -30,7 +32,8 @@ def generate_code():
         data = request.json
         tables = [FreeConnexTable.load_from_json(t) for t in json.loads(data['table'])]
         sql = data['sql']
-        parser = FreeConnexParser(sql=sql, tables=tables)
+        annotation_name = data['annotation_name']
+        parser = FreeConnexParser(sql=sql, tables=tables, annotation_name=annotation_name)
         output = parser.parse().to_output(data.get("functionName"))
         graph = parser.root_table.to_json(
             output_attrs=parser.get_output_attributes())
@@ -59,6 +62,7 @@ def generate_code_by_db():
         database = data.get("database", None) if data.get("database", None) else getenv("database")
         host = getenv("host")
         port = getenv("port")
+        annotation_name = data['annotation_name']
 
         driver = PostgresDBDriver(password=password,
                                   user=user,
@@ -67,7 +71,7 @@ def generate_code_by_db():
                                   port=port,
                                   tables=tables)
 
-        parser = CodeGenDB(db_driver=driver, sql=sql, tables=tables)
+        parser = CodeGenDB(db_driver=driver, sql=sql, tables=tables, annotation_name=annotation_name)
 
         if "plan" in data and data["plan"] != "":
             plan = PostgresDBPlan.from_json(data["plan"], tables=tables)
@@ -83,6 +87,49 @@ def generate_code_by_db():
         error_tables = [e.variable_table_name for e in error_tables]
         return jsonify(
             {"code": output, "joinGraph": graph, "isFreeConnex": is_free_connex, "errorTables": error_tables})
+
+    except Exception as e:
+        traceback.print_exc()
+        return Response(str(e), status=500)
+
+
+@app.route("/generate_python", methods=["POST"])
+def generate_python_result():
+    """
+    Perform a code generation and return the actual results
+    :return:
+    """
+    try:
+        data: dict = request.json
+        tables = [PythonFreeConnexTable.load_from_json(t) for t in json.loads(data['table'])]
+
+        sql = data['sql']
+        password = getenv('password')
+        user = getenv('user')
+        database = data.get("database", None) if data.get("database", None) else getenv("database")
+        host = getenv("host")
+        port = getenv("port")
+        annotation_name = data['annotation_name']
+        num_of_rows = data.get("num_of_rows", 100)
+
+        driver = PostgresDBDriver(password=password,
+                                  user=user,
+                                  database_name=database,
+                                  host=host,
+                                  port=port,
+                                  tables=tables)
+
+        parser = CodeGenPython(db_driver=driver, sql=sql, tables=tables, annotation_name=annotation_name)
+        parser.parse()
+
+        output = parser.to_output(limit_size=num_of_rows)
+        graph = parser.root_table.to_json(
+            output_attrs=parser.get_output_attributes()) if parser.root_table else {}
+
+        is_free_connex, error_tables = parser.is_free_connex()
+        error_tables = [e.variable_table_name for e in error_tables]
+        return jsonify(
+            {"output": output, "joinGraph": graph, "isFreeConnex": is_free_connex, "errorTables": error_tables})
 
     except Exception as e:
         traceback.print_exc()

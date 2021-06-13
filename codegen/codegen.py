@@ -1,7 +1,7 @@
 from typing import List, Optional, Tuple
 import sqlparse
 from sqlparse.sql import Comment, Identifier, Statement, Where, Token, IdentifierList, Comparison
-from .node import SelectNode, GroupByNode, FromNode, JoinNode, OrderByNode, WhereNode, BaseNode
+from .node.cpp_nodes import SelectNode, GroupByNode, FromNode, JoinNode, OrderByNode, WhereNode, BaseNode
 from .table import Table, FreeConnexTable
 from jinja2 import Template
 from . import templates
@@ -45,7 +45,7 @@ class Parser:
     """
     root: BaseNode
 
-    def __init__(self, sql: str, tables: List[Table]):
+    def __init__(self, sql: str, tables: List[Table], annotation_name: str):
         """
         Create a parser with sql query and database tables
         :param sql: SQL Query string
@@ -56,6 +56,7 @@ class Parser:
         self.tokens: List[Token] = sqlparse.parse(sql)[0].tokens
         self.root = BaseNode(tables=[])
         self.tables: List[Table] = tables
+        self.annotation_name = annotation_name
 
     @property
     def root_table(self) -> Optional[Table]:
@@ -79,7 +80,7 @@ class Parser:
         """
         node = self.root
         while node:
-            if type(node) == SelectNode:
+            if isinstance(node, SelectNode):
                 return [str(i) for i in node.identifier_list]
             else:
                 node = node.next
@@ -202,7 +203,7 @@ class Parser:
             generated = template.render(function_lines=lines, relation_names=relation_names, data_sizes=data_sizes)
             f.write(generated)
 
-    def to_output(self, function_name="run_Demo") -> str:
+    def to_output(self, function_name="run_Demo", *args, **kwargs) -> str:
         """
         Generate code and return
 
@@ -273,7 +274,7 @@ class Parser:
         """
 
         last = self.root.get_last_node()
-        last.next = SelectNode(tables=self.tables)
+        last.next = SelectNode(tables=self.tables, annotation_name=self.annotation_name)
         last.next.prev = last
 
     def __parse_identifier__(self, token: Identifier):

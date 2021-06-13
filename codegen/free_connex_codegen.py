@@ -3,7 +3,7 @@ from typing import Tuple, List, Optional
 from sqlparse.sql import Where, Comparison
 
 from codegen.codegen import Parser
-from codegen.node.WhereNode import FreeConnexWhereNode
+from codegen.node.cpp_nodes.WhereNode import FreeConnexWhereNode
 from codegen.table import Table, FreeConnexTable
 
 

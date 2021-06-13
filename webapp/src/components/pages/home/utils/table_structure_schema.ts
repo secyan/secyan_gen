@@ -15,6 +15,12 @@ export const tableStructureSchema = {
             type: "integer",
           },
         },
+        data_paths: {
+          type: "array",
+          items: {
+            type: "string",
+          },
+        },
         table_name: {
           type: "string",
         },

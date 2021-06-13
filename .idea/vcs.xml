@@ -2,5 +2,17 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/SECYAN" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/SECYAN/extern/ABY" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/SECYAN/extern/ABY/extern/ENCRYPTO_utils" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/SECYAN/extern/ABY/extern/ENCRYPTO_utils/extern/googletest" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/SECYAN/extern/ABY/extern/ENCRYPTO_utils/extern/relic" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/SECYAN/extern/ABY/extern/OTExtension" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/SECYAN/extern/ABY/extern/OTExtension/extern/ENCRYPTO_utils" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/SECYAN/extern/ABY/extern/OTExtension/extern/ENCRYPTO_utils/extern/googletest" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/SECYAN/extern/ABY/extern/OTExtension/extern/ENCRYPTO_utils/extern/relic" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/SECYAN/extern/libOTe" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/SECYAN/extern/libOTe/cryptoTools" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/SECYAN/extern/pybind11" vcs="Git" />
   </component>
 </project>

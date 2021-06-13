@@ -1,11 +1,10 @@
-from typing import Dict, List, Optional, Tuple, Callable
+from typing import List, Optional, Tuple, Callable
 import psycopg2
-import json
 
 from .baseDB import DatabaseDriver
 from .dbplan import DBPlan
-from ..node.FreeConnexJoinNode import FreeConnexJoinNode
-from ..node.JoinNode import JoinData
+from codegen.node.cpp_nodes.FreeConnexJoinNode import FreeConnexJoinNode
+from codegen.node.cpp_nodes.JoinNode import JoinData
 from ..table.table import Table
 from ..utils import CreateDBHelper
 
@@ -179,16 +178,9 @@ class PostgresDBPlan(DBPlan):
                     conditions = self.hash_cond.split("AND")
                     for cond in conditions:
                         right_key, left_key = self.__parse_join_key__(cond)
-                        # ret_table = self.__perform_join_util__(left=left_table, right=right_table, left_key=left_key,
-                        #                                        right_key=right_key,
-                        #                                        left_depth=left_depth, right_depth=right_depth)
-
                         join_list.append(JoinData(left_key=left_key, right_key=right_key))
                 else:
                     right_key, left_key = self.__parse_join_key__(self.hash_cond)
-                    # ret_table = self.__perform_join_util__(left=left_table, right=right_table, left_key=left_key,
-                    #                                        right_key=right_key,
-                    #                                        left_depth=left_depth, right_depth=right_depth)
                     join_list.append(JoinData(left_key=left_key, right_key=right_key))
                 return right_table, depth
 

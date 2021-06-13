@@ -2,12 +2,11 @@ from typing import List, Optional
 
 from sqlparse.sql import IdentifierList, Identifier, Token
 
-from .codegen import Parser
 from .database.baseDB import DatabaseDriver
 from .database.dbplan import DBPlan
 from .free_connex_codegen import FreeConnexParser
-from .node import FromNode, SelectNode
-from .node.JoinNode import JoinNode
+from .node.cpp_nodes import FromNode, SelectNode
+from codegen.node.cpp_nodes.JoinNode import JoinNode
 from .table.table import Table
 
 
@@ -16,7 +15,7 @@ class CodeGenDB(FreeConnexParser):
     This codegen use system's query execution plan to generate a code.
     """
 
-    def __init__(self, sql: str, db_driver: DatabaseDriver, tables: List[Table]):
+    def __init__(self, sql: str, db_driver: DatabaseDriver, tables: List[Table], annotation_name: str):
         """
         Construct the Codegen DB Parser.
 
@@ -25,7 +24,7 @@ class CodeGenDB(FreeConnexParser):
         :param tables: list of database tables
         """
 
-        super().__init__(sql=sql, tables=tables)
+        super().__init__(sql=sql, tables=tables, annotation_name=annotation_name)
         self.db_driver: DatabaseDriver = db_driver
 
     def parse(self, query_plan: Optional[DBPlan] = None):

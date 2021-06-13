@@ -1,3 +1,5 @@
+
+
 TEST_CONFIG = [
     {
         "table_name": "SUPPLIER",
@@ -8,6 +10,8 @@ TEST_CONFIG = [
             330,
             1000
         ],
+        "data_paths":
+            ["a", "a", "a", "a", "a"],
         "columns": [
             {
                 "column_type": "int",
@@ -48,6 +52,8 @@ TEST_CONFIG = [
             4950,
             15000
         ],
+        "data_paths":
+            ["a", "a", "a", "a", "a"],
         "columns": [
             {
                 "column_type": "int",
@@ -92,6 +98,8 @@ TEST_CONFIG = [
             198344,
             595215
         ],
+        "data_paths":
+            ["a", "a", "a", "a", "a"],
         "columns": [
             {
                 "column_type": "int",
@@ -168,6 +176,8 @@ TEST_CONFIG = [
             49500,
             150000
         ],
+        "data_paths":
+            ["a", "a", "a", "a", "a"],
         "columns": [
             {
                 "column_type": "int",
@@ -210,6 +220,8 @@ TEST_CONFIG = [
     {
         "table_name": "REGION",
         "data_sizes": [],
+        "data_paths":
+            [],
         "columns": [
             {
                 "column_type": "int",
@@ -228,6 +240,8 @@ TEST_CONFIG = [
     {
         "table_name": "nation",
         "data_sizes": [],
+        "data_paths":
+            [],
         "columns": [
             {
                 "column_type": "int",
@@ -256,6 +270,8 @@ TEST_CONFIG = [
             6600,
             20000
         ],
+        "data_paths":
+            ["a", "a", "a", "a", "a"],
         "columns": [
             {
                 "column_type": "int",
@@ -304,6 +320,8 @@ TEST_CONFIG = [
             26400,
             80000
         ],
+        "data_paths":
+            ["a", "a", "a", "a", "a"],
         "columns": [
             {
                 "column_type": "int",
