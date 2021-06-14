@@ -1,12 +1,16 @@
 import React from "react";
-import { TableOutlined } from "@ant-design/icons";
+import { TableOutlined, SettingOutlined } from "@ant-design/icons";
 import TableConfigPage from "../components/pages/table/TableConfigPage";
+import CodePage from "../components/pages/code/CodePage";
+import CodeAction from "../components/pages/code/CodeAction";
 
 interface Route {
   path: string;
   component: JSX.Element;
   title: string;
   icon: JSX.Element;
+  hasSubMenu: boolean;
+  action?: JSX.Element;
 }
 
 export const routes: Route[] = [
@@ -15,5 +19,21 @@ export const routes: Route[] = [
     title: "Table Config",
     component: <TableConfigPage />,
     icon: <TableOutlined />,
+    hasSubMenu: true,
+  },
+  {
+    path: "/settings",
+    title: "Settings",
+    component: <div></div>,
+    icon: <SettingOutlined />,
+    hasSubMenu: false,
+  },
+  {
+    path: "/editor",
+    title: "Query Editor",
+    component: <CodePage />,
+    icon: <SettingOutlined />,
+    hasSubMenu: false,
+    action: <CodeAction />,
   },
 ];

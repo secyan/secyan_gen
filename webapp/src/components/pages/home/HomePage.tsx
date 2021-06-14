@@ -48,50 +48,50 @@ import * as monaco from "monaco-editor";
 //   //   setFunctionName,
 //   // } = React.useContext(CodeContext);
 
-//   // const handleSQLEditorWillMount = React.useCallback(
-//   //   (monaco: Monaco) => {
-//   //     monaco.languages.registerCompletionItemProvider("sql", {
-//   //       provideCompletionItems: (
-//   //         model: monaco.editor.ITextModel,
-//   //         position: monaco.Position
-//   //       ) => {
-//   //         var word = model.getWordUntilPosition(position);
-//   //         var range = {
-//   //           startLineNumber: position.lineNumber,
-//   //           endLineNumber: position.lineNumber,
-//   //           startColumn: word.startColumn,
-//   //           endColumn: word.endColumn,
-//   //         };
-//   //         if (tableStructure)
-//   //           return {
-//   //             suggestions: Utils.generateSuggestions(range, tableStructure),
-//   //           };
-//   //       },
-//   //     });
+  // const handleSQLEditorWillMount = React.useCallback(
+  //   (monaco: Monaco) => {
+  //     monaco.languages.registerCompletionItemProvider("sql", {
+  //       provideCompletionItems: (
+  //         model: monaco.editor.ITextModel,
+  //         position: monaco.Position
+  //       ) => {
+  //         var word = model.getWordUntilPosition(position);
+  //         var range = {
+  //           startLineNumber: position.lineNumber,
+  //           endLineNumber: position.lineNumber,
+  //           startColumn: word.startColumn,
+  //           endColumn: word.endColumn,
+  //         };
+  //         if (tableStructure)
+  //           return {
+  //             suggestions: Utils.generateSuggestions(range, tableStructure),
+  //           };
+  //       },
+  //     });
 
-//   //     monaco.languages.registerHoverProvider("sql", {
-//   //       provideHover: (
-//   //         model: monaco.editor.ITextModel,
-//   //         position: monaco.Position
-//   //       ) => {
-//   //         var word = model.getWordAtPosition(position);
-//   //         var range = {
-//   //           startLineNumber: position.lineNumber,
-//   //           endLineNumber: position.lineNumber,
-//   //           startColumn: word?.startColumn,
-//   //           endColumn: word?.endColumn,
-//   //         };
-//   //         return Utils.generateHover(
-//   //           range,
-//   //           model,
-//   //           word?.word ?? "",
-//   //           tableStructure
-//   //         );
-//   //       },
-//   //     });
-//   //   },
-//   //   [tableStructure]
-//   // );
+  //     monaco.languages.registerHoverProvider("sql", {
+  //       provideHover: (
+  //         model: monaco.editor.ITextModel,
+  //         position: monaco.Position
+  //       ) => {
+  //         var word = model.getWordAtPosition(position);
+  //         var range = {
+  //           startLineNumber: position.lineNumber,
+  //           endLineNumber: position.lineNumber,
+  //           startColumn: word?.startColumn,
+  //           endColumn: word?.endColumn,
+  //         };
+  //         return Utils.generateHover(
+  //           range,
+  //           model,
+  //           word?.word ?? "",
+  //           tableStructure
+  //         );
+  //       },
+  //     });
+  //   },
+  //   [tableStructure]
+  // );
 
   // const handleJSONEditorWillMount = React.useCallback(
   //   (monaco: Monaco) => {

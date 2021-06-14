@@ -1,4 +1,5 @@
 import * as monaco from "monaco-editor";
+import { TableConfig } from "./table-config";
 export interface TableInterface {
   table_name: string;
   columns: ColumnInterface[];
@@ -66,9 +67,13 @@ export class Utils {
     return new URL(p, process.env.REACT_APP_URL).href;
   }
 
-  static generateHover(range: any, model: any, text: string, table?: string) {
-    if (table) {
-      let tables: TableInterface[] = JSON.parse(table);
+  static generateHover(
+    range: any,
+    model: any,
+    text: string,
+    tables?: TableConfig[]
+  ) {
+    if (tables) {
       for (let k of sqlKeywords) {
         if (text.toLowerCase().includes(k.keyword.toLowerCase())) {
           return {
@@ -104,9 +109,8 @@ export class Utils {
       };
   }
 
-  static generateSuggestions(range: any, table?: string) {
-    if (table) {
-      let tables: TableInterface[] = JSON.parse(table);
+  static generateSuggestions(range: any, tables?: TableConfig[]) {
+    if (tables) {
       let suggestions = [];
       for (let table of tables) {
         suggestions.push({

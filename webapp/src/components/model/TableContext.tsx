@@ -28,10 +28,13 @@ export default function TableConfigProvider(props: any) {
     localStorage.setItem("tableStructure", JSON.stringify(configs));
   }, [configs]);
 
-  const setConfigs = React.useCallback((vs: TableConfig[]) => {
-    localStorage.setItem("tableStructure", JSON.stringify(vs));
-    setConfigsState(vs);
-  }, []);
+  const setConfigs = React.useCallback(
+    (vs: TableConfig[]) => {
+      localStorage.setItem("tableStructure", JSON.stringify(vs));
+      setConfigsState(JSON.parse(JSON.stringify(vs)));
+    },
+    [configs]
+  );
 
   const value: TableConfigContext = {
     configs,

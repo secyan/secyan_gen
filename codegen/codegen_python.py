@@ -69,12 +69,12 @@ class CodeGenPython(CodeGenDB):
             for relation in relations:
                 if relation.variable_table_name == output_table_name.lower():
                     results = relation.relation.return_print_results(limit_size=limit_size,
-                                                                     show_zero_annoted_tuple=True)
+                                                                     show_zero_annoted_tuple=False)
                     return self.__convert_c_to_python__(results)
         else:
             # noinspection PyTypeChecker
             root: PythonFreeConnexTable = self.root_table
-            results = root.relation.return_print_results(limit_size=limit_size, show_zero_annoted_tuple=True)
+            results = root.relation.return_print_results(limit_size=limit_size, show_zero_annoted_tuple=False)
             return self.__convert_c_to_python__(results)
 
         return []
