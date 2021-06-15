@@ -24,6 +24,9 @@ export const tableStructureSchema = {
         table_name: {
           type: "string",
         },
+        owner: {
+          type: "string",
+        },
         columns: {
           type: "array",
           items: {

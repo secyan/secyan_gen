@@ -22,6 +22,7 @@ export default function TableConfigPage() {
       data_sizes: [],
       data_paths: [],
       columns: [],
+      owner: "Server",
     });
     setConfigs(configs);
     setOpen(false);

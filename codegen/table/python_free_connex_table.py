@@ -30,7 +30,8 @@ class PythonFreeConnexTable(FreeConnexTable):
 
         columns = [Column.load_column_from_json(c) for c in json_content['columns']]
         return PythonFreeConnexTable(table_name=json_content["table_name"], columns=columns,
-                                     owner=CharacterEnum[json_content['owner']] if "owner" in json_content else None,
+                                     owner=CharacterEnum[json_content[
+                                         'owner'].lower()] if "owner" in json_content else CharacterEnum.client,
                                      data_sizes=json_content['data_sizes'], data_paths=json_content['data_paths'])
 
     def load_relation(self, relation: Relation):

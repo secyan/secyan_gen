@@ -1,9 +1,14 @@
-import { Button, Form, Input, Row, Tooltip } from "antd";
+import { Button, Form, Input, Row, Tooltip, Popover } from "antd";
 import React from "react";
-import { EditOutlined, CaretRightOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  CaretRightOutlined,
+  BarChartOutlined,
+} from "@ant-design/icons";
 import { CodeContext } from "../../model/CodeContext";
 import { TableConfigContext } from "../../model/TableContext";
 import Modal from "antd/lib/modal/Modal";
+import TreeDisplay from "../home/component/TreeDisplay";
 
 export default function CodeAction() {
   const {
@@ -59,6 +64,24 @@ export default function CodeAction() {
           <EditOutlined />
         </Button>
       </Tooltip>
+      {codeRunResults[index]?.result && (
+        <Popover
+          content={<TreeDisplay />}
+          placement="leftBottom"
+          trigger="click"
+        >
+          <Tooltip title="Join Tree">
+            <Button
+              shape="round"
+              size="large"
+              style={{ marginRight: 10 }}
+              onClick={() => {}}
+            >
+              <BarChartOutlined />
+            </Button>
+          </Tooltip>
+        </Popover>
+      )}
       <Modal
         title="Configuration"
         visible={showEdit}

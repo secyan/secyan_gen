@@ -23,6 +23,7 @@ import {
 import { TableConfigContext } from "../../model/TableContext";
 import { column_types, table_owner } from "../../../settings/column_types";
 import AwesomeDebouncePromise from "awesome-debounce-promise";
+import { Role } from "../../model/SettingsContext";
 
 interface Props {
   config: TableConfig;
@@ -37,6 +38,7 @@ interface FormValue {
 export default function TableConfigCard(props: Props) {
   const { config, index } = props;
   const [name, setName] = React.useState(config.table_name);
+  const [owner, setOwner] = React.useState(config.owner);
   const [open, setOpen] = React.useState(false);
   const { setConfigs, configs } = React.useContext(TableConfigContext);
 
@@ -67,11 +69,12 @@ export default function TableConfigCard(props: Props) {
     }
   }, [config]);
 
-  const updateTableName = React.useCallback(() => {
+  const updateTableConfig = React.useCallback(() => {
     configs[index].table_name = name;
+    configs[index].owner = owner;
     setConfigs(configs);
     setOpen(false);
-  }, [name]);
+  }, [name, owner]);
 
   const updateConfig = React.useCallback(
     (value: FormValue) => {
@@ -102,7 +105,7 @@ export default function TableConfigCard(props: Props) {
   return (
     <Card
       id={config.table_name}
-      title={`${config.table_name} - Client`}
+      title={`${config.table_name} - ${config.owner ?? "Client"}`}
       key={config.table_name}
       style={{ margin: 10 }}
       extra={[
@@ -262,9 +265,10 @@ export default function TableConfigCard(props: Props) {
         title="Table name"
         onCancel={() => {
           setName(config.table_name);
+          setOwner(config.owner);
           setOpen(false);
         }}
-        onOk={updateTableName}
+        onOk={updateTableConfig}
       >
         <Input
           placeholder="Table name"
@@ -276,6 +280,8 @@ export default function TableConfigCard(props: Props) {
         <Select
           style={{ width: "100%", marginTop: 20 }}
           placeholder="Select Owner"
+          value={owner}
+          onChange={(e) => setOwner(e)}
         >
           {table_owner.map((v) => (
             <Select.Option value={v} key={v}>
