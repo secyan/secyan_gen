@@ -4,6 +4,8 @@ import React from "react";
 import { CodeRunResult } from "./code-run-result";
 import { TableConfig } from "./table-config";
 import { Utils } from "./utils";
+import Editor, { Monaco } from "@monaco-editor/react";
+import * as monaco from "monaco-editor";
 
 interface Code {
   codeRunResults: CodeRunResult[];
@@ -14,6 +16,7 @@ interface Code {
   setIndex(num: number): void;
   showEdit: boolean;
   setShowEdit(b: boolean): void;
+  // initSQLEditor(m: Monaco): void;
 }
 
 //@ts-ignore

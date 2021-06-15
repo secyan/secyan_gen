@@ -16,20 +16,71 @@ import {
 interface Props {
   codeRunResult: CodeRunResult;
   index: number;
-  handleSQLEditorWillMount(m: any): void;
 }
 
 const height = "calc(100vh - 64px - 56px - 20px)";
 const tableHeight = "calc(100vh - 64px - 56px - 30px)";
+let hover: monaco.IDisposable | undefined = undefined;
+let completion: monaco.IDisposable | undefined = undefined;
 
 export default function CodePanel(props: Props) {
-  const { codeRunResult, index, handleSQLEditorWillMount } = props;
+  const { codeRunResult, index } = props;
   const { setCodeRunResults, codeRunResults, showEdit, setShowEdit } =
     React.useContext(CodeContext);
 
   const [isLoading, setIsLoading] = React.useState(true);
-
+  const { configs } = React.useContext(TableConfigContext);
   const { role } = React.useContext(SettingsContext);
+  const [editor, setEditor] =
+    React.useState<monaco.editor.IStandaloneCodeEditor>();
+
+  React.useEffect(() => {
+    return () => {
+      hover?.dispose();
+      completion?.dispose();
+    };
+  }, []);
+
+  const handleSQLEditorWillMount = React.useCallback(
+    (monaco: Monaco) => {
+      completion = monaco.languages.registerCompletionItemProvider("sql", {
+        provideCompletionItems: (
+          model: monaco.editor.ITextModel,
+          position: monaco.Position
+        ) => {
+          var word = model.getWordUntilPosition(position);
+          var range = {
+            startLineNumber: position.lineNumber,
+            endLineNumber: position.lineNumber,
+            startColumn: word.startColumn,
+            endColumn: word.endColumn,
+          };
+          if (configs) {
+            return {
+              suggestions: Utils.generateSuggestions(range, configs),
+            };
+          }
+        },
+      });
+
+      hover = monaco.languages.registerHoverProvider("sql", {
+        provideHover: (
+          model: monaco.editor.ITextModel,
+          position: monaco.Position
+        ) => {
+          var word = model.getWordAtPosition(position);
+          var range = {
+            startLineNumber: position.lineNumber,
+            endLineNumber: position.lineNumber,
+            startColumn: word?.startColumn,
+            endColumn: word?.endColumn,
+          };
+          return Utils.generateHover(range, model, word?.word ?? "", configs);
+        },
+      });
+    },
+    [configs, editor]
+  );
 
   React.useEffect(() => {
     notification.info({
@@ -93,7 +144,8 @@ export default function CodePanel(props: Props) {
         <Col xs={8}>
           <Editor
             value={codeRunResult.code}
-            onMount={() => {
+            onMount={(e) => {
+              setEditor(e);
               setIsLoading(false);
               notification.close("Data Loaded");
             }}

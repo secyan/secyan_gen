@@ -13,76 +13,11 @@ export default function CodePage() {
   const { codeRunResults, setCodeRunResults, setIndex } =
     React.useContext(CodeContext);
   const { configs } = React.useContext(TableConfigContext);
-  const [completionDisp, setCompletionDisp] =
-    React.useState<monaco.IDisposable>();
-  const [hoverDisp, sethoverDisp] = React.useState<monaco.IDisposable>();
-
-  React.useEffect(() => {
-    return () => {
-      if (hoverDisp) {
-        hoverDisp.dispose();
-      }
-      if (completionDisp) {
-        completionDisp.dispose();
-      }
-    };
-  }, []);
-
-  const handleSQLEditorWillMount = React.useCallback(
-    (monaco: Monaco) => {
-      const completion = monaco.languages.registerCompletionItemProvider(
-        "sql",
-        {
-          provideCompletionItems: (
-            model: monaco.editor.ITextModel,
-            position: monaco.Position
-          ) => {
-            var word = model.getWordUntilPosition(position);
-            var range = {
-              startLineNumber: position.lineNumber,
-              endLineNumber: position.lineNumber,
-              startColumn: word.startColumn,
-              endColumn: word.endColumn,
-            };
-            if (configs) {
-              return {
-                suggestions: Utils.generateSuggestions(range, configs),
-              };
-            }
-          },
-        }
-      );
-
-      const hover = monaco.languages.registerHoverProvider("sql", {
-        provideHover: (
-          model: monaco.editor.ITextModel,
-          position: monaco.Position
-        ) => {
-          var word = model.getWordAtPosition(position);
-          var range = {
-            startLineNumber: position.lineNumber,
-            endLineNumber: position.lineNumber,
-            startColumn: word?.startColumn,
-            endColumn: word?.endColumn,
-          };
-          return Utils.generateHover(range, model, word?.word ?? "", configs);
-        },
-      });
-
-      sethoverDisp(hover);
-      setCompletionDisp(completion);
-    },
-    [configs]
-  );
 
   const renderPanel = React.useCallback(() => {
     return codeRunResults.map((c, i) => (
       <Tabs.TabPane tab={c.name} key={i} style={{ height: "100%" }}>
-        <CodePanel
-          codeRunResult={c}
-          index={i}
-          handleSQLEditorWillMount={handleSQLEditorWillMount}
-        />
+        <CodePanel codeRunResult={c} index={i} />
       </Tabs.TabPane>
     ));
   }, [codeRunResults]);
