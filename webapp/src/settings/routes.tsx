@@ -1,5 +1,9 @@
 import React from "react";
-import { TableOutlined, SettingOutlined } from "@ant-design/icons";
+import {
+  TableOutlined,
+  SettingOutlined,
+  CodeOutlined,
+} from "@ant-design/icons";
 import TableConfigPage from "../components/pages/table/TableConfigPage";
 import CodePage from "../components/pages/code/CodePage";
 import CodeAction from "../components/pages/code/components/CodeAction";
@@ -33,7 +37,7 @@ export const routes: Route[] = [
     path: "/editor",
     title: "Query Editor",
     component: <CodePage />,
-    icon: <SettingOutlined />,
+    icon: <CodeOutlined />,
     hasSubMenu: false,
     action: <CodeAction />,
   },

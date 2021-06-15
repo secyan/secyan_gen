@@ -41,11 +41,7 @@ export default function SideBar(props: { expanded: boolean }) {
           <Menu.Item
             key={c.table_name}
             onClick={() => {
-              if (location.pathname !== routes[0].path) {
-                history.push(routes[0].path);
-              }
-              let element = document.getElementById(c.table_name);
-              element?.scrollIntoView();
+              history.push(`${routes[0].path}?table=${c.table_name}`);
             }}
           >
             {c.table_name}
