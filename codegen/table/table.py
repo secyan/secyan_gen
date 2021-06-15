@@ -50,6 +50,13 @@ class Table:
         # Used for is_boolean struct
         self.is_bool = True
         self.used = False
+        # This variable will be used for generating selected output.
+        # None selected output will not be included in the final result
+        self.used_in_select = False
+        # List of fields used in select statement
+        self.fields_used_in_select = []
+        # This variable will be used for generating selection.
+        # It will determine whether a table has been used during the operation
         self.used_in_join = False
         self.data_sizes = data_sizes
 
@@ -242,6 +249,14 @@ class Table:
                 return True
 
         return False
+
+    def get_columns_used_in_select(self) -> List[Column]:
+        columns_used_in_select = []
+        for field in self.fields_used_in_select:
+            for c in self.column_names:
+                if c.equals_name(field):
+                    columns_used_in_select.append(c)
+        return columns_used_in_select
 
     def join(self, to_table: "Table", from_table_key: str, to_table_key: str):
         """

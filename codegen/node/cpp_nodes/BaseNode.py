@@ -1,7 +1,6 @@
 from typing import List, Optional, Union
 
 from sqlparse.sql import Identifier, Token, Function
-
 from codegen.table.table import Table
 
 try:
@@ -32,6 +31,9 @@ class BaseNode:
         self.next: Optional["BaseNode"] = None
         self._identifier_list: List[Identifier] = []
         self.tables = tables
+        # This will not include keywords such as sum, count
+        self.built_in_keywords = ["*", "+", "-", "/", "(",
+                                  ")", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
 
     @property
     def identifier_list(self):
@@ -107,14 +109,14 @@ class BaseNode:
         :param identifier:
         :return:
         """
-        if type(identifier) != Token and len(identifier.tokens) > 1:
+        if isinstance(identifier, Token) is False and len(identifier.tokens) > 1:
             identifier: Function
             for token in identifier.tokens:
                 table = self.find_table_by_identifier_or_function(token)
                 if table:
                     return table
 
-        if type(identifier) == Identifier:
+        if isinstance(identifier, Identifier) or isinstance(identifier, Token):
             for table in self.tables:
                 if table.has_column_with_name(identifier.normalized):
                     return table
@@ -129,3 +131,29 @@ class BaseNode:
         for table in self.tables:
             if tb_name == table.variable_table_name:
                 return table
+
+    def find_table_by_column_name(self, identifier: str) -> Table:
+        for table in self.tables:
+            if table.has_column_with_name(identifier):
+                return table
+
+    def get_list_of_identifiers(self, identifier: Identifier) -> List[str]:
+        """
+        Will Get a list of identifiers.
+        For example a sql statement like sum(1 - l_discount * l_number) will return [sum, l_discount, l_number]
+
+        :param identifier:
+        :return:
+        """
+
+        if type(identifier) == Token:
+            if identifier.normalized.lower() not in self.built_in_keywords and str(identifier) != " ":
+                return [identifier.normalized.lower()]
+            else:
+                return []
+
+        li = []
+        for token in identifier.tokens:
+            li += self.get_list_of_identifiers(token)
+
+        return li

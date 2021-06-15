@@ -19,9 +19,9 @@ class SelectNode(BaseNode):
         self.support_aggregation_functions = ["sum", "count", "avg"]
         self.annotation_name = annotation_name
 
-    def is_function_supported(self, identifier: Identifier):
+    def is_supported_function(self, identifier: str):
         for func in self.support_aggregation_functions:
-            if func in str(identifier.normalized.lower()):
+            if func == identifier:
                 return True
         return False
 
@@ -33,18 +33,16 @@ class SelectNode(BaseNode):
         # Merge aggregation functions
         for identifier in self.identifier_list:
             identifier: Identifier
-            if type(identifier) == Function:
-                if self.is_function_supported(identifier):
-                    table = self.find_table_by_identifier_or_function(identifier)
+            is_bool = True
+            for token in self.get_list_of_identifiers(identifier):
+                table = self.find_table_by_column_name(token)
+                if token in self.support_aggregation_functions:
+                    is_bool = False
+                else:
                     if table:
-                        table.is_bool = False
-            else:
-                for token in identifier.tokens:
-                    if type(token) == Function:
-                        if self.is_function_supported(token):
-                            table = self.find_table_by_identifier_or_function(token)
-                            if table:
-                                table.is_bool = False
+                        table.fields_used_in_select.append(str(token))
+                        table.used_in_select = True
+                        table.is_bool = is_bool
 
         # Merge From node data
         if self.next and self.next.self_identify == "From":

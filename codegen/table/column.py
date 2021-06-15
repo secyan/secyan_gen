@@ -55,8 +55,7 @@ class Column:
         assert type(json_content) == dict
         assert "column_type" in json_content
         assert "name" in json_content
-
-        return Column(name=json_content["name"], column_type=TypeEnum[json_content['column_type']])
+        return Column(name=json_content["name"], column_type=TypeEnum[json_content['column_type'].lower()])
 
     @property
     def name_with_table(self):

@@ -70,12 +70,16 @@ class CodeGenPython(CodeGenDB):
                 if relation.variable_table_name == output_table_name.lower():
                     results = relation.relation.return_print_results(limit_size=limit_size,
                                                                      show_zero_annoted_tuple=False)
-                    return self.__convert_c_to_python__(results)
+                    results = self.__convert_c_to_python__(results)
+                    results = self.__filter_unused_fields__(results)
+                    return results
         else:
             # noinspection PyTypeChecker
             root: PythonFreeConnexTable = self.root_table
             results = root.relation.return_print_results(limit_size=limit_size, show_zero_annoted_tuple=False)
-            return self.__convert_c_to_python__(results)
+            results = self.__convert_c_to_python__(results)
+            results = self.__filter_unused_fields__(results)
+            return results
 
         return []
 
@@ -103,3 +107,22 @@ class CodeGenPython(CodeGenDB):
                     r.append(col)
             ret.append(r)
         return ret
+
+    def __filter_unused_fields__(self, results: List[List[str]]):
+        """
+        Filtered out cols which not used in select
+        :param results:
+        :return:
+        """
+        used_tables = [t.get_columns_used_in_select() for t in self.tables if t.used_in_select]
+
+        if len(results) == 1 or len(results) == 0:
+            return results
+        else:
+            used_index = [0, len(results[0]) - 1]
+            for i, col in enumerate(results[0][1:]):
+                for columns in used_tables:
+                    for column in columns:
+                        if column.equals_name(col):
+                            used_index.append(i + 1)
+        return [[col for i, col in enumerate(row) if i in used_index] for row in results]

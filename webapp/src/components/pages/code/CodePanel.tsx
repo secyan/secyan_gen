@@ -5,11 +5,14 @@ import Editor, { Monaco } from "@monaco-editor/react";
 import * as monaco from "monaco-editor";
 import { Utils } from "../../model/utils";
 import { TableConfigContext } from "../../model/TableContext";
-import { Card, Col, notification, Row, Spin } from "antd";
+import { Card, Col, notification, Row, Spin, Table } from "antd";
 //@ts-ignore
-import { InfinityTable } from "antd-table-infinity";
 import { SettingsContext } from "../../model/SettingsContext";
-
+import {
+  DataGrid,
+  GridColDef,
+  GridValueGetterParams,
+} from "@material-ui/data-grid";
 interface Props {
   codeRunResult: CodeRunResult;
   index: number;
@@ -17,7 +20,7 @@ interface Props {
 }
 
 const height = "calc(100vh - 64px - 56px - 20px)";
-const tableHeight = "calc(100vh - 64px - 56px - 150px)";
+const tableHeight = "calc(100vh - 64px - 56px - 30px)";
 
 export default function CodePanel(props: Props) {
   const { codeRunResult, index, handleSQLEditorWillMount } = props;
@@ -46,12 +49,16 @@ export default function CodePanel(props: Props) {
 
   // Table columns
   const columns = () => {
-    if (codeRunResult.result?.server_result?.length ?? 0 > 0) {
-      return codeRunResult.result?.server_result[0].map((v) => {
+    let results: string[][] | undefined =
+      role === "Server"
+        ? codeRunResult.result?.server_result
+        : codeRunResult.result?.client_result;
+    if (results?.length ?? 0 > 0) {
+      return results![0].map((v) => {
         return {
           title: v.toLocaleUpperCase(),
-          dataIndex: v.toLowerCase(),
-          key: v.toLowerCase(),
+          field: v.toLowerCase(),
+          width: v.length * 20,
         };
       });
     }
@@ -68,7 +75,7 @@ export default function CodePanel(props: Props) {
       let cs = results[0]!;
       results.slice(1).forEach((s, i) => {
         let data: { [key: string]: any } = {
-          key: i,
+          id: i,
         };
         s.forEach((c, j) => {
           data[cs[j]] = c;
@@ -79,8 +86,6 @@ export default function CodePanel(props: Props) {
 
     return res;
   };
-
-  rows();
 
   return (
     <div style={{ padding: 10 }}>
@@ -105,18 +110,11 @@ export default function CodePanel(props: Props) {
           xs={16}
           style={{ overflowY: "scroll", overflowX: "scroll", height: "100%" }}
         >
-          <Card style={{ height: height, overflowY: "hidden" }}>
+          <div style={{ height: tableHeight, overflowY: "hidden" }}>
             {codeRunResult.result && !isLoading && (
-              <InfinityTable
-                style={{
-                  width: "100%",
-                }}
-                columns={columns()}
-                dataSource={rows()}
-                scroll={{ y: tableHeight, x: "4000px" }}
-              />
+              <DataGrid columns={columns()} rows={rows()} rowHeight={60} />
             )}
-          </Card>
+          </div>
         </Col>
       </Row>
     </div>

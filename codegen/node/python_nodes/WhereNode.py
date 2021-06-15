@@ -57,8 +57,8 @@ class FreeConnexWherePythonNode(FreeConnexWhereNode):
             columns = root.get_columns_after_aggregate()
             new_selections = self.__preprocess_selection__(selections=selections, columns=columns)
             agg = [Column(name=s, column_type=TypeEnum.int) for s in new_selections]
-
             agg = self.remove_duplicates(agg)
+
             should_aggregate = len(agg) > 0
             if should_aggregate:
                 root.relation.aggregate_names([a.name for a in agg])
