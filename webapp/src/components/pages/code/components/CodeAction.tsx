@@ -5,10 +5,10 @@ import {
   CaretRightOutlined,
   BarChartOutlined,
 } from "@ant-design/icons";
-import { CodeContext } from "../../model/CodeContext";
-import { TableConfigContext } from "../../model/TableContext";
+import { CodeContext } from "../../../model/CodeContext";
+import { TableConfigContext } from "../../../model/TableContext";
 import Modal from "antd/lib/modal/Modal";
-import TreeDisplay from "../home/component/TreeDisplay";
+import TreeDisplay from "./TreeDisplay";
 
 export default function CodeAction() {
   const {

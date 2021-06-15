@@ -1,13 +1,13 @@
 import React from "react";
-import { CodeRunResult } from "../../model/code-run-result";
-import { CodeContext } from "../../model/CodeContext";
+import { CodeRunResult } from "../../../model/code-run-result";
+import { CodeContext } from "../../../model/CodeContext";
 import Editor, { Monaco } from "@monaco-editor/react";
 import * as monaco from "monaco-editor";
-import { Utils } from "../../model/utils";
-import { TableConfigContext } from "../../model/TableContext";
+import { Utils } from "../../../model/utils";
+import { TableConfigContext } from "../../../model/TableContext";
 import { Card, Col, notification, Row, Spin, Table } from "antd";
 //@ts-ignore
-import { SettingsContext } from "../../model/SettingsContext";
+import { SettingsContext } from "../../../model/SettingsContext";
 import {
   DataGrid,
   GridColDef,

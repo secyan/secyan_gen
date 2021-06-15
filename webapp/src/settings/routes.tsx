@@ -2,7 +2,7 @@ import React from "react";
 import { TableOutlined, SettingOutlined } from "@ant-design/icons";
 import TableConfigPage from "../components/pages/table/TableConfigPage";
 import CodePage from "../components/pages/code/CodePage";
-import CodeAction from "../components/pages/code/CodeAction";
+import CodeAction from "../components/pages/code/components/CodeAction";
 import SettingsPage from "../components/pages/settings/SettingsPage";
 
 interface Route {
