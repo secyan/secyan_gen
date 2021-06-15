@@ -22,6 +22,7 @@ import {
 } from "@ant-design/icons";
 import { TableConfigContext } from "../../model/TableContext";
 import { column_types, table_owner } from "../../../settings/column_types";
+import AwesomeDebouncePromise from "awesome-debounce-promise";
 
 interface Props {
   config: TableConfig;
@@ -78,7 +79,7 @@ export default function TableConfigCard(props: Props) {
       configs[index].data_sizes = path_size.map((v: any) => parseInt(v.size));
       configs[index].data_paths = path_size.map((v: any) => v.path);
       configs[index].columns = value.columns;
-      setConfigs(configs);
+      setConfigs(configs, false);
     },
     [config]
   );

@@ -8,6 +8,13 @@ import TableConfigCard from "./TableConfigCard";
 export default function TableConfigPage() {
   const { configs, setConfigs } = React.useContext(TableConfigContext);
   const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 50);
+  }, []);
 
   const addTable = React.useCallback(() => {
     configs.push({
@@ -27,9 +34,10 @@ export default function TableConfigPage() {
   return (
     <div style={{ overflowY: "scroll", height: "100%" }}>
       <InputRowTableConfigCard />
-      {configs.map((c, i) => (
-        <TableConfigCard key={`config-${i}`} config={c} index={i} />
-      ))}
+      {!loading &&
+        configs.map((c, i) => (
+          <TableConfigCard key={`config-${i}`} config={c} index={i} />
+        ))}
 
       <Affix offsetBottom={20} style={{ position: "fixed", right: 10 }}>
         <Row justify="end">

@@ -3,7 +3,7 @@ import { TableConfig } from "./table-config";
 
 interface TableConfigContext {
   configs: TableConfig[];
-  setConfigs(configs: TableConfig[]): void;
+  setConfigs(configs: TableConfig[], update?: boolean): void;
   openRawConfigDialog: boolean;
   setOpenRawConfigDialog(v: boolean): void;
 }
@@ -29,9 +29,11 @@ export default function TableConfigProvider(props: any) {
   }, [configs]);
 
   const setConfigs = React.useCallback(
-    (vs: TableConfig[]) => {
+    (vs: TableConfig[], update: boolean = true) => {
       localStorage.setItem("tableStructure", JSON.stringify(vs));
-      setConfigsState(JSON.parse(JSON.stringify(vs)));
+      if (update) {
+        setConfigsState(JSON.parse(JSON.stringify(vs)));
+      }
     },
     [configs]
   );

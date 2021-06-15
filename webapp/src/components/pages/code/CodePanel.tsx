@@ -5,21 +5,10 @@ import Editor, { Monaco } from "@monaco-editor/react";
 import * as monaco from "monaco-editor";
 import { Utils } from "../../model/utils";
 import { TableConfigContext } from "../../model/TableContext";
-import {
-  Button,
-  Card,
-  Col,
-  Form,
-  Input,
-  notification,
-  Row,
-  Spin,
-  Table,
-  Tooltip,
-} from "antd";
-
-import Modal from "antd/lib/modal/Modal";
-import AutoSizer from "react-virtualized-auto-sizer";
+import { Card, Col, notification, Row, Spin } from "antd";
+//@ts-ignore
+import { InfinityTable } from "antd-table-infinity";
+import { SettingsContext } from "../../model/SettingsContext";
 
 interface Props {
   codeRunResult: CodeRunResult;
@@ -28,13 +17,23 @@ interface Props {
 }
 
 const height = "calc(100vh - 64px - 56px - 20px)";
-const tableHeight = "calc(100vh - 64px - 56px - 200px)";
+const tableHeight = "calc(100vh - 64px - 56px - 150px)";
 
 export default function CodePanel(props: Props) {
   const { codeRunResult, index, handleSQLEditorWillMount } = props;
   const { setCodeRunResults, codeRunResults, showEdit, setShowEdit } =
     React.useContext(CodeContext);
-  const { configs } = React.useContext(TableConfigContext);
+
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  const { role } = React.useContext(SettingsContext);
+
+  React.useEffect(() => {
+    notification.info({
+      message: "Loading Data",
+      placement: "bottomRight",
+    });
+  }, []);
 
   // Update editor code
   const updateCode = React.useCallback(
@@ -61,9 +60,13 @@ export default function CodePanel(props: Props) {
 
   const rows = () => {
     let res: any[] = [];
-    if (codeRunResult.result?.server_result?.length ?? 0 > 0) {
-      let cs = codeRunResult.result?.server_result[0]!;
-      codeRunResult.result?.server_result.slice(1).forEach((s, i) => {
+    let results: string[][] | undefined =
+      role === "Server"
+        ? codeRunResult.result?.server_result
+        : codeRunResult.result?.client_result;
+    if (results) {
+      let cs = results[0]!;
+      results.slice(1).forEach((s, i) => {
         let data: { [key: string]: any } = {
           key: i,
         };
@@ -85,6 +88,10 @@ export default function CodePanel(props: Props) {
         <Col xs={8}>
           <Editor
             value={codeRunResult.code}
+            onMount={() => {
+              setIsLoading(false);
+              notification.close("Data Loaded");
+            }}
             language="sql"
             beforeMount={(e) => handleSQLEditorWillMount(e)}
             options={{ minimap: { enabled: false } }}
@@ -99,8 +106,8 @@ export default function CodePanel(props: Props) {
           style={{ overflowY: "scroll", overflowX: "scroll", height: "100%" }}
         >
           <Card style={{ height: height, overflowY: "hidden" }}>
-            {codeRunResult.result && (
-              <Table
+            {codeRunResult.result && !isLoading && (
+              <InfinityTable
                 style={{
                   width: "100%",
                 }}

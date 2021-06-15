@@ -3,6 +3,7 @@ import { TableOutlined, SettingOutlined } from "@ant-design/icons";
 import TableConfigPage from "../components/pages/table/TableConfigPage";
 import CodePage from "../components/pages/code/CodePage";
 import CodeAction from "../components/pages/code/CodeAction";
+import SettingsPage from "../components/pages/settings/SettingsPage";
 
 interface Route {
   path: string;
@@ -24,7 +25,7 @@ export const routes: Route[] = [
   {
     path: "/settings",
     title: "Settings",
-    component: <div></div>,
+    component: <SettingsPage />,
     icon: <SettingOutlined />,
     hasSubMenu: false,
   },
