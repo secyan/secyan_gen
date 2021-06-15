@@ -53,7 +53,7 @@ export default function TableConfigPage() {
           <TableConfigCard key={`config-${i}`} config={c} index={i} />
         ))}
 
-      <Affix offsetBottom={20} style={{ position: "fixed", right: 10 }}>
+      <Affix offsetBottom={20} style={{ position: "absolute", right: 10 }}>
         <Row justify="end">
           <Button
             type="primary"
