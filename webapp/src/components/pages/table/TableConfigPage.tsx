@@ -29,22 +29,7 @@ export default function TableConfigPage() {
     }
   }, [location.search, loading]);
 
-  const addTable = React.useCallback(() => {
-    configs.push({
-      table_name: "table",
-      data_sizes: [],
-      data_paths: [],
-      columns: [],
-      owner: "Server",
-    });
-    setConfigs(configs);
-    setOpen(false);
-    notification.success({
-      message: "Added a new table",
-      placement: "bottomRight",
-    });
-  }, [configs]);
-
+  
   return (
     <div style={{ overflowY: "scroll", height: "100%" }}>
       <InputRowTableConfigCard />
@@ -53,7 +38,7 @@ export default function TableConfigPage() {
           <TableConfigCard key={`config-${i}`} config={c} index={i} />
         ))}
 
-      <Affix offsetBottom={20} style={{ position: "absolute", right: 10 }}>
+      {/* <Affix offsetBottom={20} style={{ position: "absolute", right: 10 }}>
         <Row justify="end">
           <Button
             type="primary"
@@ -63,17 +48,7 @@ export default function TableConfigPage() {
             Add Table
           </Button>
         </Row>
-      </Affix>
-      <Modal
-        visible={open}
-        title="Add New Table"
-        onOk={addTable}
-        onCancel={() => {
-          setOpen(false);
-        }}
-      >
-        <Typography>Create a empty table?</Typography>
-      </Modal>
+      </Affix> */}
     </div>
   );
 }

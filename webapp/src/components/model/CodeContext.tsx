@@ -16,6 +16,7 @@ interface Code {
   setIndex(num: number): void;
   showEdit: boolean;
   setShowEdit(b: boolean): void;
+  deleteResultCache(): void;
   // initSQLEditor(m: Monaco): void;
 }
 
@@ -88,6 +89,14 @@ export default function CodeProvider(props: any) {
     [codeRunResults]
   );
 
+  const deleteResultCache = React.useCallback(() => {
+    codeRunResults.forEach((c) => {
+      c.result = undefined;
+    });
+
+    setCodeRunResults(codeRunResults);
+  }, [codeRunResults]);
+
   const value: Code = {
     codeRunResults,
     setCodeRunResults,
@@ -97,6 +106,7 @@ export default function CodeProvider(props: any) {
     setIndex,
     showEdit,
     setShowEdit,
+    deleteResultCache,
   };
 
   return <CodeContext.Provider value={value}>{children}</CodeContext.Provider>;

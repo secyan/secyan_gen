@@ -13,6 +13,7 @@ import { Menu } from "antd";
 import { routes } from "../../settings/routes";
 import { TableConfigContext } from "../model/TableContext";
 import SubMenu from "antd/lib/menu/SubMenu";
+import qs from "query-string";
 
 export default function SideBar(props: { expanded: boolean }) {
   const { configs } = React.useContext(TableConfigContext);
@@ -20,6 +21,7 @@ export default function SideBar(props: { expanded: boolean }) {
   const history = useHistory();
   const [selectedPath, setSelectedPath] = React.useState(routes[0].title);
   const { expanded } = props;
+  const table = qs.parse(location.search).table;
 
   React.useEffect(() => {
     if (location.pathname !== routes[0].path) {
@@ -87,7 +89,7 @@ export default function SideBar(props: { expanded: boolean }) {
     <Menu
       theme="light"
       mode="inline"
-      selectedKeys={[selectedPath]}
+      selectedKeys={table === null ? [selectedPath] : [table as string]}
       style={{ height: "100%" }}
     >
       {renderMenu()}

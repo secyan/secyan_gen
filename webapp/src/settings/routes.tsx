@@ -8,6 +8,7 @@ import TableConfigPage from "../components/pages/table/TableConfigPage";
 import CodePage from "../components/pages/code/CodePage";
 import CodeAction from "../components/pages/code/components/CodeAction";
 import SettingsPage from "../components/pages/settings/SettingsPage";
+import TableAction from "../components/pages/table/TableAction";
 
 interface Route {
   path: string;
@@ -24,6 +25,7 @@ export const routes: Route[] = [
     title: "Table Config",
     component: <TableConfigPage />,
     icon: <TableOutlined />,
+    action: <TableAction />,
     hasSubMenu: true,
   },
   {

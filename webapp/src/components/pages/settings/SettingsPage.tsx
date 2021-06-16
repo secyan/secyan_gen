@@ -1,7 +1,8 @@
-import { Card, Typography, Form, Select } from "antd";
+import { Card, Typography, Form, Select, Button, message } from "antd";
 import React from "react";
 import { BackEnd, Role, SettingsContext } from "../../model/SettingsContext";
 import { useLocation } from "react-router";
+import { CodeContext } from "../../model/CodeContext";
 
 interface FormValue {
   role: Role;
@@ -11,6 +12,8 @@ interface FormValue {
 export default function SettingsPage() {
   const { role, setRole, backend, setBackend } =
     React.useContext(SettingsContext);
+
+  const { deleteResultCache } = React.useContext(CodeContext);
 
   const formValue: FormValue = {
     role: role,
@@ -56,6 +59,17 @@ export default function SettingsPage() {
             </Select>
           </Form.Item>
         </Form>
+      </Card>
+      <Card title="Delete Data">
+        <Typography.Title level={5}>Stored results</Typography.Title>
+        <Button
+          onClick={() => {
+            deleteResultCache();
+            message.success("Delete cache successfully");
+          }}
+        >
+          Delete
+        </Button>
       </Card>
     </div>
   );
