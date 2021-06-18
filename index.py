@@ -17,6 +17,7 @@ from flask_cors import CORS
 from multiprocessing import Process, Queue
 
 from codegen.table.python_free_connex_table import PythonFreeConnexTable
+from codegen.utils.SchemaFetcher import SchemaFetcher
 
 app = Flask(__name__)
 CORS(app)
@@ -40,7 +41,7 @@ def generate_code():
         annotation_name = data['annotation_name']
         parser = FreeConnexParser(sql=sql, tables=tables, annotation_name=annotation_name)
         output = parser.parse().to_output(data.get("functionName"))
-        graph = parser.root_table.to_json(
+        graph = parser.root_table.to_json_graph(
             output_attrs=parser.get_output_attributes())
 
         is_free_connex, error_tables = parser.is_free_connex()
@@ -85,7 +86,7 @@ def generate_code_by_db():
             parser.parse()
 
         output = parser.to_output(function_name=data.get("functionName"))
-        graph = parser.root_table.to_json(
+        graph = parser.root_table.to_json_graph(
             output_attrs=parser.get_output_attributes()) if parser.root_table else {}
 
         is_free_connex, error_tables = parser.is_free_connex()
@@ -104,7 +105,7 @@ def run_query(sql, role: E_role, queue: Queue, tables, driver, annotation_name, 
         parser = CodeGenPython(db_driver=driver, sql=sql, tables=tables, annotation_name=annotation_name)
         parser.parse()
         output = parser.to_output(limit_size=num_of_rows)
-        graph = parser.root_table.to_json(
+        graph = parser.root_table.to_json_graph(
             output_attrs=parser.get_output_attributes()) if parser.root_table else {}
 
         is_free_connex, error_tables = parser.is_free_connex()
@@ -191,6 +192,58 @@ def create_db():
                               tables=[])
     try:
         driver.create_db_with_columns(data=request.json['data'])
+        return Response(status=201)
+    except Exception as e:
+        traceback.print_exc()
+        return Response(str(e), status=500)
+
+
+@app.route("/schema", methods=["GET"])
+def get_table_schema():
+    """
+    Get tables' schema.
+
+    :return:
+    """
+    password = getenv('password')
+    user = getenv('user')
+    database = getenv("database")
+    host = getenv("host")
+    port = getenv("port")
+
+    driver = PostgresDBDriver(password=password,
+                              user=user,
+                              database_name=database,
+                              host=host,
+                              port=port,
+                              tables=[])
+    schema_fetcher = SchemaFetcher(db_driver=driver)
+    try:
+        tables = schema_fetcher.get_schema()
+        return jsonify([t.to_json() for t in tables])
+    except Exception as e:
+        traceback.print_exc()
+        return Response(str(e), status=500)
+
+
+@app.route("/schema", methods=["GET"])
+def get_data_with_annotation():
+    password = getenv('password')
+    user = getenv('user')
+    database = getenv("database")
+    host = getenv("host")
+    port = getenv("port")
+
+    driver = PostgresDBDriver(password=password,
+                              user=user,
+                              database_name=database,
+                              host=host,
+                              port=port,
+                              tables=[])
+    schema_fetcher = SchemaFetcher(db_driver=driver)
+    try:
+        tables = schema_fetcher.get_schema()
+        print(tables)
         return Response(status=201)
     except Exception as e:
         traceback.print_exc()

@@ -8,8 +8,7 @@ FROM mcr.microsoft.com/vscode/devcontainers/cpp:0-${VARIANT}
 ENV TZ=Europe/Minsk
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
-  && apt-get install -y ssh \
-    build-essential \
+  && apt-get install -y build-essential \
     gcc \
     g++ \
     gdb \
@@ -19,9 +18,6 @@ RUN apt-get update \
     tar \
     python \
   && apt-get clean
-
-RUN useradd -m user \
-  && yes password | passwd user
 
 RUN apt install cmake
 RUN apt install -y libssl-dev
@@ -40,4 +36,6 @@ RUN cmake ..
 RUN make install -j8
 # Install node js
 RUN apt install -y nodejs
+RUN apt install -y npm
+
 WORKDIR /usr/local/project
