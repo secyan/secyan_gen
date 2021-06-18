@@ -125,8 +125,6 @@ class Table:
         """
         assert "table_name" in json_content
         assert "columns" in json_content
-        assert "data_sizes" in json_content
-        assert "data_paths" in json_content
 
         columns = [Column.load_column_from_json(c) for c in json_content['columns']]
         return Table(table_name=json_content["table_name"], columns=columns,
@@ -297,15 +295,9 @@ class Table:
         return self.parent.get_root()
 
     def to_json(self, output_attrs: List[str], join_by=None):
-        attrs = {}
-        for column in self.original_column_names:
-            attrs[column.name] = column.name
-
         return {
-            "name": self.variable_table_name,
-            "attributes": {"": f"{join_by if join_by else [f'{c.to_table_key} ' for c in self.children]}"},
-            # "parent": self.parent.variable_table_name if self.parent else None,
-            "children": [c.to_table.to_json(output_attrs=output_attrs, join_by=c.to_table_key) for c in self.children]
+            "table_name": self.variable_table_name,
+            "columns": [c.to_json() for c in self.original_column_names]
         }
 
     def clear_join(self):

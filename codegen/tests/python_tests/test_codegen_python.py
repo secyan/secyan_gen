@@ -53,5 +53,5 @@ class TestCodegenPython(BaseTestCase):
         self.assertNotEqual(client_result, "error")
         self.assertNotEqual(server_result, "error")
 
-        self.assertEqual(len(client_result), 0)
-        self.assertEqual(len(server_result), 4)
+        self.assertEqual(len(client_result), 4)
+        self.assertEqual(len(server_result), 0)

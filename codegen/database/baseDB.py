@@ -38,3 +38,6 @@ class DatabaseDriver:
     def perform_select_from(self):
         assert self.plan is not None
         return self.plan.perform_select_from()
+
+    def execute(self, sql: str) -> List[Tuple]:
+        raise NotImplementedError

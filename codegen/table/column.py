@@ -12,6 +12,24 @@ class TypeEnum(Enum):
     decimal = "DECIMAL"
     date = "DATE"
 
+    @staticmethod
+    def from_database_type(db_type: str) -> "TypeEnum":
+        """
+        Return a typeenum from database type. This will convert Postgres DB type into a type enum
+
+        :param self:
+        :param db_type:
+        :return:
+        """
+        if db_type.lower() == "integer":
+            return TypeEnum.int
+        elif db_type.lower() == "text":
+            return TypeEnum.string
+        elif db_type.lower() == "real":
+            return TypeEnum.decimal
+        elif db_type.lower() == 'date':
+            return TypeEnum.date
+
     @property
     def data_type(self) -> DataType:
         """
@@ -39,6 +57,7 @@ class Column:
         Create a column
         :param name: Column name
         :param column_type: Column type
+        :param table: Target table
         """
         self.name: str = name
         self.column_type: TypeEnum = column_type
@@ -56,6 +75,12 @@ class Column:
         assert "column_type" in json_content
         assert "name" in json_content
         return Column(name=json_content["name"], column_type=TypeEnum[json_content['column_type'].lower()])
+
+    def to_json(self):
+        return {
+            "name": self.name,
+            "column_type": self.column_type.value
+        }
 
     @property
     def name_with_table(self):

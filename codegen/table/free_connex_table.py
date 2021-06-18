@@ -17,8 +17,6 @@ class FreeConnexTable(Table):
         """
         assert "table_name" in json_content
         assert "columns" in json_content
-        assert "data_sizes" in json_content
-        assert "data_paths" in json_content
 
         columns = [Column.load_column_from_json(c) for c in json_content['columns']]
         return FreeConnexTable(table_name=json_content["table_name"], columns=columns,

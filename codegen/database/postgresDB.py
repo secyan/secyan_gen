@@ -66,6 +66,19 @@ class PostgresDBDriver(DatabaseDriver):
         data = cur.fetchone()
         return PostgresDBPlan.from_json(data[0][0]['Plan'], tables=self.tables)
 
+    def execute(self, sql: str) -> List[Tuple]:
+        try:
+            conn = psycopg2.connect(database=self.database_name, user=self.user, password=self.password, host=self.host,
+                                    port=self.port)
+            cur = conn.cursor()
+        except Exception as e:
+            raise RuntimeError("Cannot connect to the database. Please check config")
+
+        cur.execute(sql)
+        data = cur.fetchall()
+
+        return data
+
 
 class PostgresDBPlan(DBPlan):
     """
