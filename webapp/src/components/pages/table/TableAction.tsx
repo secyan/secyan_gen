@@ -1,11 +1,13 @@
 import { Button, Modal, notification, Tooltip, Typography } from "antd";
 import React from "react";
 import { TableConfigContext } from "../../model/TableContext";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, ReloadOutlined } from "@ant-design/icons";
 
 export default function TableAction() {
   const [open, setOpen] = React.useState(false);
-  const { configs, setConfigs } = React.useContext(TableConfigContext);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const { configs, setConfigs, fetchConfigs } =
+    React.useContext(TableConfigContext);
 
   const addTable = React.useCallback(() => {
     configs.push({
@@ -25,6 +27,20 @@ export default function TableAction() {
 
   return (
     <div>
+      <Tooltip title="Fetch Table Config from DB">
+        <Button
+          shape="round"
+          loading={isLoading}
+          style={{ marginRight: 20 }}
+          onClick={async () => {
+            setIsLoading(true);
+            await fetchConfigs();
+            setIsLoading(false);
+          }}
+        >
+          <ReloadOutlined />
+        </Button>
+      </Tooltip>
       <Tooltip title="Create a new table">
         <Button
           shape="round"

@@ -3,7 +3,7 @@ import Editor, { Monaco } from "@monaco-editor/react";
 import * as monaco from "monaco-editor";
 import { Button, PageHeader, Row, Typography, Modal } from "antd";
 import { TableConfigContext } from "../../model/TableContext";
-import { tableStructureSchema } from "../home/utils/table_structure_schema";
+import { tableStructureSchema } from "../../model/table_structure_schema";
 
 export default function InputRowTableConfigCard() {
   const { setOpenRawConfigDialog, openRawConfigDialog, configs, setConfigs } =
@@ -58,7 +58,8 @@ export default function InputRowTableConfigCard() {
         >
           Link
         </Typography.Link>{" "}
-        for example table configuration.
+        for example table configuration. You can also fetch table schema by
+        clicking the fetching button.
       </Typography>
       <Modal
         title="Raw Data Configuration"

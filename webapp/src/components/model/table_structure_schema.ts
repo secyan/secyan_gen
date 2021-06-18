@@ -9,18 +9,6 @@ export const tableStructureSchema = {
       type: "object",
       additionalProperties: false,
       properties: {
-        data_sizes: {
-          type: "array",
-          items: {
-            type: "integer",
-          },
-        },
-        data_paths: {
-          type: "array",
-          items: {
-            type: "string",
-          },
-        },
         table_name: {
           type: "string",
         },
@@ -34,7 +22,7 @@ export const tableStructureSchema = {
           },
         },
       },
-      required: ["columns", "data_sizes", "table_name"],
+      required: ["columns", "table_name"],
       title: "TableConfigElement",
     },
     Column: {

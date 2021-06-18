@@ -32,7 +32,7 @@ export default function SideBar(props: { expanded: boolean }) {
         setSelectedPath(route?.title);
       }
     } else {
-      setSelectedPath(routes[0].path);
+      setSelectedPath(routes[0].title);
     }
   }, [location]);
 
@@ -89,13 +89,10 @@ export default function SideBar(props: { expanded: boolean }) {
     <Menu
       theme="light"
       mode="inline"
-      selectedKeys={table === null ? [selectedPath] : [table as string]}
+      selectedKeys={table === undefined ? [selectedPath] : [table as string]}
       style={{ height: "100%" }}
     >
       {renderMenu()}
     </Menu>
   );
-}
-function useStyles() {
-  throw new Error("Function not implemented.");
 }

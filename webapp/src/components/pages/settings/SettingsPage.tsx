@@ -1,4 +1,4 @@
-import { Card, Typography, Form, Select, Button, message } from "antd";
+import { Card, Typography, Form, Select, Button, message, Input } from "antd";
 import React from "react";
 import { BackEnd, Role, SettingsContext } from "../../model/SettingsContext";
 import { useLocation } from "react-router";
@@ -7,10 +7,11 @@ import { CodeContext } from "../../model/CodeContext";
 interface FormValue {
   role: Role;
   backend: BackEnd;
+  datadir: string;
 }
 
 export default function SettingsPage() {
-  const { role, setRole, backend, setBackend } =
+  const { role, setRole, backend, setBackend, datadir, setDatadir } =
     React.useContext(SettingsContext);
 
   const { deleteResultCache } = React.useContext(CodeContext);
@@ -18,6 +19,7 @@ export default function SettingsPage() {
   const formValue: FormValue = {
     role: role,
     backend: backend,
+    datadir: datadir,
   };
 
   return (
@@ -34,8 +36,19 @@ export default function SettingsPage() {
             if (changed.backend) {
               setBackend(changed.backend);
             }
+
+            if (changed.datadir) {
+              setDatadir(changed.datadir);
+            }
           }}
         >
+          <Form.Item
+            label="Default data dir"
+            name="datadir"
+            help="Your table's data will be stored in this folder"
+          >
+            <Input />
+          </Form.Item>
           <Form.Item label="Role" name="role">
             <Select>
               {["Client", "Server"].map((v, i) => (
@@ -60,7 +73,7 @@ export default function SettingsPage() {
           </Form.Item>
         </Form>
       </Card>
-      <Card title="Delete Data">
+      <Card title="Delete Data" style={{ marginTop: 10 }}>
         <Typography.Title level={5}>Stored results</Typography.Title>
         <Button
           onClick={() => {
