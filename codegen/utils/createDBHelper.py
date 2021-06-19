@@ -1,6 +1,7 @@
 from typing import List
 
-from codegen.table import Table, Column, TypeEnum
+from codegen.table import Table
+from codegen.table.column import TypeEnum, Column
 
 
 class CreateDBHelper:

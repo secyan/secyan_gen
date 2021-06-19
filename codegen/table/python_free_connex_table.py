@@ -1,8 +1,7 @@
-from . import Column
+from .column import Column
 from .free_connex_table import FreeConnexTable
 from secyan_python import Relation
-
-from .table import CharacterEnum
+from codegen.table import CharacterEnum
 
 
 class PythonFreeConnexTable(FreeConnexTable):

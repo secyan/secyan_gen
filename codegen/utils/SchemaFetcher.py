@@ -4,7 +4,8 @@ Fetch table schema
 from typing import Dict, List
 
 from ..database.baseDB import DatabaseDriver
-from ..table import FreeConnexTable, Column, TypeEnum, Table
+from ..table import FreeConnexTable, Table
+from ..table.column import Column, TypeEnum
 
 
 class SchemaFetcher:

@@ -1,4 +1,14 @@
-import { Card, Typography, Form, Select, Button, message, Input } from "antd";
+import {
+  Card,
+  Typography,
+  Form,
+  Select,
+  Button,
+  message,
+  Input,
+  List,
+  Spin,
+} from "antd";
 import React from "react";
 import { BackEnd, Role, SettingsContext } from "../../model/SettingsContext";
 import { useLocation } from "react-router";
@@ -11,7 +21,7 @@ interface FormValue {
 }
 
 export default function SettingsPage() {
-  const { role, setRole, backend, setBackend, datadir, setDatadir } =
+  const { role, setRole, backend, setBackend, datadir, setDatadir, loaded } =
     React.useContext(SettingsContext);
 
   const { deleteResultCache } = React.useContext(CodeContext);
@@ -22,9 +32,8 @@ export default function SettingsPage() {
     datadir: datadir,
   };
 
-  return (
-    <div style={{ padding: 10 }}>
-      <Typography.Title level={3}>Settings</Typography.Title>
+  const settings = (
+    <div>
       <Card>
         <Typography.Title level={5}>General Settings</Typography.Title>
         <Form
@@ -73,17 +82,45 @@ export default function SettingsPage() {
           </Form.Item>
         </Form>
       </Card>
-      <Card title="Delete Data" style={{ marginTop: 10 }}>
-        <Typography.Title level={5}>Stored results</Typography.Title>
-        <Button
-          onClick={() => {
-            deleteResultCache();
-            message.success("Delete cache successfully");
-          }}
-        >
-          Delete
-        </Button>
+      <Card title="Data" style={{ marginTop: 10 }}>
+        <List>
+          <List.Item>
+            <List.Item.Meta
+              title="Stored results"
+              description="Your query results"
+            />
+            <Button
+              onClick={() => {
+                deleteResultCache();
+                message.success("Delete cache successfully");
+              }}
+            >
+              Delete
+            </Button>
+          </List.Item>
+          <List.Item>
+            <List.Item.Meta
+              title="Download Data"
+              description="Download table data from database"
+            />
+            <Button
+              onClick={() => {
+                deleteResultCache();
+                message.success("Delete cache successfully");
+              }}
+            >
+              Download data
+            </Button>
+          </List.Item>
+        </List>
       </Card>
+    </div>
+  );
+
+  return (
+    <div style={{ padding: 10 }}>
+      <Typography.Title level={3}>Settings</Typography.Title>
+      {loaded ? settings : <Spin />}
     </div>
   );
 }

@@ -5,21 +5,25 @@ export type Role = "Client" | "Server";
 export type BackEnd = "Default Backend" | "Postgres Backend";
 
 interface Settings {
+  loaded: boolean;
   role: Role;
   setRole(role: Role): void;
   backend: BackEnd;
   setBackend(b: BackEnd): void;
   datadir: string;
   setDatadir(v: string): void;
+  isDownloading: boolean;
 }
 
 //@ts-ignore
 export const SettingsContext = React.createContext<Settings>({});
 
 export default function SettingsProvider(props: any) {
+  const [loaded, setLoaded] = React.useState(false);
   const [role, setRoleState] = React.useState<Role>("Server");
   const [backend, setBackendState] = React.useState<BackEnd>("Default Backend");
   const [datadir, setDatadirState] = React.useState("");
+  const [isDownloading, setIsDownloading] = React.useState(false);
 
   React.useEffect(() => {
     let role = localStorage.getItem("role");
@@ -37,6 +41,8 @@ export default function SettingsProvider(props: any) {
     if (data) {
       setDatadirState(data);
     }
+
+    setLoaded(true);
   }, []);
 
   const setDatadir = React.useCallback((r: string) => {
@@ -61,6 +67,8 @@ export default function SettingsProvider(props: any) {
     setBackend,
     datadir,
     setDatadir,
+    loaded,
+    isDownloading,
   };
 
   return (
