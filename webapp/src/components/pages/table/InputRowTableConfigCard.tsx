@@ -59,7 +59,10 @@ export default function InputRowTableConfigCard() {
           Link
         </Typography.Link>{" "}
         for example table configuration. You can also fetch table schema by
-        clicking the fetching button.
+        clicking the fetching button. The data path and size field might be
+        empty and will be updated when you click fetch data in settings page.
+        You can update the field mannuly by using raw data editor, however, we
+        don't recommand editting this field mannully.
       </Typography>
       <Modal
         title="Raw Data Configuration"

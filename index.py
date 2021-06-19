@@ -17,6 +17,7 @@ from flask_cors import CORS
 from multiprocessing import Process, Queue
 
 from codegen.table.python_free_connex_table import PythonFreeConnexTable
+from codegen.utils.DataFetcher import DataFetcher
 from codegen.utils.SchemaFetcher import SchemaFetcher
 
 app = Flask(__name__)
@@ -226,13 +227,14 @@ def get_table_schema():
         return Response(str(e), status=500)
 
 
-@app.route("/schema", methods=["GET"])
+@app.route("/download_data", methods=["POST"])
 def get_data_with_annotation():
     password = getenv('password')
     user = getenv('user')
     database = getenv("database")
     host = getenv("host")
     port = getenv("port")
+    output_dir = request.json.get("output_dir")
 
     driver = PostgresDBDriver(password=password,
                               user=user,
@@ -240,11 +242,14 @@ def get_data_with_annotation():
                               host=host,
                               port=port,
                               tables=[])
-    schema_fetcher = SchemaFetcher(db_driver=driver)
+    data_fetcher = DataFetcher(db_driver=driver)
+    tables = [PythonFreeConnexTable.load_from_json(t) for t in json.loads(request.json.get("tables"))]
+
     try:
-        tables = schema_fetcher.get_schema()
-        print(tables)
-        return Response(status=201)
+        tables = data_fetcher.store_data(output_dir=output_dir, tables=tables)
+        return jsonify(
+            [t.to_json() for t in tables]
+        )
     except Exception as e:
         traceback.print_exc()
         return Response(str(e), status=500)

@@ -11,6 +11,8 @@ import {
   Select,
   Modal,
   notification,
+  List,
+  Descriptions,
 } from "antd";
 import React from "react";
 import { TableConfig } from "../../model/table-config";
@@ -121,76 +123,21 @@ export default function TableConfigCard(props: Props) {
         </Button>,
       ]}
     >
+      <Descriptions title="Data size and path" bordered={true}>
+        <Descriptions.Item label="Data Path">
+          {config.data_paths}
+        </Descriptions.Item>
+        <Descriptions.Item label="Data Size">
+          {config.data_sizes}
+        </Descriptions.Item>
+      </Descriptions>
       <Form
+        style={{ marginTop: 20 }}
         initialValues={formValues()}
         onValuesChange={(_, v) => {
           updateConfig(v);
         }}
       >
-        {/* data sizes and data paths */}
-
-        <Typography.Title level={5}>Data Sizes and Paths</Typography.Title>
-        <Form.List name="path_size">
-          {(fields, { add, remove }) => (
-            <Row gutter={[10, 10]}>
-              {fields.map(({ key, name, fieldKey, ...restField }) => (
-                <Col
-                  key={`path_size-${key}`}
-                  style={{ display: "flex", marginBottom: 8 }}
-                  xs={24}
-                  md={12}
-                >
-                  <Row style={{ width: "100%" }} gutter={[20, 10]}>
-                    <Col md={10} xs={24}>
-                      <Form.Item
-                        {...restField}
-                        name={[name, "size"]}
-                        fieldKey={[fieldKey, "size"]}
-                        rules={[
-                          { required: true, message: "Data Size is required" },
-                        ]}
-                      >
-                        <Input placeholder="Data size" type="number" />
-                      </Form.Item>
-                    </Col>
-                    <Col md={12} xs={22}>
-                      <Form.Item
-                        {...restField}
-                        name={[name, "path"]}
-                        fieldKey={[fieldKey, "path"]}
-                        rules={[
-                          { required: true, message: "Data Path is required" },
-                        ]}
-                      >
-                        <Input placeholder="Data path" />
-                      </Form.Item>
-                    </Col>
-                    <Col span={2}>
-                      <MinusCircleOutlined
-                        className="dynamic-delete-button"
-                        onClick={() => remove(name)}
-                      />
-                    </Col>
-                  </Row>
-                </Col>
-              ))}
-              <Col xs={24}>
-                <Form.Item>
-                  <Button
-                    type="dashed"
-                    onClick={() => add()}
-                    block
-                    icon={<PlusOutlined />}
-                  >
-                    Add Data Path and Size
-                  </Button>
-                </Form.Item>
-              </Col>
-            </Row>
-          )}
-        </Form.List>
-
-        {/* end data sizes and data paths */}
         {/* columns */}
         <Typography.Title level={5}>Table Columns</Typography.Title>
         <Form.List name="columns">
@@ -235,6 +182,22 @@ export default function TableConfigCard(props: Props) {
                         ]}
                       >
                         <Input placeholder="Column Name" />
+                      </Form.Item>
+                    </Col>
+                    <Col md={12} xs={22}>
+                      <Form.Item
+                        {...restField}
+                        name={[name, "annotation"]}
+                        fieldKey={[fieldKey, "Annotation"]}
+                        help="Will use this field to add annotation"
+                        rules={[
+                          {
+                            required: false,
+                            message: "",
+                          },
+                        ]}
+                      >
+                        <Input placeholder="Annotation SQL" />
                       </Form.Item>
                     </Col>
                     <Col span={2}>

@@ -11,6 +11,7 @@ export interface TableConfig {
 export interface Column {
   column_type: string;
   name: string;
+  annotation: string;
 }
 
 interface Result {

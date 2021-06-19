@@ -1,5 +1,9 @@
+import { message, notification } from "antd";
+import axios from "axios";
 import { type } from "node:os";
 import React from "react";
+import { TableConfig } from "./table-config";
+import { Utils } from "./utils";
 
 export type Role = "Client" | "Server";
 export type BackEnd = "Default Backend" | "Postgres Backend";
@@ -13,6 +17,7 @@ interface Settings {
   datadir: string;
   setDatadir(v: string): void;
   isDownloading: boolean;
+  downloadData(configs: TableConfig[]): Promise<TableConfig[] | undefined>;
 }
 
 //@ts-ignore
@@ -29,7 +34,6 @@ export default function SettingsProvider(props: any) {
     let role = localStorage.getItem("role");
     let backend = localStorage.getItem("");
     let data = localStorage.getItem("datadir");
-    console.log(data);
 
     if (role) {
       setRoleState(role as Role);
@@ -60,6 +64,34 @@ export default function SettingsProvider(props: any) {
     setBackendState(r);
   }, []);
 
+  const downloadData = React.useCallback(
+    async (configs: TableConfig[]): Promise<TableConfig[] | undefined> => {
+      setIsDownloading(true);
+      try {
+        let url = Utils.getURL("/download_data");
+        let data = await axios.post(url, {
+          tables: JSON.stringify(configs),
+          output_dir: datadir,
+        });
+        message.success("Successfully dump data into " + datadir, 8);
+        return data.data;
+      } catch (err) {
+        notification.error({
+          message: "Cannot fetch table configs",
+          description: `${
+            err?.response?.data ?? "Cannot connect to the backend"
+          }`,
+          duration: 5,
+          placement: "bottomRight",
+        });
+        return undefined;
+      } finally {
+        setIsDownloading(false);
+      }
+    },
+    [datadir]
+  );
+
   const values: Settings = {
     role,
     setRole,
@@ -69,6 +101,7 @@ export default function SettingsProvider(props: any) {
     setDatadir,
     loaded,
     isDownloading,
+    downloadData,
   };
 
   return (

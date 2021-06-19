@@ -13,6 +13,7 @@ import React from "react";
 import { BackEnd, Role, SettingsContext } from "../../model/SettingsContext";
 import { useLocation } from "react-router";
 import { CodeContext } from "../../model/CodeContext";
+import { TableConfigContext } from "../../model/TableContext";
 
 interface FormValue {
   role: Role;
@@ -21,8 +22,19 @@ interface FormValue {
 }
 
 export default function SettingsPage() {
-  const { role, setRole, backend, setBackend, datadir, setDatadir, loaded } =
-    React.useContext(SettingsContext);
+  const {
+    role,
+    setRole,
+    backend,
+    setBackend,
+    datadir,
+    setDatadir,
+    loaded,
+    downloadData,
+    isDownloading,
+  } = React.useContext(SettingsContext);
+
+  const { configs, setConfigs } = React.useContext(TableConfigContext);
 
   const { deleteResultCache } = React.useContext(CodeContext);
 
@@ -104,9 +116,12 @@ export default function SettingsPage() {
               description="Download table data from database"
             />
             <Button
-              onClick={() => {
-                deleteResultCache();
-                message.success("Delete cache successfully");
+              loading={isDownloading}
+              onClick={async () => {
+                let newConfig = await downloadData(configs);
+                if (newConfig) {
+                  setConfigs(newConfig);
+                }
               }}
             >
               Download data

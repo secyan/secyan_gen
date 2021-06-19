@@ -4,3 +4,4 @@
 *.gz
 *.zip
 *.env
+data_dir

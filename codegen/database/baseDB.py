@@ -41,3 +41,12 @@ class DatabaseDriver:
 
     def execute(self, sql: str) -> List[Tuple]:
         raise NotImplementedError
+
+    def execute_save(self, sql: str, output_filename: str):
+        """
+        Save sql result into a tbl file
+        :param output_filename:
+        :param sql:
+        :return:
+        """
+        raise NotImplementedError

@@ -7,6 +7,7 @@ from codegen.node.cpp_nodes.FreeConnexJoinNode import FreeConnexJoinNode
 from codegen.node.cpp_nodes.JoinNode import JoinData
 from ..table.table import Table
 from ..utils import CreateDBHelper
+import csv
 
 
 class PostgresDBDriver(DatabaseDriver):
@@ -78,6 +79,25 @@ class PostgresDBDriver(DatabaseDriver):
         data = cur.fetchall()
 
         return data
+
+    def execute_save(self, sql: str, output_filename: str):
+        try:
+            conn = psycopg2.connect(database=self.database_name, user=self.user, password=self.password, host=self.host,
+                                    port=self.port)
+            cur = conn.cursor()
+        except Exception as e:
+            raise RuntimeError("Cannot connect to the database. Please check config")
+
+        cur.execute(sql)
+        rows = cur.fetchall()
+        headers = [c.name for c in cur.description]
+        with open(output_filename, 'w') as f:
+            f.write(f"{len(headers)}\n")
+            writer = csv.writer(f, delimiter="|", lineterminator="|\n")
+            writer.writerow(headers)
+            writer.writerows(rows)
+
+        return cur.rowcount
 
 
 class PostgresDBPlan(DBPlan):
