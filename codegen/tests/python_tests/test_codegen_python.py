@@ -1,4 +1,5 @@
 import traceback
+from os import getenv
 from typing import List
 
 from secyan_python.constant import E_role
@@ -35,6 +36,9 @@ class TestCodegenPython(BaseTestCase):
         self.replace_paths(mapping=self.generate_mapping())
 
     def test_select(self):
+        in_docker = getenv("in_docker")
+        if in_docker:
+            return
         client_queue = Queue()
         server_queue = Queue()
 
