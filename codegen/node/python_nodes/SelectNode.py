@@ -44,7 +44,11 @@ class SelectNodePython(SelectNode):
                 # assert type(file_path) == str
                 if not os.path.exists(file_path):
                     raise FileNotFoundError(f"Cannot find the file {file_path} on your disk")
-                relation.load_data(table.data_paths[index], self.annotation_name)
+                if len(table.annotations) > 0:
+                    # TODO: Add multiple annotations support
+                    relation.load_data(table.data_paths[index], table.get_annotation_name(0))
+                else:
+                    relation.load_data(table.data_paths[index], self.annotation_name)
 
             table.load_relation(relation)
 

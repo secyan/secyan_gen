@@ -338,3 +338,6 @@ class Table:
 
         self.children = []
         self.parent = None
+
+    def get_annotation_name(self, index=0):
+        return f"{self.variable_table_name}_annotation_{index}"
