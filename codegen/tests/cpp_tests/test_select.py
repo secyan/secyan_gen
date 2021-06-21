@@ -13,7 +13,7 @@ class TestSelect(QueryTestCase):
                              columns=[
                                  Column(name="a", column_type=TypeEnum.int),
                                  Column(name="b", column_type=TypeEnum.string)
-                             ], owner=CharacterEnum.client, data_sizes=[100], data_paths=[""])
+                             ], owner=CharacterEnum.client, data_sizes=[100], data_paths=[""], annotations=[])
 
     def test_simple_select(self):
         select_node = SelectNode(tables=[self.table_a], annotation_name="demo")

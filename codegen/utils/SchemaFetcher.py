@@ -41,7 +41,8 @@ class SchemaFetcher:
         tables = []
 
         for table_name, columns in column_map.items():
-            table = FreeConnexTable(table_name=table_name, columns=columns, data_sizes=[100], data_paths=[f""])
+            table = FreeConnexTable(table_name=table_name, columns=columns, data_sizes=[100], data_paths=[f""],
+                                    annotations=[])
             tables.append(table)
 
         return tables

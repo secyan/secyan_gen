@@ -27,8 +27,16 @@ class TypeEnum(Enum):
             return TypeEnum.string
         elif db_type.lower() == "real":
             return TypeEnum.decimal
+        elif db_type.lower() == "numeric":
+            return TypeEnum.decimal
         elif db_type.lower() == 'date':
             return TypeEnum.date
+        elif db_type.lower() == "character":
+            return TypeEnum.string
+        elif db_type.lower() == "character varying":
+            return TypeEnum.string
+        else:
+            raise Exception(f"Type {db_type} not does not exist on TypeEnum")
 
     @property
     def data_type(self) -> DataType:

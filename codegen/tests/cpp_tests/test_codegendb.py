@@ -1,7 +1,23 @@
 import unittest
+from typing import List, Callable, Tuple
+from codegen.table import FreeConnexTable
+from codegen.database import DBPlan
 from codegen.database.postgresDB import PostgresDBPlan
 from codegen.table.table import Table
 from codegen.tests.test_table_config import TEST_CONFIG, TEST_DB_PLAN
+from codegen.database.baseDB import DatabaseDriver
+from codegen.codegen_fromDB import CodeGenDB, DBPlan
+
+
+class MockDB(DatabaseDriver):
+    def get_query_plan(self, sql: str) -> DBPlan:
+        return PostgresDBPlan.from_json(TEST_DB_PLAN[0]["Plan"], tables=self.tables)
+
+    def execute(self, sql: str) -> List[Tuple]:
+        pass
+
+    def execute_save(self, sql: str, output_filename: str):
+        pass
 
 
 class TestCodegenDB(unittest.TestCase):
@@ -21,3 +37,11 @@ class TestCodegenDB(unittest.TestCase):
         # self.assertEqual(order_table.parent, lineitem_table)
         # self.assertEqual(lineitem_table.parent, customer_table)
         # self.assertEqual(customer_table.parent, None)
+
+    def test_select(self):
+        tables = [FreeConnexTable.load_from_json(t) for t in TEST_CONFIG]
+        sql = "select l_orderkey from LINEITEM, CUSTOMER, ORDERS"
+        driver = MockDB(tables=tables)
+        parser = CodeGenDB(sql=sql, db_driver=driver, tables=tables, annotation_name="")
+        parser.parse()
+

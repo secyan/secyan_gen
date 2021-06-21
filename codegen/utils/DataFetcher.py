@@ -31,7 +31,16 @@ class DataFetcher:
         """
         new_tables = deepcopy(tables)
         for i, table in enumerate(tables):
-            sql = f"select * from {table._table_name};"
+            if len(table.annotations) > 0:
+                annotations = ""
+                for index, annotation in enumerate(table.annotations):
+                    annotations += f"{annotation} as {table.variable_table_name}_annotation_{index}"
+                    if index < len(table.annotations) - 1:
+                        annotations += ","
+
+                sql = f"select *, {annotations} from {table._table_name};"
+            else:
+                sql = f"select * from {table._table_name};"
             output_path = path.join(output_dir, table.variable_table_name) + '.tbl'
             size = 0
             if should_write:

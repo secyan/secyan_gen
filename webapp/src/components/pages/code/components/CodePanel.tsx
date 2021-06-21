@@ -34,15 +34,10 @@ export default function CodePanel(props: Props) {
   const [editor, setEditor] =
     React.useState<monaco.editor.IStandaloneCodeEditor>();
 
-  React.useEffect(() => {
-    return () => {
-      hover?.dispose();
-      completion?.dispose();
-    };
-  }, []);
-
   const handleSQLEditorWillMount = React.useCallback(
     (monaco: Monaco) => {
+      hover?.dispose();
+      completion?.dispose();
       completion = monaco.languages.registerCompletionItemProvider("sql", {
         provideCompletionItems: (
           model: monaco.editor.ITextModel,

@@ -26,12 +26,14 @@ class PythonFreeConnexTable(FreeConnexTable):
         assert "columns" in json_content
         assert "data_sizes" in json_content
         assert "data_paths" in json_content
+        assert "annotations" in json_content
 
         columns = [Column.load_column_from_json(c) for c in json_content['columns']]
         return PythonFreeConnexTable(table_name=json_content["table_name"], columns=columns,
                                      owner=CharacterEnum[json_content[
                                          'owner'].lower()] if "owner" in json_content else CharacterEnum.client,
-                                     data_sizes=json_content['data_sizes'], data_paths=json_content['data_paths'])
+                                     data_sizes=json_content['data_sizes'], data_paths=json_content['data_paths'],
+                                     annotations=json_content['annotations'])
 
     def load_relation(self, relation: Relation):
         """

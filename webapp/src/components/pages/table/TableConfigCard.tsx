@@ -35,6 +35,7 @@ interface Props {
 interface FormValue {
   path_size: { size: number; path: string }[];
   columns: any[];
+  annotations: any[];
 }
 
 export default function TableConfigCard(props: Props) {
@@ -45,32 +46,10 @@ export default function TableConfigCard(props: Props) {
   const { setConfigs, configs } = React.useContext(TableConfigContext);
 
   const formValues = React.useCallback(() => {
-    let longest = Math.max(
-      config?.data_paths?.length ?? 0,
-      config?.data_sizes?.length ?? 0
-    );
-    let path_size = Array.from(Array(longest)).map((c) => {
-      return { size: undefined, path: undefined };
-    });
-
-    for (let i = 0; i < longest; i++) {
-      if (config?.data_sizes?.length ?? 0 < i) {
-        //@ts-ignore
-        path_size[i].size = config.data_sizes[i];
-      }
-
-      if (config?.data_paths?.length ?? 0 < i) {
-        //@ts-ignore
-        path_size[i].path = config.data_paths[i];
-      }
-
-      return {
-        path_size,
-        columns: config.columns,
-      };
-    }
+    return config;
   }, [config]);
 
+  // Will be used to rename the table
   const updateTableConfig = React.useCallback(() => {
     configs[index].table_name = name;
     configs[index].owner = owner;
@@ -78,12 +57,16 @@ export default function TableConfigCard(props: Props) {
     setOpen(false);
   }, [name, owner]);
 
+  // Will be used on each field's update
   const updateConfig = React.useCallback(
     (value: FormValue) => {
-      let path_size = value.path_size.filter((v) => v !== undefined);
-      configs[index].data_sizes = path_size.map((v: any) => parseInt(v.size));
-      configs[index].data_paths = path_size.map((v: any) => v.path);
+      console.log(value.annotations);
+      let annotations = value.annotations
+        .filter((v) => v !== undefined && v.annotation !== undefined)
+        .map((a) => a.annotation);
+
       configs[index].columns = value.columns;
+      configs[index].annotations = annotations !== undefined ? annotations : [];
       setConfigs(configs, false);
     },
     [config]
@@ -184,22 +167,6 @@ export default function TableConfigCard(props: Props) {
                         <Input placeholder="Column Name" />
                       </Form.Item>
                     </Col>
-                    <Col md={12} xs={22}>
-                      <Form.Item
-                        {...restField}
-                        name={[name, "annotation"]}
-                        fieldKey={[fieldKey, "Annotation"]}
-                        help="Will use this field to add annotation"
-                        rules={[
-                          {
-                            required: false,
-                            message: "",
-                          },
-                        ]}
-                      >
-                        <Input placeholder="Annotation SQL" />
-                      </Form.Item>
-                    </Col>
                     <Col span={2}>
                       <MinusCircleOutlined onClick={() => remove(name)} />
                     </Col>
@@ -222,6 +189,41 @@ export default function TableConfigCard(props: Props) {
           )}
         </Form.List>
         {/* end columns */}
+        {/* Annotations */}
+        <Typography.Title level={5}>Annotations</Typography.Title>
+        <Form.List name="annotations">
+          {(fields, { add, remove }) => (
+            <div>
+              {fields.map(({ key, name, fieldKey, ...restField }) => (
+                <Row gutter={[10, 10]}>
+                  <Col span={22}>
+                    <Form.Item
+                      name={[name, "annotation"]}
+                      fieldKey={[fieldKey, "annotation"]}
+                      label="Annotation"
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col>
+                    <MinusCircleOutlined onClick={() => remove(name)} />
+                  </Col>
+                </Row>
+              ))}
+              <Form.Item>
+                <Button
+                  type="dashed"
+                  onClick={() => add()}
+                  block
+                  icon={<PlusOutlined />}
+                >
+                  Add Annotation
+                </Button>
+              </Form.Item>
+            </div>
+          )}
+        </Form.List>
+        {/* end Annotations */}
       </Form>
       <Modal
         visible={open}

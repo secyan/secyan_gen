@@ -2,5 +2,7 @@
 <project version="4">
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/codegen/tests/cpp_tests/test_parse_q3.py" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/codegen/utils/DataFetcher.py" dialect="GenericSQL" />
+    <file url="PROJECT" dialect="PostgreSQL" />
   </component>
 </project>

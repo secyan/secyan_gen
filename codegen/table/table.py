@@ -27,12 +27,13 @@ class CharacterEnum(Enum):
 class Table:
 
     def __init__(self, table_name: str, columns: List[Column], data_sizes: List[float], data_paths: List[str],
-                 owner: CharacterEnum = None):
+                 annotations: List[str], owner: CharacterEnum = None):
         """
         Create a table with columns
         :param table_name: table name
         :param columns: list of columns
         :param data_sizes: list of sizes. Used for num_of_rows in the code
+        :param annotations: List of annotations. Will use this field to fetch related annotation
 
         """
 
@@ -59,6 +60,7 @@ class Table:
         # It will determine whether a table has been used during the operation
         self.used_in_join = False
         self.data_sizes = data_sizes
+        self.annotations = annotations
 
     def __str__(self):
         return f"<Table: {self._table_name} />"
@@ -127,11 +129,13 @@ class Table:
         assert "columns" in json_content
         assert "data_sizes" in json_content
         assert "data_paths" in json_content
+        assert "annotations" in json_content
 
         columns = [Column.load_column_from_json(c) for c in json_content['columns']]
         return Table(table_name=json_content["table_name"], columns=columns,
                      owner=CharacterEnum[json_content['owner']] if "owner" in json_content else None,
-                     data_sizes=json_content['data_sizes'], data_paths=json_content['data_paths'])
+                     data_sizes=json_content['data_sizes'], data_paths=json_content['data_paths'],
+                     annotations=json_content['annotations'])
 
     @property
     def variable_table_name(self) -> str:
@@ -313,7 +317,8 @@ class Table:
             "name": self.variable_table_name,
             "attributes": {"": f"{join_by if join_by else [f'{c.to_table_key} ' for c in self.children]}"},
             # "parent": self.parent.variable_table_name if self.parent else None,
-            "children": [c.to_table.to_json(output_attrs=output_attrs, join_by=c.to_table_key) for c in self.children]
+            "children": [c.to_table.to_json_graph(output_attrs=output_attrs, join_by=c.to_table_key) for c in
+                         self.children]
         }
 
     def to_json(self):
@@ -321,7 +326,8 @@ class Table:
             "table_name": self.variable_table_name,
             "columns": [c.to_json() for c in self.original_column_names],
             "data_paths": self.data_paths,
-            "data_sizes": self.data_sizes
+            "data_sizes": self.data_sizes,
+            "annotations": self.annotations
         }
 
     def clear_join(self):

@@ -11,6 +11,9 @@ class LoadJsonTest(unittest.TestCase):
             "owner": "client",
             "data_sizes": [100],
             "data_paths": [""],
+            "annotations": [
+
+            ],
             "columns": [
                 {
                     "column_type": "int",

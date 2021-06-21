@@ -42,3 +42,16 @@ class TestDataFetcher(TestCase):
 
         self.assertEqual(new_tables[3].data_sizes, [0])
         self.assertEqual(new_tables[3].data_paths, ['/test/orders.tbl'])
+
+    def test_simple_fetcher_with_annotations(self):
+        schema_fetcher = SchemaFetcher(db_driver=self.driver)
+        data = schema_fetcher.get_schema()
+        data_fetcher = DataFetcher(db_driver=self.driver)
+        data[0].annotations = ["CAST(c_mktsegment = 'AUTOMOBILE' AS int)"]
+        new_tables = data_fetcher.store_data(output_dir="/test", tables=data, should_write=False)
+        self.assertEqual(len(new_tables), 4)
+        self.assertEqual(new_tables[0].data_sizes, [0])
+        self.assertEqual(new_tables[0].data_paths, ['/test/supplier.tbl'])
+
+        self.assertEqual(new_tables[3].data_sizes, [0])
+        self.assertEqual(new_tables[3].data_paths, ['/test/orders.tbl'])

@@ -6,12 +6,12 @@ export interface TableConfig {
   data_paths: string[];
   columns: Column[];
   owner: Role;
+  annotations: string[];
 }
 
 export interface Column {
   column_type: string;
   name: string;
-  annotation: string;
 }
 
 interface Result {

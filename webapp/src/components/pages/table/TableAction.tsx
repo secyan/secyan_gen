@@ -16,6 +16,7 @@ export default function TableAction() {
       data_paths: [],
       columns: [],
       owner: "Server",
+      annotations: [],
     });
     setConfigs(configs);
     setOpen(false);

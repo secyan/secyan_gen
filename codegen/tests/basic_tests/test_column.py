@@ -9,8 +9,8 @@ class TestColumn(unittest.TestCase):
         column1 = Column(name="a", column_type=TypeEnum.int)
         column2 = Column(name="b", column_type=TypeEnum.int)
 
-        table_1 = Table(columns=[column1], table_name="1", data_sizes=[100], data_paths=[""])
-        table_2 = Table(columns=[column2], table_name="2", data_sizes=[100], data_paths=[""])
+        table_1 = Table(columns=[column1], table_name="1", data_sizes=[100], data_paths=[""], annotations=[])
+        table_2 = Table(columns=[column2], table_name="2", data_sizes=[100], data_paths=[""], annotations=[])
 
         column1 = table_1.original_column_names[0]
         column2 = table_2.original_column_names[0]

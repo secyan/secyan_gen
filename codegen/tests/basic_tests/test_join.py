@@ -15,16 +15,16 @@ class JoinTest(unittest.TestCase):
     def setUp(self):
         self.a_table = Table(table_name="a",
                              columns=[Column(name="name", column_type=TypeEnum.string),
-                                      Column(name="id", column_type=TypeEnum.int)], data_sizes=[100], data_paths=[""])
+                                      Column(name="id", column_type=TypeEnum.int)], data_sizes=[100], data_paths=[""], annotations=[])
         self.b_table = Table(table_name="b", columns=[Column(name="name", column_type=TypeEnum.string),
                                                       Column(name="id", column_type=TypeEnum.int)], data_sizes=[100],
-                             data_paths=[""])
+                             data_paths=[""], annotations=[])
 
         self.c_table = Table(table_name="c", columns=[
             Column(name="name", column_type=TypeEnum.string),
             Column(name="id", column_type=TypeEnum.int),
             Column(name="address", column_type=TypeEnum.string)
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
     def test_simple_join(self):
         self.a_table.join(self.b_table, "id", "id")
@@ -57,17 +57,17 @@ class JoinTest(unittest.TestCase):
             Column(name="a", column_type=TypeEnum.int),
             Column(name="b", column_type=TypeEnum.int),
             Column(name="c", column_type=TypeEnum.int)
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         table_b = Table(table_name="B", columns=[
             Column(name="a", column_type=TypeEnum.int),
             Column(name="e", column_type=TypeEnum.int)
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         table_c = Table(table_name="C", columns=[
             Column(name="e", column_type=TypeEnum.int),
             Column(name="f", column_type=TypeEnum.int)
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         table_a.join(table_b, "a", "a")
         table_c.join(table_a, "e", "e")
@@ -92,12 +92,12 @@ class JoinTest(unittest.TestCase):
             Column(name="aa", column_type=TypeEnum.int),
             Column(name="b", column_type=TypeEnum.int),
             Column(name="c", column_type=TypeEnum.int)
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         table_b = Table(table_name="B", columns=[
             Column(name="ba", column_type=TypeEnum.int),
             Column(name="e", column_type=TypeEnum.int)
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         table_a.join(to_table=table_b, from_table_key="aa", to_table_key="ba")
 
@@ -112,17 +112,17 @@ class JoinTest(unittest.TestCase):
         table_a = Table(table_name="A", columns=[
             Column(name="a", column_type=TypeEnum.int),
             Column(name="b", column_type=TypeEnum.int),
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         table_b = Table(table_name="B", columns=[
             Column(name="a", column_type=TypeEnum.int),
             Column(name="c", column_type=TypeEnum.int)
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         table_c = Table(table_name="C", columns=[
             Column(name="b", column_type=TypeEnum.int),
             Column(name="d", column_type=TypeEnum.int)
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         table_a.join(table_b, 'a', 'a')
         table_a.join(table_c, 'b', 'b')
@@ -142,28 +142,28 @@ class FreeConnexJoin(unittest.TestCase):
         self.table_1 = FreeConnexTable(table_name="1", columns=[
             Column(name="a", column_type=TypeEnum.int),
             Column(name="b", column_type=TypeEnum.int),
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         self.table_2 = FreeConnexTable(table_name="2", columns=[
             Column(name="a", column_type=TypeEnum.int),
             Column(name="c", column_type=TypeEnum.int)
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         self.table_3 = FreeConnexTable(table_name="3", columns=[
             Column(name="b", column_type=TypeEnum.int),
             Column(name="d", column_type=TypeEnum.int)
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         self.table_4 = FreeConnexTable(table_name="4", columns=[
             Column(name="d", column_type=TypeEnum.int),
             Column(name="f", column_type=TypeEnum.int),
             Column(name="g", column_type=TypeEnum.int),
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         self.table_5 = FreeConnexTable(table_name="5", columns=[
             Column(name="b", column_type=TypeEnum.int),
             Column(name="e", column_type=TypeEnum.int)
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
     def test_is_free_connex_join(self):
         """
@@ -262,28 +262,28 @@ class FreeConnexJoin(unittest.TestCase):
         self.table_1 = FreeConnexTable(table_name="1", columns=[
             Column(name="a", column_type=TypeEnum.int),
             Column(name="b1", column_type=TypeEnum.int),
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         self.table_2 = FreeConnexTable(table_name="2", columns=[
             Column(name="a", column_type=TypeEnum.int),
             Column(name="c", column_type=TypeEnum.int)
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         self.table_3 = FreeConnexTable(table_name="3", columns=[
             Column(name="b2", column_type=TypeEnum.int),
             Column(name="d1", column_type=TypeEnum.int)
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         self.table_4 = FreeConnexTable(table_name="4", columns=[
             Column(name="d2", column_type=TypeEnum.int),
             Column(name="f", column_type=TypeEnum.int),
             Column(name="g", column_type=TypeEnum.int),
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         self.table_5 = FreeConnexTable(table_name="5", columns=[
             Column(name="b3", column_type=TypeEnum.int),
             Column(name="e", column_type=TypeEnum.int)
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         self.table_1.join(self.table_2, "a", "a")
         self.table_1.join(self.table_3, "b1", "b2")
@@ -316,17 +316,17 @@ class FreeConnexJoin(unittest.TestCase):
         table1 = FreeConnexTable(table_name="1", columns=[
             Column(name="a", column_type=TypeEnum.int),
             Column(name="b", column_type=TypeEnum.int),
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         table2 = FreeConnexTable(table_name="2", columns=[
             Column(name="b", column_type=TypeEnum.int),
             Column(name="c", column_type=TypeEnum.int),
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         table3 = FreeConnexTable(table_name="3", columns=[
             Column(name="c", column_type=TypeEnum.int),
             Column(name="a", column_type=TypeEnum.int),
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         table1.join(table2, "b", "b")
         table2.join(table3, "c", "c")

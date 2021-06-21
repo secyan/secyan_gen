@@ -84,9 +84,10 @@ class CodeGenDB(FreeConnexParser):
         if not has_join_node:
             join_node = JoinNode(tables=self.tables, join_list=[])
             original = select_node.next
+            # If select node does have next node
+            if original:
+                join_node.next = original
+                join_node.next.prev = join_node
 
-            join_node.next = original
-            join_node.next.prev = join_node
-
-            select_node.next = join_node
-            select_node.next.prev = select_node
+                select_node.next = join_node
+                select_node.next.prev = select_node

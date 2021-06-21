@@ -1,5 +1,3 @@
-
-
 TEST_CONFIG = [
     {
         "table_name": "SUPPLIER",
@@ -12,6 +10,9 @@ TEST_CONFIG = [
         ],
         "data_paths":
             ["a", "a", "a", "a", "a"],
+        "annotations": [
+
+        ],
         "columns": [
             {
                 "column_type": "int",
@@ -51,6 +52,9 @@ TEST_CONFIG = [
             1500,
             4950,
             15000
+        ],
+        "annotations": [
+
         ],
         "data_paths":
             ["a", "a", "a", "a", "a"],
@@ -97,6 +101,9 @@ TEST_CONFIG = [
             60175,
             198344,
             595215
+        ],
+        "annotations": [
+
         ],
         "data_paths":
             ["a", "a", "a", "a", "a"],
@@ -176,6 +183,9 @@ TEST_CONFIG = [
             49500,
             150000
         ],
+        "annotations": [
+
+        ],
         "data_paths":
             ["a", "a", "a", "a", "a"],
         "columns": [
@@ -222,6 +232,9 @@ TEST_CONFIG = [
         "data_sizes": [],
         "data_paths":
             [],
+        "annotations": [
+
+        ],
         "columns": [
             {
                 "column_type": "int",
@@ -242,6 +255,9 @@ TEST_CONFIG = [
         "data_sizes": [],
         "data_paths":
             [],
+        "annotations": [
+
+        ],
         "columns": [
             {
                 "column_type": "int",
@@ -269,6 +285,9 @@ TEST_CONFIG = [
             2000,
             6600,
             20000
+        ],
+        "annotations": [
+
         ],
         "data_paths":
             ["a", "a", "a", "a", "a"],
@@ -319,6 +338,9 @@ TEST_CONFIG = [
             8000,
             26400,
             80000
+        ],
+        "annotations": [
+
         ],
         "data_paths":
             ["a", "a", "a", "a", "a"],

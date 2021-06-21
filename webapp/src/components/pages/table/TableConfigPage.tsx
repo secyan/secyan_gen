@@ -37,18 +37,6 @@ export default function TableConfigPage() {
         configs.map((c, i) => (
           <TableConfigCard key={`config-${i}`} config={c} index={i} />
         ))}
-
-      {/* <Affix offsetBottom={20} style={{ position: "absolute", right: 10 }}>
-        <Row justify="end">
-          <Button
-            type="primary"
-            style={{ marginRight: 20 }}
-            onClick={() => setOpen(true)}
-          >
-            Add Table
-          </Button>
-        </Row>
-      </Affix> */}
     </div>
   );
 }

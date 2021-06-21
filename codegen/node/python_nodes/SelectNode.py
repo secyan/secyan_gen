@@ -41,7 +41,7 @@ class SelectNodePython(SelectNode):
 
             if should_load_data:
                 file_path = table.data_paths[index]
-                assert type(file_path) == str
+                # assert type(file_path) == str
                 if not os.path.exists(file_path):
                     raise FileNotFoundError(f"Cannot find the file {file_path} on your disk")
                 relation.load_data(table.data_paths[index], self.annotation_name)

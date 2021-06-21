@@ -13,17 +13,17 @@ class TestTable(unittest.TestCase):
             Column(name="a", column_type=TypeEnum.int),
             Column(name="b", column_type=TypeEnum.int),
             Column(name="c", column_type=TypeEnum.int)
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         table_b = Table(table_name="B", columns=[
             Column(name="a", column_type=TypeEnum.int),
             Column(name="e", column_type=TypeEnum.int)
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         table_c = Table(table_name="C", columns=[
             Column(name="e", column_type=TypeEnum.int),
             Column(name="f", column_type=TypeEnum.int)
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         table_a.join(table_b, "a", "a")
         table_b.join(table_c, "e", "e")
@@ -39,21 +39,21 @@ class TestTable(unittest.TestCase):
         table_a = Table(table_name="A", columns=[
             Column(name="a", column_type=TypeEnum.int),
             Column(name="c", column_type=TypeEnum.int),
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         table_b = Table(table_name="B", columns=[
             Column(name="a", column_type=TypeEnum.int),
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         table_c = Table(table_name="C", columns=[
             Column(name="b", column_type=TypeEnum.int),
             Column(name="c", column_type=TypeEnum.int)
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         table_d = Table(table_name="d", columns=[
             Column(name="c", column_type=TypeEnum.int),
             Column(name="e", column_type=TypeEnum.int)
-        ], data_sizes=[100], data_paths=[""])
+        ], data_sizes=[100], data_paths=[""], annotations=[])
 
         table_a.join(table_b, "a", "a")
         table_a.join(table_c, "c", "c")

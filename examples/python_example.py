@@ -1,3 +1,4 @@
+import json
 from multiprocessing import Process, Queue
 from typing import Dict, List
 
@@ -58,6 +59,7 @@ def run_query(sql, role: E_role, queue: Queue, tables):
 if __name__ == '__main__':
     tables: List[PythonFreeConnexTable] = [PythonFreeConnexTable.load_from_json(t) for t in TEST_CONFIG]
     replace_paths(mapping=generate_mapping(), tables=tables)
+    # j = json.dumps([t.to_json() for t in tables])
     client_queue = Queue()
     server_queue = Queue()
 

@@ -50,6 +50,7 @@ class Parser:
         Create a parser with sql query and database tables
         :param sql: SQL Query string
         :param tables: list of database tables
+        :param annotation_name: A name represents the annotation column's name. Will be used in select node.
         """
 
         self.sql = sql

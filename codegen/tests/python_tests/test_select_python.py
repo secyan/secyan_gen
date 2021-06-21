@@ -19,7 +19,8 @@ class TestSelectPython(TestCase):
                                         columns=[
                                             Column(name="a", column_type=TypeEnum.int),
                                             Column(name="b", column_type=TypeEnum.string)
-                                        ], owner=CharacterEnum.client, data_sizes=[100], data_paths=[""])
+                                        ], owner=CharacterEnum.client, data_sizes=[100], data_paths=[""],
+                                        annotations=[])
 
         node = SelectNodePython(tables=[table_a], annotation_name="demo")
         node.from_tables = [
@@ -37,13 +38,15 @@ class TestSelectPython(TestCase):
                                         columns=[
                                             Column(name="a", column_type=TypeEnum.int),
                                             Column(name="b", column_type=TypeEnum.string)
-                                        ], owner=CharacterEnum.client, data_sizes=[100], data_paths=[""])
+                                        ], owner=CharacterEnum.client, data_sizes=[100], data_paths=[""],
+                                        annotations=[])
 
         table_b = PythonFreeConnexTable(table_name="B",
                                         columns=[
                                             Column(name="c", column_type=TypeEnum.int),
                                             Column(name="d", column_type=TypeEnum.string)
-                                        ], owner=CharacterEnum.server, data_sizes=[100], data_paths=[""])
+                                        ], owner=CharacterEnum.server, data_sizes=[100], data_paths=[""],
+                                        annotations=[])
 
         node = SelectNodePython(tables=[table_a, table_b], annotation_name="demo")
         node.from_tables = [
