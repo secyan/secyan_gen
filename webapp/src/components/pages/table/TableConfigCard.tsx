@@ -46,7 +46,12 @@ export default function TableConfigCard(props: Props) {
   const { setConfigs, configs } = React.useContext(TableConfigContext);
 
   const formValues = React.useCallback(() => {
-    return config;
+    return {
+      ...config,
+      annotations: config.annotations.map((v) => {
+        return { annotation: v };
+      }),
+    };
   }, [config]);
 
   // Will be used to rename the table

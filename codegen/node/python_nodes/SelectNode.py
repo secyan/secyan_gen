@@ -46,6 +46,7 @@ class SelectNodePython(SelectNode):
                     raise FileNotFoundError(f"Cannot find the file {file_path} on your disk")
                 if len(table.annotations) > 0:
                     # TODO: Add multiple annotations support
+                    print("Use annotation")
                     relation.load_data(table.data_paths[index], table.get_annotation_name(0))
                 else:
                     relation.load_data(table.data_paths[index], self.annotation_name)

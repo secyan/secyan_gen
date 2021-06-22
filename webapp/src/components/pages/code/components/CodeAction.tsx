@@ -4,11 +4,13 @@ import {
   EditOutlined,
   CaretRightOutlined,
   BarChartOutlined,
+  UserSwitchOutlined,
 } from "@ant-design/icons";
 import { CodeContext } from "../../../model/CodeContext";
 import { TableConfigContext } from "../../../model/TableContext";
 import Modal from "antd/lib/modal/Modal";
 import TreeDisplay from "./TreeDisplay";
+import { SettingsContext } from "../../../model/SettingsContext";
 
 export default function CodeAction() {
   const {
@@ -21,6 +23,8 @@ export default function CodeAction() {
     showEdit,
   } = React.useContext(CodeContext);
   const { configs } = React.useContext(TableConfigContext);
+  const { role, setRole } = React.useContext(SettingsContext);
+
   const [form] = Form.useForm();
 
   // Rename, etc
@@ -50,6 +54,22 @@ export default function CodeAction() {
           }}
         >
           <CaretRightOutlined />
+        </Button>
+      </Tooltip>
+      <Tooltip title={`"Current role: ${role}"`}>
+        <Button
+          shape="round"
+          size="large"
+          style={{ marginRight: 10 }}
+          onClick={async () => {
+            if (role === "Client") {
+              setRole("Server");
+            } else {
+              setRole("Client");
+            }
+          }}
+        >
+          <UserSwitchOutlined />
         </Button>
       </Tooltip>
       <Tooltip title="Rename">
