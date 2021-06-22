@@ -203,7 +203,6 @@ def create_db():
 def get_table_schema():
     """
     Get tables' schema.
-
     :return:
     """
     password = getenv('password')

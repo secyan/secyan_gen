@@ -24,8 +24,8 @@ import {
 } from "@ant-design/icons";
 import { TableConfigContext } from "../../model/TableContext";
 import { column_types, table_owner } from "../../../settings/column_types";
-import AwesomeDebouncePromise from "awesome-debounce-promise";
-import { Role } from "../../model/SettingsContext";
+import { test_id_config } from "../../../tests/data/test_id";
+import { v4 } from "uuid";
 
 interface Props {
   config: TableConfig;
@@ -96,7 +96,7 @@ export default function TableConfigCard(props: Props) {
     <Card
       id={config.table_name}
       title={`${config.table_name} - ${config.owner ?? "Client"}`}
-      key={config.table_name}
+      key={index}
       style={{ margin: 10 }}
       extra={[
         <Button
@@ -113,10 +113,14 @@ export default function TableConfigCard(props: Props) {
     >
       <Descriptions title="Data size and path" bordered={true}>
         <Descriptions.Item label="Data Path">
-          {config.data_paths}
+          <div data-testid={test_id_config.tableCard.testCardPathId}>
+            {config.data_paths}
+          </div>
         </Descriptions.Item>
         <Descriptions.Item label="Data Size">
-          {config.data_sizes}
+          <div data-testid={test_id_config.tableCard.testCardSizeId}>
+            {config.data_sizes}
+          </div>
         </Descriptions.Item>
       </Descriptions>
       <Form
@@ -178,7 +182,7 @@ export default function TableConfigCard(props: Props) {
                   </Row>
                 </Col>
               ))}
-              <Col xs={24}>
+              <Col xs={24} key={`button-${v4()}`}>
                 <Form.Item>
                   <Button
                     type="dashed"

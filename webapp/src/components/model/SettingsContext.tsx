@@ -2,8 +2,10 @@ import { message, notification } from "antd";
 import axios from "axios";
 import { type } from "node:os";
 import React from "react";
+import { apiRoutes } from "../../settings/api_routes";
+import { localStorageKeyConfig } from "../../settings/localstorage_keyconfig";
 import { TableConfig } from "./table-config";
-import { Utils } from "./utils";
+import { Utils } from "./utils/utils";
 
 export type Role = "Client" | "Server";
 export type BackEnd = "Default Backend" | "Postgres Backend";
@@ -31,9 +33,9 @@ export default function SettingsProvider(props: any) {
   const [isDownloading, setIsDownloading] = React.useState(false);
 
   React.useEffect(() => {
-    let role = localStorage.getItem("role");
-    let backend = localStorage.getItem("");
-    let data = localStorage.getItem("datadir");
+    let role = localStorage.getItem(localStorageKeyConfig.roleKey);
+    let backend = localStorage.getItem(localStorageKeyConfig.backendKey);
+    let data = localStorage.getItem(localStorageKeyConfig.datadirKey);
 
     if (role) {
       setRoleState(role as Role);
@@ -50,17 +52,17 @@ export default function SettingsProvider(props: any) {
   }, []);
 
   const setDatadir = React.useCallback((r: string) => {
-    localStorage.setItem("datadir", r);
+    localStorage.setItem(localStorageKeyConfig.datadirKey, r);
     setDatadirState(r);
   }, []);
 
   const setRole = React.useCallback((r: Role) => {
-    localStorage.setItem("role", r);
+    localStorage.setItem(localStorageKeyConfig.roleKey, r);
     setRoleState(r);
   }, []);
 
   const setBackend = React.useCallback((r: BackEnd) => {
-    localStorage.setItem("backend", r);
+    localStorage.setItem(localStorageKeyConfig.backendKey, r);
     setBackendState(r);
   }, []);
 
@@ -68,7 +70,7 @@ export default function SettingsProvider(props: any) {
     async (configs: TableConfig[]): Promise<TableConfig[] | undefined> => {
       setIsDownloading(true);
       try {
-        let url = Utils.getURL("/download_data");
+        let url = Utils.getURL(apiRoutes.downloadDataRoute);
         let data = await axios.post(url, {
           tables: JSON.stringify(configs),
           output_dir: datadir,

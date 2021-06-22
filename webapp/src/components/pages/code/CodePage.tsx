@@ -3,7 +3,7 @@ import React from "react";
 import { Affix, Button, Col, Row, Table, Tabs } from "antd";
 import { CodeContext } from "../../model/CodeContext";
 import { TableConfigContext } from "../../model/TableContext";
-import { Utils } from "../../model/utils";
+import { Utils } from "../../model/utils/utils";
 import CodePanel from "./components/CodePanel";
 import { PlusOutlined } from "@ant-design/icons";
 import Editor, { Monaco } from "@monaco-editor/react";

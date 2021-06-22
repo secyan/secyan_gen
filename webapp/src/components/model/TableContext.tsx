@@ -1,8 +1,10 @@
 import { message, notification } from "antd";
 import axios from "axios";
 import React from "react";
+import { apiRoutes } from "../../settings/api_routes";
+import { localStorageKeyConfig } from "../../settings/localstorage_keyconfig";
 import { TableConfig } from "./table-config";
-import { Utils } from "./utils";
+import { Utils } from "./utils/utils";
 
 interface TableConfigContext {
   configs: TableConfig[];
@@ -22,19 +24,27 @@ export default function TableConfigProvider(props: any) {
   const [openRawConfigDialog, setOpenRawConfigDialog] = React.useState(false);
 
   React.useEffect(() => {
-    let tableConfig = localStorage.getItem("tableStructure");
+    let tableConfig = localStorage.getItem(
+      localStorageKeyConfig.tableStructureKey
+    );
     if (tableConfig !== null) {
       setConfigsState(JSON.parse(tableConfig));
     }
   }, []);
 
   React.useEffect(() => {
-    localStorage.setItem("tableStructure", JSON.stringify(configs));
+    localStorage.setItem(
+      localStorageKeyConfig.tableStructureKey,
+      JSON.stringify(configs)
+    );
   }, [configs]);
 
   const setConfigs = React.useCallback(
     (vs: TableConfig[], update: boolean = true) => {
-      localStorage.setItem("tableStructure", JSON.stringify(vs));
+      localStorage.setItem(
+        localStorageKeyConfig.tableStructureKey,
+        JSON.stringify(vs)
+      );
       if (update) {
         setConfigsState(JSON.parse(JSON.stringify(vs)));
       }
@@ -44,7 +54,7 @@ export default function TableConfigProvider(props: any) {
 
   const fetchConfigs = React.useCallback(async () => {
     try {
-      let url = Utils.getURL("/schema");
+      let url = Utils.getURL(apiRoutes.fetchTableSchemaRoute);
       let resp = await axios.get(url);
       setConfigs(resp.data);
       message.success("Tables are updated");

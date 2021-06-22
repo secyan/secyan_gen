@@ -3,7 +3,7 @@ import { CodeRunResult } from "../../../model/code-run-result";
 import { CodeContext } from "../../../model/CodeContext";
 import Editor, { Monaco } from "@monaco-editor/react";
 import * as monaco from "monaco-editor";
-import { Utils } from "../../../model/utils";
+import { Utils } from "../../../model/utils/utils";
 import { TableConfigContext } from "../../../model/TableContext";
 import { Card, Col, notification, Row, Spin, Table } from "antd";
 //@ts-ignore
@@ -13,6 +13,7 @@ import {
   GridColDef,
   GridValueGetterParams,
 } from "@material-ui/data-grid";
+import { EditorUtils } from "../../../model/utils/editorUtils";
 interface Props {
   codeRunResult: CodeRunResult;
   index: number;
@@ -52,7 +53,7 @@ export default function CodePanel(props: Props) {
           };
           if (configs) {
             return {
-              suggestions: Utils.generateSuggestions(range, configs),
+              suggestions: EditorUtils.generateSuggestions(range, configs),
             };
           }
         },

@@ -3,9 +3,11 @@ import axios from "axios";
 import React from "react";
 import { CodeRunResult } from "./code-run-result";
 import { TableConfig } from "./table-config";
-import { Utils } from "./utils";
+import { Utils } from "./utils/utils";
 import Editor, { Monaco } from "@monaco-editor/react";
 import * as monaco from "monaco-editor";
+import { apiRoutes } from "../../settings/api_routes";
+import { localStorageKeyConfig } from "../../settings/localstorage_keyconfig";
 
 interface Code {
   codeRunResults: CodeRunResult[];
@@ -34,7 +36,7 @@ export default function CodeProvider(props: any) {
   const [showEdit, setShowEdit] = React.useState(false);
 
   React.useEffect(() => {
-    let code = localStorage.getItem("code");
+    let code = localStorage.getItem(localStorageKeyConfig.codeResultKey);
     if (code) {
       try {
         setCodeRunResultState(JSON.parse(code));
@@ -46,7 +48,10 @@ export default function CodeProvider(props: any) {
 
   const setCodeRunResults = React.useCallback(
     (c: CodeRunResult[]) => {
-      localStorage.setItem("code", JSON.stringify(c));
+      localStorage.setItem(
+        localStorageKeyConfig.codeResultKey,
+        JSON.stringify(c)
+      );
       setCodeRunResultState(JSON.parse(JSON.stringify(c)));
     },
     [codeRunResults]
@@ -54,7 +59,7 @@ export default function CodeProvider(props: any) {
 
   const runCode = React.useCallback(
     async (index: number, tableConfigs: TableConfig[]) => {
-      let url = Utils.getURL("/generate_python");
+      let url = Utils.getURL(apiRoutes.runPythonCodeRoute);
       let data = codeRunResults[index];
 
       try {
