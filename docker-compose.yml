@@ -41,7 +41,9 @@ services:
       in_docker: 1
 
   db:
-    image: postgres
+    build:
+      context: ./
+      dockerfile: docker/postgres.dockerfile
     restart: always
     environment:
       POSTGRES_PASSWORD: password

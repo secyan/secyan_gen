@@ -14,5 +14,6 @@
     <mapping directory="$PROJECT_DIR$/external/SECYAN/extern/libOTe" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/external/SECYAN/extern/libOTe/cryptoTools" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/external/SECYAN/extern/pybind11" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/webapp/eth-localnet" vcs="Git" />
   </component>
 </project>

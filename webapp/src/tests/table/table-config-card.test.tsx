@@ -53,3 +53,51 @@ test("Test simple card", () => {
     expect(screen.getByDisplayValue(column.name)).toBeTruthy();
   }
 });
+
+test("Test simple card with annotation", () => {
+  render(
+    <TableConfigProvider>
+      <TableConfigCard config={SIMPLE_CONFIGS[1]} index={1} />
+    </TableConfigProvider>
+  );
+  expect(
+    screen.getByTestId(test_id_config.tableCard.testCardPathId)
+  ).toHaveTextContent(SIMPLE_CONFIGS[1].data_paths[0]);
+
+  expect(
+    screen.getByTestId(test_id_config.tableCard.testCardSizeId)
+  ).toHaveTextContent(SIMPLE_CONFIGS[1].data_sizes[0]);
+
+  expect(
+    screen.getByDisplayValue(SIMPLE_CONFIGS[1].annotations[0])
+  ).toBeTruthy();
+});
+
+test("Test Modify Annotation", () => {
+  const config = SIMPLE_CONFIGS[1];
+  render(
+    <TableConfigProvider>
+      <TableConfigCard config={config} index={1} />
+    </TableConfigProvider>
+  );
+  let inputField = screen.getByDisplayValue(config.annotations[0]);
+  fireEvent.change(inputField, { target: { value: "cde" } });
+  expect(screen.getByDisplayValue("cde")).toBeTruthy();
+  let newItem = localStorage.getItem(localStorageKeyConfig.tableStructureKey);
+  expect(JSON.parse(newItem!)[1].annotations[0]).toBe("cde");
+});
+
+test("Test Modify field Name", async () => {
+  const config = SIMPLE_CONFIGS[1];
+  render(
+    <TableConfigProvider>
+      <TableConfigCard config={config} index={1} />
+    </TableConfigProvider>
+  );
+
+  let fieldName = screen.getByDisplayValue(config.columns[0].name);
+  fireEvent.change(fieldName, { target: { value: "abcd" } });
+  expect(screen.getByDisplayValue("abcd")).toBeTruthy();
+  let newItem = localStorage.getItem(localStorageKeyConfig.tableStructureKey);
+  expect(JSON.parse(newItem!)[1].columns[0].name).toBe("abcd");
+});

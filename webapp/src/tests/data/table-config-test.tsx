@@ -26,7 +26,7 @@ export const SIMPLE_CONFIGS: any[] = [
     table_name: "nation",
   },
   {
-    annotations: [],
+    annotations: ["cast"],
     columns: [
       {
         column_type: "INT",

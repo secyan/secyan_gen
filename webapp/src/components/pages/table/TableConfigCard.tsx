@@ -74,7 +74,7 @@ export default function TableConfigCard(props: Props) {
       configs[index].annotations = annotations !== undefined ? annotations : [];
       setConfigs(configs, false);
     },
-    [config]
+    [config, configs]
   );
 
   const deleteTable = React.useCallback(() => {

@@ -6,3 +6,6 @@
 *.env
 data_dir
 *.envfile
+build
+dist
+*.egg-info
