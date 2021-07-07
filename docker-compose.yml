@@ -45,6 +45,7 @@ services:
       context: ./
       dockerfile: docker/postgres.dockerfile
     restart: always
+    image: sirily11/secyan_db
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: user

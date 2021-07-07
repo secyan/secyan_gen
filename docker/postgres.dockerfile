@@ -35,7 +35,9 @@ RUN cmake ..
 RUN make install -j8
 
 WORKDIR /app
+
 # Install secyan_python
 RUN git clone --recurse-submodules https://github.com/sirily11/SECYAN
 WORKDIR /app/SECYAN
 RUN python3 setup.py install
+RUN python3 -c 'import secyan_python'

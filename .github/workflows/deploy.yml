@@ -1,61 +1,79 @@
-#name: Deploy
-#
-#on:
-#  push:
-#    paths:
-#      - '**.py'
-#      - "**.tsx"
-#      - "**.css"
-#      - "**.js"
-#      - '**.yml'
-#      - '**.html'
-#      - 'zappa_settings.json'
-#      - "**.json"
-#jobs:
-#  deploy_aws:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v2
-#      - name: Set up Python
-#        uses: actions/setup-python@v2
-#        with:
-#          python-version: '3.8'
-#      - uses: dschep/install-pipenv-action@v1
-#      - name: Pipenv install
-#        run: |
-#          pipenv install
-#      - name: Deploy
-#        env:
-#          AWS_ACCESS_KEY_ID: ${{ secrets.KEY_ID }}
-#          AWS_SECRET_ACCESS_KEY: ${{ secrets.KEY }}
-#          AWS_DEFAULT_REGION: ap-east-1
-#        run: |
-#          pipenv run zappa update
-#
-#  deploy_github_page:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v2
-#      - uses: actions/setup-node@v2
-#        with:
-#          node-version: '14'
-#      - name: list
-#        run: ls
-#        working-directory: ./webapp
-#      - name: Install dependencies
-#        run: yarn install
-#        working-directory: ./webapp
-#        env:
-#          CI: false
-#      - name: Build
-#        run: yarn build
-#        working-directory: ./webapp
-#        env:
-#          CI: false
-#          PUBLIC_URL: https://sirily11.github.io/SECYAN-GEN
-#          REACT_APP_URL: https://cwvf54ckb6.execute-api.ap-east-1.amazonaws.com/dev/
-#      - name: Deploy
-#        uses: peaceiris/actions-gh-pages@v3
-#        with:
-#          github_token: ${{ secrets.GITHUB_TOKEN }}
-#          publish_dir: ./webapp/build
+name: Deploy
+
+on:
+  push:
+    paths:
+      - '**.py'
+      - "**.tsx"
+      - "**.css"
+      - "**.js"
+      - '**.yml'
+      - '**.html'
+      - 'zappa_settings.json'
+      - "**.json"
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Prepare
+        id: prep
+        run: |
+          DOCKER_IMAGE=sirily11/secyan_db
+          VERSION=edge
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+          elif [[ $GITHUB_REF == refs/heads/* ]]; then
+            VERSION=latest
+          elif [[ $GITHUB_REF == refs/pull/* ]]; then
+            VERSION=pr-${{ github.event.number }}
+          fi
+          TAGS="${DOCKER_IMAGE}:${VERSION}"
+          echo ::set-output name=version::${VERSION}
+          echo ::set-output name=tags::${TAGS}
+          echo ::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+      - name: Setup Docker Buildx
+        uses: dockerfiles/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./dockerfiles/Dockerfile
+          platforms: linux/arm64,linux/amd64
+          push: true
+          tags: ${{ steps.prep.outputs.tags }}
+
+    deploy_github_page:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+        - uses: actions/setup-node@v2
+          with:
+            node-version: '14'
+        - name: list
+          run: ls
+          working-directory: ./webapp
+        - name: Install dependencies
+          run: yarn install
+          working-directory: ./webapp
+          env:
+            CI: false
+        - name: Build
+          run: yarn build
+          working-directory: ./webapp
+          env:
+            CI: false
+            PUBLIC_URL: https://sirily11.github.io/SECYAN-GEN
+            REACT_APP_URL: https://cwvf54ckb6.execute-api.ap-east-1.amazonaws.com/dev/
+        - name: Deploy
+          uses: peaceiris/actions-gh-pages@v3
+          with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            publish_dir: ./webapp/build
