@@ -50,30 +50,30 @@ jobs:
           push: true
           tags: ${{ steps.prep.outputs.tags }}
 
-    deploy_github_page:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v2
-        - uses: actions/setup-node@v2
-          with:
-            node-version: '14'
-        - name: list
-          run: ls
-          working-directory: ./webapp
-        - name: Install dependencies
-          run: yarn install
-          working-directory: ./webapp
-          env:
-            CI: false
-        - name: Build
-          run: yarn build
-          working-directory: ./webapp
-          env:
-            CI: false
-            PUBLIC_URL: https://sirily11.github.io/SECYAN-GEN
-            REACT_APP_URL: https://cwvf54ckb6.execute-api.ap-east-1.amazonaws.com/dev/
-        - name: Deploy
-          uses: peaceiris/actions-gh-pages@v3
-          with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            publish_dir: ./webapp/build
+  deploy_github_page:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: list
+        run: ls
+        working-directory: ./webapp
+      - name: Install dependencies
+        run: yarn install
+        working-directory: ./webapp
+        env:
+          CI: false
+      - name: Build
+        run: yarn build
+        working-directory: ./webapp
+        env:
+          CI: false
+          PUBLIC_URL: https://sirily11.github.io/SECYAN-GEN
+          REACT_APP_URL: https://cwvf54ckb6.execute-api.ap-east-1.amazonaws.com/dev/
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./webapp/build
