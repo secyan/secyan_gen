@@ -21,7 +21,10 @@ setup(
     install_requires=[
         "setuptools",
         "wheel",
-        "secyan_python"
+        "secyan_python",
+        "sqlparse",
+        "jinja2",
+        "psycopg2-binary",
     ],
     packages=find_packages(),
     package_dir={"codegen": "codegen"}
