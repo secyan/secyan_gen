@@ -8,5 +8,4 @@ RUN pip3 install pipenv
 COPY . .
 RUN pipenv install --skip-lock
 WORKDIR codegen
-CMD ['pipenv', 'run', 'pytest']
 

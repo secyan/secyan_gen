@@ -10,10 +10,9 @@ sqlparse = "*"
 jinja2 = "*"
 pytest = "*"
 flask = "*"
-zappa = "*"
 flask-cors = "*"
-pip = "*"
 psycopg2-binary = "*"
+secyan-python = "*"
 
 [requires]
 python_version = "3.8"

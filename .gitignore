@@ -9,3 +9,6 @@ data_dir
 build
 dist
 *.egg-info
+data
+.idea
+.DS_Store
