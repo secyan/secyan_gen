@@ -1,15 +1,15 @@
 from setuptools import setup, find_packages
 
-with open("readme.md", "r", encoding="utf-8") as fh:
-    long_description = fh.read()
+# with open("readme.md", "r", encoding="utf-8") as fh:
+#     long_description = fh.read()
 
 setup(
     name="secyan_gen",
-    version="0.0.1",
+    version="0.2.0",
     author="Qiwei Li",
     author_email="sirily1997@gmail.com",
     description="Code parser with secyan_python",
-    long_description=long_description,
+    long_description="",
     long_description_content_type="text/markdown",
     zip_safe=False,
     platforms=['any'],
