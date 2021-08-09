@@ -3,9 +3,9 @@ name: Build Docker Image
 on: push
 
 jobs:
-  strategy:
-    fail-fast: false
   deploy-db:
+    strategy:
+      fail-fast: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -58,6 +58,8 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
   deploy-gen:
+    strategy:
+      fail-fast: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
