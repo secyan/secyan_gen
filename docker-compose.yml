@@ -10,11 +10,9 @@ services:
     container_name: "codegen-webapp"
 
   server:
-    build:
-      context: ./
-      dockerfile: docker/server.dockerfile
-    volumes:
-      - ./:/app
+    image: sirily11/secyan_gen
+#    volumes:
+#      - ./:/app
     ports:
       - "5000:5000"
     container_name: "codegen-server"
