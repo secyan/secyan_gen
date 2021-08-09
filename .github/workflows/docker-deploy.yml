@@ -1,11 +1,6 @@
 name: Build Docker Image
 
-on:
-  push:
-    branches:
-      - "main"
-    tags:
-      - "**"
+on: push
 
 jobs:
   strategy:
