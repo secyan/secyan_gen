@@ -1,4 +1,4 @@
-FROM node:14 as build
+FROM node:14git  as build
 
 WORKDIR /app
 COPY ./webapp/ ./

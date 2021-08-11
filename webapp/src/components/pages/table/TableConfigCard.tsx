@@ -24,7 +24,6 @@ import {
 } from "@ant-design/icons";
 import { TableConfigContext } from "../../model/TableContext";
 import { column_types, table_owner } from "../../../settings/column_types";
-import { test_id_config } from "../../../tests/data/test_id";
 import { v4 } from "uuid";
 
 interface Props {
@@ -113,12 +112,12 @@ export default function TableConfigCard(props: Props) {
     >
       <Descriptions title="Data size and path" bordered={true}>
         <Descriptions.Item label="Data Path">
-          <div data-testid={test_id_config.tableCard.testCardPathId}>
+          <div data-testid={"table-config-path"}>
             {config.data_paths}
           </div>
         </Descriptions.Item>
         <Descriptions.Item label="Data Size">
-          <div data-testid={test_id_config.tableCard.testCardSizeId}>
+          <div data-testid={"table-config-size"}>
             {config.data_sizes}
           </div>
         </Descriptions.Item>
