@@ -8,8 +8,8 @@ services:
 
   server:
     image: sirily11/secyan_gen
-#    volumes:
-#      - ./:/app
+    volumes:
+      - ./:/app
     ports:
       - "5000:5000"
     container_name: "codegen-server"
@@ -34,7 +34,7 @@ services:
       host: db
       password: password
       user: user
-      database: test
+      database: tpch
       in_docker: 1
 
   db:

@@ -13,18 +13,18 @@ import {
   notification,
   List,
   Descriptions,
-} from "antd";
-import React from "react";
-import { TableConfig } from "../../model/table-config";
+} from 'antd';
+import React from 'react';
+import { TableConfig } from '../../model/table-config';
 import {
   EditOutlined,
   PlusOutlined,
   MinusCircleOutlined,
   DeleteOutlined,
-} from "@ant-design/icons";
-import { TableConfigContext } from "../../model/TableContext";
-import { column_types, table_owner } from "../../../settings/column_types";
-import { v4 } from "uuid";
+} from '@ant-design/icons';
+import { TableConfigContext } from '../../model/TableContext';
+import { column_types, table_owner } from '../../../settings/column_types';
+import { v4 } from 'uuid';
 
 interface Props {
   config: TableConfig;
@@ -78,14 +78,14 @@ export default function TableConfigCard(props: Props) {
 
   const deleteTable = React.useCallback(() => {
     Modal.confirm({
-      title: "confirm",
-      content: "Delete this table",
+      title: 'confirm',
+      content: 'Delete this table',
       onOk: () => {
         configs.splice(index, 1);
         setConfigs(JSON.parse(JSON.stringify(configs)));
         notification.success({
-          message: "Table deleted",
-          placement: "bottomRight",
+          message: 'Table deleted',
+          placement: 'bottomRight',
         });
       },
     });
@@ -94,7 +94,7 @@ export default function TableConfigCard(props: Props) {
   return (
     <Card
       id={config.table_name}
-      title={`${config.table_name} - ${config.owner ?? "Client"}`}
+      title={`${config.table_name} - ${config.owner ?? 'Client'}`}
       key={index}
       style={{ margin: 10 }}
       extra={[
@@ -112,14 +112,10 @@ export default function TableConfigCard(props: Props) {
     >
       <Descriptions title="Data size and path" bordered={true}>
         <Descriptions.Item label="Data Path">
-          <div data-testid={"table-config-path"}>
-            {config.data_paths}
-          </div>
+          <div data-testid={'table-config-path'}>{config.data_paths}</div>
         </Descriptions.Item>
         <Descriptions.Item label="Data Size">
-          <div data-testid={"table-config-size"}>
-            {config.data_sizes}
-          </div>
+          <div data-testid={'table-config-size'}>{config.data_sizes}</div>
         </Descriptions.Item>
       </Descriptions>
       <Form
@@ -134,22 +130,22 @@ export default function TableConfigCard(props: Props) {
         <Form.List name="columns">
           {(fields, { add, remove }) => (
             <Row gutter={[10, 10]}>
-              {fields.map(({ key, name, fieldKey, ...restField }) => (
+              {fields?.map(({ key, name, fieldKey, ...restField }) => (
                 <Col
                   key={`column-${key}`}
-                  style={{ display: "flex", marginBottom: 8 }}
+                  style={{ display: 'flex', marginBottom: 8 }}
                   xs={24}
                 >
-                  <Row style={{ width: "100%" }} gutter={[20, 10]}>
+                  <Row style={{ width: '100%' }} gutter={[20, 10]}>
                     <Col md={5} xs={24}>
                       <Form.Item
                         {...restField}
-                        name={[name, "column_type"]}
-                        fieldKey={[fieldKey, "type"]}
+                        name={[name, 'column_type']}
+                        fieldKey={[fieldKey, 'type']}
                         rules={[
                           {
                             required: true,
-                            message: "Column type is required",
+                            message: 'Column type is required',
                           },
                         ]}
                       >
@@ -163,12 +159,12 @@ export default function TableConfigCard(props: Props) {
                     <Col md={5} xs={22}>
                       <Form.Item
                         {...restField}
-                        name={[name, "name"]}
-                        fieldKey={[fieldKey, "name"]}
+                        name={[name, 'name']}
+                        fieldKey={[fieldKey, 'name']}
                         rules={[
                           {
                             required: true,
-                            message: "Column name is required",
+                            message: 'Column name is required',
                           },
                         ]}
                       >
@@ -202,12 +198,12 @@ export default function TableConfigCard(props: Props) {
         <Form.List name="annotations">
           {(fields, { add, remove }) => (
             <div>
-              {fields.map(({ key, name, fieldKey, ...restField }) => (
+              {fields?.map(({ key, name, fieldKey, ...restField }) => (
                 <Row gutter={[10, 10]}>
                   <Col span={22}>
                     <Form.Item
-                      name={[name, "annotation"]}
-                      fieldKey={[fieldKey, "annotation"]}
+                      name={[name, 'annotation']}
+                      fieldKey={[fieldKey, 'annotation']}
                       label="Annotation"
                     >
                       <Input />
@@ -251,7 +247,7 @@ export default function TableConfigCard(props: Props) {
           }}
         />
         <Select
-          style={{ width: "100%", marginTop: 20 }}
+          style={{ width: '100%', marginTop: 20 }}
           placeholder="Select Owner"
           value={owner}
           onChange={(e) => setOwner(e)}

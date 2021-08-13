@@ -16,7 +16,7 @@ class SelectNode(BaseNode):
         super().__init__(tables=tables)
         self.self_identify = "Selection"
         self.from_tables: List[Identifier] = []
-        self.support_aggregation_functions = ["sum", "count", "avg"]
+        self.support_aggregation_functions = ["sum", "count", "avg", "max"]
         self.annotation_name = annotation_name
 
     def is_supported_function(self, identifier: str):

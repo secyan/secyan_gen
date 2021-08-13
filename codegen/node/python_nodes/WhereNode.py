@@ -39,7 +39,7 @@ class FreeConnexWherePythonNode(FreeConnexWhereNode):
 
             root.parent.relation.semi_join_attr(root.relation, from_key, to_key)
             if should_aggregate:
-                root.relation.aggregate_names([a.name for a in agg])
+                root.relation.aggregate([a.name for a in agg])
 
         else:
             group_by = self.__get_group_by__()
@@ -61,4 +61,4 @@ class FreeConnexWherePythonNode(FreeConnexWhereNode):
 
             should_aggregate = len(agg) > 0
             if should_aggregate:
-                root.relation.aggregate_names([a.name for a in agg])
+                root.relation.aggregate([a.name for a in agg])
