@@ -9,4 +9,4 @@ COPY . .
 RUN python3 setup.py install
 RUN python3 -c "import codegen"
 
-RUN apt-get install postgresql-plpython3-12
+RUN apt-get install -y postgresql-plpython3-12
