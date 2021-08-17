@@ -1,6 +1,8 @@
 from typing import List, Tuple
 from secyan_python import Relation, RelationInfo, AnnotInfo
+from secyan_python.constant import AggregateType
 from ..cpp_nodes import SelectNode
+from ...table import Table
 from ...table.python_free_connex_table import PythonFreeConnexTable
 import os
 

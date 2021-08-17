@@ -1,6 +1,7 @@
+/** @format */
+
 import { message, notification } from "antd";
 import axios from "axios";
-import { type } from "node:os";
 import React from "react";
 import { apiRoutes } from "../../settings/api_routes";
 import { localStorageKeyConfig } from "../../settings/localstorage_keyconfig";

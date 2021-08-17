@@ -1,6 +1,6 @@
 from typing import List, Optional, Tuple
 import sqlparse
-from sqlparse.sql import Comment, Identifier, Statement, Where, Token, IdentifierList, Comparison
+from sqlparse.sql import Comment, Identifier, Statement, Where, Token, IdentifierList, Comparison, Function
 from .node.cpp_nodes import SelectNode, GroupByNode, FromNode, JoinNode, OrderByNode, WhereNode, BaseNode
 from .table import Table, FreeConnexTable
 from jinja2 import Template
@@ -124,6 +124,10 @@ class Parser:
                 elif type(token) == Where:
                     token: Where
                     self.__parse_where__(token)
+
+                elif type(token) == Function:
+                    self.__parse_function__(token)
+
                 elif type(token) == Identifier:
                     token: Identifier
                     self.__parse_identifier__(token)
@@ -217,6 +221,19 @@ class Parser:
         generated = template.render(function_lines=lines, function_name=function_name, relation_names=relation_names,
                                     data_sizes=data_sizes)
         return generated
+
+    def __parse_function__(self, function: Function):
+        last = self.root.get_last_node()
+        if type(last) == SelectNode:
+            last: SelectNode
+            function_type = function.tokens[0].normalized
+            if function_type == "max":
+
+                last.used_aggregation_function = "max"
+            elif function_type == "sum":
+                last.used_aggregation_function = "sum"
+            else:
+                raise RuntimeError("Aggregation type is not supported")
 
     def __parse_from__(self):
         """

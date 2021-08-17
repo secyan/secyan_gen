@@ -12,7 +12,7 @@ pytest = "*"
 flask = "*"
 flask-cors = "*"
 psycopg2-binary = "*"
-secyan-python = "*"
+secyan-python = "0.3.7"
 
 [requires]
 python_version = "3.8"

@@ -3,6 +3,7 @@ from sqlparse.tokens import Comparison
 from codegen.node.cpp_nodes import FreeConnexWhereNode
 from codegen.table import Table, Column, TypeEnum
 from codegen.table.python_free_connex_table import PythonFreeConnexTable
+from secyan_python.constant import AggregateType
 
 
 class FreeConnexWherePythonNode(FreeConnexWhereNode):
@@ -39,7 +40,7 @@ class FreeConnexWherePythonNode(FreeConnexWhereNode):
 
             root.parent.relation.semi_join_attr(root.relation, from_key, to_key)
             if should_aggregate:
-                root.relation.aggregate_names([a.name for a in agg])
+                root.relation.aggregate(attr_names=[a.name for a in agg], agg_type=AggregateType.SUM)
 
         else:
             group_by = self.__get_group_by__()
