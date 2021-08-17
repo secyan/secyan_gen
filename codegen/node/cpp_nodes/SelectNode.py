@@ -16,7 +16,7 @@ class SelectNode(BaseNode):
         super().__init__(tables=tables)
         self.self_identify = "Selection"
         self.from_tables: List[Identifier] = []
-        self.support_aggregation_functions = ["sum", "count", "avg"]
+        self.support_aggregation_functions = ["sum", "count", "avg", "max"]
         self.annotation_name = annotation_name
         # Which aggregation function used in the sql. For example, max.
         self.used_aggregation_function: str = None
