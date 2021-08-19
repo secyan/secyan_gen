@@ -5,7 +5,7 @@ RUN apt update
 RUN apt install -y python3
 RUN apt install -y python3-pip
 RUN pip3 install setuptools
-RUN pip3 install pipenv
 COPY . .
-RUN pipenv install --skip-lock
-
+RUN pip3 install -r requirements.txt
+RUN python3 -c "from flask import Flask"
+EXPOSE 5000

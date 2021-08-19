@@ -3,13 +3,15 @@ This is a pure python example without using codegen.
 The query this example represents is the Query 3 in the Tpch repo
 """
 
-from secyan_python import Relation, RelationInfo, AnnotInfo, Party
-from secyan_python.constant import DataType, E_role
-from secyan_python.utils import init_global_party, DateTime
+
 from multiprocessing import Queue, Process
 import importlib.resources as pkg_resources
 import codegen.tests.test_data as test_data
 from codegen.codegen_python import cpp_datetime_to_python_datetime
+from secyan_python import Relation, RelationInfo, AnnotInfo, Party
+from secyan_python.constant import DataType, E_role
+from secyan_python.utils import init_global_party, DateTime
+
 
 sizes = [
     [150, 450, 1500, 4950, 15000],

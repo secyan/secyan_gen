@@ -102,16 +102,18 @@ def generate_code_by_db():
 
 def run_query(sql, role: E_role, queue: Queue, tables, driver, annotation_name, num_of_rows):
     try:
+        print("Starting connection")
         init_global_party(address="0.0.0.0", port=7766, role=role)
-        parser = CodeGenPython(db_driver=driver, sql=sql, tables=tables, annotation_name=annotation_name)
-        parser.parse()
-        output = parser.to_output(limit_size=num_of_rows)
-        graph = parser.root_table.to_json_graph(
-            output_attrs=parser.get_output_attributes()) if parser.root_table else {}
-
-        is_free_connex, error_tables = parser.is_free_connex()
-        error_tables = [e.variable_table_name for e in error_tables]
-        queue.put((False, output, graph, is_free_connex, error_tables))
+        # parser = CodeGenPython(db_driver=driver, sql=sql, tables=tables, annotation_name=annotation_name)
+        # parser.parse()
+        # output = parser.to_output(limit_size=num_of_rows)
+        # graph = parser.root_table.to_json_graph(
+        #     output_attrs=parser.get_output_attributes()) if parser.root_table else {}
+        #
+        # is_free_connex, error_tables = parser.is_free_connex()
+        # error_tables = [e.variable_table_name for e in error_tables]
+        # queue.put((False, output, graph, is_free_connex, error_tables))
+        queue.put((True, 1))
 
     except Exception as e:
         queue.put((True, e))
@@ -124,6 +126,7 @@ def generate_python_result():
     :return:
     """
     try:
+
         data: dict = request.json
         tables = [PythonFreeConnexTable.load_from_json(t) for t in json.loads(data['table'])]
 
@@ -135,6 +138,7 @@ def generate_python_result():
         port = getenv("port")
         annotation_name = data['annotation_name']
         num_of_rows = data.get("num_of_rows", 100)
+        print("Generating python result")
         driver = PostgresDBDriver(password=password,
                                   user=user,
                                   database_name=database,
@@ -151,8 +155,11 @@ def generate_python_result():
         server = Process(target=run_query,
                          args=(sql, E_role.SERVER, server_queue, tables, driver, annotation_name, num_of_rows))
 
+        print("Start process")
         client.start()
         server.start()
+
+        print("Join process")
 
         client.join()
         server.join()

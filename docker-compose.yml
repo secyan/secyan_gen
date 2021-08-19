@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3"
 services:
   webapp:
     image: sirily11/secyan_webapp
@@ -13,7 +13,7 @@ services:
     ports:
       - "5000:5000"
     container_name: "codegen-server"
-    command: pipenv run python index.py
+    command: python3 index.py
     environment:
       host: db
       password: password
