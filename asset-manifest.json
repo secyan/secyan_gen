@@ -3,10 +3,10 @@
     "static/js/0.77f238fa.chunk.js": "https://secyan.github.io/SECYAN-GEN/static/js/0.77f238fa.chunk.js",
     "static/js/1.6ced074f.chunk.js": "https://secyan.github.io/SECYAN-GEN/static/js/1.6ced074f.chunk.js",
     "main.css": "https://secyan.github.io/SECYAN-GEN/static/css/main.8d98a89d.chunk.css",
-    "main.js": "https://secyan.github.io/SECYAN-GEN/static/js/main.8bb184c6.chunk.js",
+    "main.js": "https://secyan.github.io/SECYAN-GEN/static/js/main.60db779d.chunk.js",
     "runtime-main.js": "https://secyan.github.io/SECYAN-GEN/static/js/runtime-main.5ce78002.js",
     "static/css/4.745cd17f.chunk.css": "https://secyan.github.io/SECYAN-GEN/static/css/4.745cd17f.chunk.css",
-    "static/js/4.1373be46.chunk.js": "https://secyan.github.io/SECYAN-GEN/static/js/4.1373be46.chunk.js",
+    "static/js/4.aa9e2102.chunk.js": "https://secyan.github.io/SECYAN-GEN/static/js/4.aa9e2102.chunk.js",
     "static/js/5.a5dfceda.chunk.js": "https://secyan.github.io/SECYAN-GEN/static/js/5.a5dfceda.chunk.js",
     "static/js/6.0757bdaa.chunk.js": "https://secyan.github.io/SECYAN-GEN/static/js/6.0757bdaa.chunk.js",
     "static/js/7.3814814a.chunk.js": "https://secyan.github.io/SECYAN-GEN/static/js/7.3814814a.chunk.js",
@@ -79,15 +79,15 @@
     "static/js/74.a7a6e884.chunk.js": "https://secyan.github.io/SECYAN-GEN/static/js/74.a7a6e884.chunk.js",
     "static/js/75.4e366ac9.chunk.js": "https://secyan.github.io/SECYAN-GEN/static/js/75.4e366ac9.chunk.js",
     "index.html": "https://secyan.github.io/SECYAN-GEN/index.html",
-    "static/js/4.1373be46.chunk.js.LICENSE.txt": "https://secyan.github.io/SECYAN-GEN/static/js/4.1373be46.chunk.js.LICENSE.txt",
+    "static/js/4.aa9e2102.chunk.js.LICENSE.txt": "https://secyan.github.io/SECYAN-GEN/static/js/4.aa9e2102.chunk.js.LICENSE.txt",
     "static/js/67.3a7ecce2.chunk.js.LICENSE.txt": "https://secyan.github.io/SECYAN-GEN/static/js/67.3a7ecce2.chunk.js.LICENSE.txt",
     "static/media/codicon.css": "https://secyan.github.io/SECYAN-GEN/static/media/codicon.74d8acf8.ttf"
   },
   "entrypoints": [
     "static/js/runtime-main.5ce78002.js",
     "static/css/4.745cd17f.chunk.css",
-    "static/js/4.1373be46.chunk.js",
+    "static/js/4.aa9e2102.chunk.js",
     "static/css/main.8d98a89d.chunk.css",
-    "static/js/main.8bb184c6.chunk.js"
+    "static/js/main.60db779d.chunk.js"
   ]
 }
