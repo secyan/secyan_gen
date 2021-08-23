@@ -31,7 +31,7 @@ jobs:
         env:
           CI: false
           PUBLIC_URL: https://secyan.github.io/SECYAN-GEN/
-          REACT_APP_URL: 'http://0.0.0.0:5000'
+          REACT_APP_URL: 'https://0.0.0.0:5000'
           GENERATE_SOURCEMAP: false
 
       - name: Deploy

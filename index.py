@@ -258,4 +258,4 @@ def get_data_with_annotation():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0")
+    app.run(debug=True, host="0.0.0.0", ssl_context="adhoc")
