@@ -8,12 +8,13 @@ import {
   Input,
   List,
   Spin,
-} from "antd";
-import React from "react";
-import { BackEnd, Role, SettingsContext } from "../../model/SettingsContext";
-import { useLocation } from "react-router";
-import { CodeContext } from "../../model/CodeContext";
-import { TableConfigContext } from "../../model/TableContext";
+  Descriptions,
+} from 'antd';
+import React from 'react';
+import { BackEnd, Role, SettingsContext } from '../../model/SettingsContext';
+import { useLocation } from 'react-router';
+import { CodeContext } from '../../model/CodeContext';
+import { TableConfigContext } from '../../model/TableContext';
 
 interface FormValue {
   role: Role;
@@ -72,7 +73,7 @@ export default function SettingsPage() {
           </Form.Item>
           <Form.Item label="Role" name="role">
             <Select>
-              {["Client", "Server"].map((v, i) => (
+              {['Client', 'Server'].map((v, i) => (
                 <Select.Option value={v} key={`role-${i}`}>
                   {v}
                 </Select.Option>
@@ -85,7 +86,7 @@ export default function SettingsPage() {
             extra="This will only affect the c++ code generator"
           >
             <Select>
-              {["Default Backend", "Postgres Backend"].map((v, i) => (
+              {['Default Backend', 'Postgres Backend'].map((v, i) => (
                 <Select.Option value={v} key={`role-${i}`}>
                   {v}
                 </Select.Option>
@@ -104,7 +105,7 @@ export default function SettingsPage() {
             <Button
               onClick={() => {
                 deleteResultCache();
-                message.success("Delete cache successfully");
+                message.success('Delete cache successfully');
               }}
             >
               Delete
@@ -129,11 +130,18 @@ export default function SettingsPage() {
           </List.Item>
         </List>
       </Card>
+      <Card style={{ marginTop: 20, marginBottom: 20 }}>
+        <Descriptions title="Backend URL">
+          <Descriptions.Item label="Backend">
+            {process.env.REACT_APP_URL}
+          </Descriptions.Item>
+        </Descriptions>
+      </Card>
     </div>
   );
 
   return (
-    <div style={{ padding: 10 }}>
+    <div style={{ padding: 10, overflowY: 'scroll', maxHeight: '90vh' }}>
       <Typography.Title level={3}>Settings</Typography.Title>
       {loaded ? settings : <Spin />}
     </div>
