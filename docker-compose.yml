@@ -17,7 +17,7 @@ services:
     environment:
       host: db
       password: password
-      user: user
+      user: userD
       database: test
 
   test:

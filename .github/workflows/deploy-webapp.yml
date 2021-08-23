@@ -1,0 +1,42 @@
+name: Deploy
+
+on:
+  push:
+    paths:
+      - '**.py'
+      - "**.tsx"
+      - "**.css"
+      - "**.js"
+      - '**.yml'
+      - '**.html'
+      - 'zappa_settings.json'
+      - "**.json"
+jobs:
+  deploy_github_page:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: list
+        run: ls
+        working-directory: ./webapp
+      - name: Install dependencies
+        run: yarn install
+        working-directory: ./webapp
+        env:
+          CI: false
+          PUBLIC_URL: /
+          REACT_APP_URL: 'http://0.0.0.0:5000'
+          GENERATE_SOURCEMAP: false
+      - name: Build
+        run: yarn build
+        working-directory: ./webapp
+        env:
+          CI: false
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./webapp/build
