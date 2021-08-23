@@ -78,5 +78,6 @@
     "transformIgnorePatterns": [
       "node_modules/(?!(monaco-editor)/)"
     ]
-  }
+  },
+  "homepage": "https://sirily11.github.io/SECYAN-GEN"
 }
