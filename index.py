@@ -37,10 +37,12 @@ def generate_code():
     """
     try:
         data = request.json
-        tables = [FreeConnexTable.load_from_json(t) for t in json.loads(data['table'])]
+        tables = [FreeConnexTable.load_from_json(
+            t) for t in json.loads(data['table'])]
         sql = data['sql']
         annotation_name = data['annotation_name']
-        parser = FreeConnexParser(sql=sql, tables=tables, annotation_name=annotation_name)
+        parser = FreeConnexParser(
+            sql=sql, tables=tables, annotation_name=annotation_name)
         output = parser.parse().to_output(data.get("functionName"))
         graph = parser.root_table.to_json_graph(
             output_attrs=parser.get_output_attributes())
@@ -61,12 +63,14 @@ def generate_code_by_db():
     """
     try:
         data: dict = request.json
-        tables = [FreeConnexTable.load_from_json(t) for t in json.loads(data['table'])]
+        tables = [FreeConnexTable.load_from_json(
+            t) for t in json.loads(data['table'])]
 
         sql = data['sql']
         password = getenv('password')
         user = getenv('user')
-        database = data.get("database", None) if data.get("database", None) else getenv("database")
+        database = data.get("database", None) if data.get(
+            "database", None) else getenv("database")
         host = getenv("host")
         port = getenv("port")
         annotation_name = data['annotation_name']
@@ -78,7 +82,8 @@ def generate_code_by_db():
                                   port=port,
                                   tables=tables)
 
-        parser = CodeGenDB(db_driver=driver, sql=sql, tables=tables, annotation_name=annotation_name)
+        parser = CodeGenDB(db_driver=driver, sql=sql,
+                           tables=tables, annotation_name=annotation_name)
 
         if "plan" in data and data["plan"] != "":
             plan = PostgresDBPlan.from_json(data["plan"], tables=tables)
@@ -104,7 +109,8 @@ def run_query(sql, role: E_role, queue: Queue, tables, driver, annotation_name, 
     try:
         print("Starting connection")
         init_global_party(address="0.0.0.0", port=7766, role=role)
-        parser = CodeGenPython(db_driver=driver, sql=sql, tables=tables, annotation_name=annotation_name)
+        parser = CodeGenPython(db_driver=driver, sql=sql,
+                               tables=tables, annotation_name=annotation_name)
         parser.parse()
         output = parser.to_output(limit_size=num_of_rows)
         graph = parser.root_table.to_json_graph(
@@ -127,12 +133,14 @@ def generate_python_result():
     try:
 
         data: dict = request.json
-        tables = [PythonFreeConnexTable.load_from_json(t) for t in json.loads(data['table'])]
+        tables = [PythonFreeConnexTable.load_from_json(
+            t) for t in json.loads(data['table'])]
 
         sql = data['sql']
         password = getenv('password')
         user = getenv('user')
-        database = data.get("database", None) if data.get("database", None) else getenv("database")
+        database = data.get("database", None) if data.get(
+            "database", None) else getenv("database")
         host = getenv("host")
         port = getenv("port")
         annotation_name = data['annotation_name']
@@ -169,7 +177,8 @@ def generate_python_result():
         if server_result[0]:
             raise RuntimeError(server_result[1])
 
-        print(f"Client results: {len(client_result[1])}, server results: {len(server_result[1])}")
+        print(
+            f"Client results: {len(client_result[1])}, server results: {len(server_result[1])}")
 
         return jsonify(
             {"client_result": client_result[1], "server_result": server_result[1], "joinGraph": client_result[2],
@@ -245,7 +254,8 @@ def get_data_with_annotation():
                               port=port,
                               tables=[])
     data_fetcher = DataFetcher(db_driver=driver)
-    tables = [PythonFreeConnexTable.load_from_json(t) for t in json.loads(request.json.get("tables"))]
+    tables = [PythonFreeConnexTable.load_from_json(
+        t) for t in json.loads(request.json.get("tables"))]
 
     try:
         tables = data_fetcher.store_data(output_dir=output_dir, tables=tables)
@@ -258,4 +268,4 @@ def get_data_with_annotation():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0", ssl_context="adhoc")
+    app.run(debug=True, host="0.0.0.0")
