@@ -39,7 +39,7 @@ services:
 
   db:
     restart: always
-    image: ghcr.io/secyan/secyan_gen/postgres:v0.5.1
+    image: postgres
     ports:
     - 5431:5432
     volumes:

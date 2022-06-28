@@ -17,6 +17,7 @@ class PostgresDBDriver(DatabaseDriver):
 
     def __init__(self, database_name: str, user: str, password: str, host: str, port: str, tables: List[Table]):
         super().__init__(tables)
+        print(f"Using Postgres DB: {database_name}, {user}, {host}, {port}")
         self.database_name = database_name
         self.user = user
         self.password = password
@@ -69,10 +70,12 @@ class PostgresDBDriver(DatabaseDriver):
 
     def execute(self, sql: str) -> List[Tuple]:
         try:
+            print(f"Using Postgres DB: {self.user}, {self.host}, {self.port}")
             conn = psycopg2.connect(database=self.database_name, user=self.user, password=self.password, host=self.host,
                                     port=self.port)
             cur = conn.cursor()
         except Exception as e:
+            print(e)
             raise RuntimeError("Cannot connect to the database. Please check config")
 
         cur.execute(sql)
