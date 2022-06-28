@@ -7,7 +7,7 @@ services:
     container_name: "codegen-webapp"
 
   server:
-    image: server
+    image: ghcr.io/secyan/secyan_gen/webapp:v0.5.1
     volumes:
       - ./:/app
     ports:
