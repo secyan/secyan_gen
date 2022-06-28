@@ -1,17 +1,17 @@
 version: "3"
 services:
   webapp:
-    image: sirily11/secyan_webapp
+    image: ghcr.io/secyan/secyan_gen/webapp:v0.5.1
     ports:
       - "8080:80"
     container_name: "codegen-webapp"
 
   server:
-    image: sirily11/secyan_gen
+    image: ghcr.io/secyan/secyan_gen/server:v0.5.1
     volumes:
       - ./:/app
     ports:
-      - "5000:5000"
+      - "5001:5000"
     container_name: "codegen-server"
     command: python3 index.py
     environment:
@@ -38,12 +38,8 @@ services:
       in_docker: 1
 
   db:
-    build:
-      context: ./
-      dockerfile: docker/postgres.dockerfile
-
     restart: always
-    image: sirily11/secyan_db
+    image: ghcr.io/secyan/secyan_gen/postgres:v0.5.1
     ports:
     - 5431:5432
     volumes:
