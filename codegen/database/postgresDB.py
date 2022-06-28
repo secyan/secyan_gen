@@ -17,6 +17,7 @@ class PostgresDBDriver(DatabaseDriver):
 
     def __init__(self, database_name: str, user: str, password: str, host: str, port: str, tables: List[Table]):
         super().__init__(tables)
+        print(f"Using Postgres DB: {database_name}, {user}, {host}, {port}")
         self.database_name = database_name
         self.user = user
         self.password = password

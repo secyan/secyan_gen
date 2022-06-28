@@ -7,7 +7,7 @@ services:
     container_name: "codegen-webapp"
 
   server:
-    image: ghcr.io/secyan/secyan_gen/server:v0.5.1
+    image: ghcr.io/secyan/secyan_gen/webapp:v0.5.1
     volumes:
       - ./:/app
     ports:
@@ -17,7 +17,7 @@ services:
     environment:
       host: db
       password: password
-      user: userD
+      user: user
       database: test
 
   test:
@@ -39,7 +39,7 @@ services:
 
   db:
     restart: always
-    image: ghcr.io/secyan/secyan_gen/postgres:v0.5.1
+    image: postgres
     ports:
     - 5431:5432
     volumes:
@@ -47,3 +47,4 @@ services:
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: user
+      POSTGRES_DB: test
