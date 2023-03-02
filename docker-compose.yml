@@ -7,12 +7,15 @@ services:
     container_name: "codegen-webapp"
 
   server:
-    image: ghcr.io/secyan/secyan_gen/webapp:v0.5.1
+    image: ghcr.io/secyan/secyan_gen/webapp:v0.5.3
     volumes:
       - ./:/app
     ports:
       - "5001:5000"
     container_name: "codegen-server"
+    build:
+        context: ./
+        dockerfile: docker/server.dockerfile
     command: python3 index.py
     environment:
       host: db
